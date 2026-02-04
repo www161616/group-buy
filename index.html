@@ -16,7 +16,6 @@
       font-family: 'Noto Sans TC', sans-serif;
       background: linear-gradient(135deg, #fff5f5 0%, #fce4ec 50%, #f8bbd9 100%);
       min-height: 100vh;
-      /* 修改：全域文字改為更深的深灰色，提升手機閱讀性 */
       color: #2c2c2c; 
     }
     
@@ -28,7 +27,7 @@
     }
     
     .card {
-      background: rgba(255,255,255,0.9); /* 修改：背景稍微不透明一點，增加文字對比 */
+      background: rgba(255,255,255,0.9);
       border-radius: 20px;
       padding: 24px;
       border: 1px solid rgba(236,64,122,0.15);
@@ -41,24 +40,22 @@
       font-weight: 700;
       text-align: center;
       margin-bottom: 8px;
-      color: #1a1a1a; /* 修改：標題更黑 */
+      color: #1a1a1a;
     }
     
     .subtitle {
-      /* 修改：原本是淺粉紅，改為深紅褐色 */
       color: #884455; 
       text-align: center;
-      font-size: 15px; /* 稍微加大 */
+      font-size: 15px;
       margin-bottom: 28px;
       font-weight: 500;
     }
     
     label {
       display: block;
-      /* 修改：標籤改為深色 */
       color: #442222;
       font-size: 15px;
-      font-weight: 700; /* 加粗 */
+      font-weight: 700;
       margin-bottom: 8px;
     }
     
@@ -66,9 +63,8 @@
       width: 100%;
       padding: 14px 16px;
       border-radius: 12px;
-      border: 1px solid rgba(236,64,122,0.3); /* 邊框加深 */
+      border: 1px solid rgba(236,64,122,0.3);
       background: #fff;
-      /* 修改：輸入文字改為純黑，確保清晰 */
       color: #000; 
       font-size: 16px;
       font-family: inherit;
@@ -83,7 +79,6 @@
     }
     
     input::placeholder, textarea::placeholder {
-      /* 修改：提示文字改深，不要太淺 */
       color: #997b80; 
     }
     
@@ -116,7 +111,7 @@
       background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
       color: #fff;
       box-shadow: 0 8px 32px rgba(236,64,122,0.35);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1); /* 文字加陰影更清楚 */
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     
     .btn-primary:hover {
@@ -132,8 +127,8 @@
     
     .btn-outline {
       background: transparent;
-      border: 2px dashed #ec407a; /* 邊框加深 */
-      color: #d81b60; /* 文字加深 */
+      border: 2px dashed #ec407a;
+      color: #d81b60;
     }
     
     .btn-outline:hover {
@@ -194,15 +189,14 @@
     }
     
     .item-name {
-      font-size: 18px; /* 加大 */
+      font-size: 18px;
       font-weight: 700;
       margin-bottom: 4px;
-      color: #222; /* 更黑 */
+      color: #222;
     }
     
     .item-desc {
       font-size: 14px;
-      /* 修改：描述文字改深灰，確保手機可讀 */
       color: #555; 
       line-height: 1.4;
       display: -webkit-box;
@@ -219,11 +213,11 @@
     }
     
     .item-stock.available {
-      color: #d81b60; /* 深粉紅 */
+      color: #d81b60;
     }
     
     .item-stock.sold-out {
-      color: #d32f2f; /* 深紅 */
+      color: #d32f2f;
     }
     
     .item-controls {
@@ -237,7 +231,7 @@
       width: 38px;
       height: 38px;
       border-radius: 10px;
-      border: 1px solid rgba(236,64,122,0.2); /* 增加邊框 */
+      border: 1px solid rgba(236,64,122,0.2);
       background: #fff;
       color: #d81b60;
       font-size: 20px;
@@ -268,12 +262,12 @@
       font-weight: 700;
       min-width: 28px;
       text-align: center;
-      color: #333; /* 數量改深黑 */
+      color: #333;
     }
     
     /* 管理員品項編輯 */
     .admin-item {
-      background: rgba(255,255,255,0.5); /* 改亮一點的背景 */
+      background: rgba(255,255,255,0.5);
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 12px;
@@ -369,7 +363,7 @@
       border-radius: 10px;
       border: 1px solid rgba(102, 126, 234, 0.3);
       background: #fff;
-      color: #5c6ac4; /* 深藍紫色 */
+      color: #5c6ac4;
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
@@ -392,7 +386,7 @@
       border-color: #ffe0b2;
     }
     
-    /* 隱藏的 file input - 修改版 */
+    /* 隱藏的 file input */
     .hidden-file-input {
       position: absolute;
       width: 1px;
@@ -408,8 +402,8 @@
     
     /* 進度條 */
     .progress-bar {
-      height: 8px; /* 加粗 */
-      background: rgba(0,0,0,0.05); /* 改深 */
+      height: 8px;
+      background: rgba(0,0,0,0.05);
       border-radius: 4px;
       overflow: hidden;
       margin-top: 8px;
@@ -422,11 +416,11 @@
     }
     
     .progress-fill.normal {
-      background: linear-gradient(90deg, #4ade80, #10b981); /* 改深綠 */
+      background: linear-gradient(90deg, #4ade80, #10b981);
     }
     
     .progress-fill.full {
-      background: #ef4444; /* 改深紅 */
+      background: #ef4444;
     }
     
     /* 統計卡片 */
@@ -439,7 +433,6 @@
     }
     
     .stat-label {
-      /* 修改：改為深色 */
       color: #666; 
       font-size: 15px;
       margin-bottom: 4px;
@@ -449,7 +442,7 @@
     .stat-value {
       font-size: 48px;
       font-weight: 700;
-      color: #333; /* 數字深黑 */
+      color: #333;
     }
     
     /* 訂單列表 */
@@ -479,7 +472,7 @@
     
     .order-group-badge {
       background: #eef2ff;
-      color: #4f46e5; /* 深靛藍 */
+      color: #4f46e5;
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 13px;
@@ -499,24 +492,22 @@
     }
     
     .order-phone {
-      /* 修改：列表電話改深灰 */
       color: #666;
       font-family: monospace;
     }
     
     .order-items {
-      /* 修改：列表品項改黑 */
       color: #111; 
       font-weight: 500;
     }
     
-    /* --- 底部導航 (維持深粉色背景，文字維持白色以利對比) --- */
+    /* --- 底部導航 --- */
     .bottom-nav {
       position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(216, 27, 96, 0.95); /* 加深背景色 */
+      background: rgba(216, 27, 96, 0.95);
       border-radius: 50px;
       padding: 6px;
       display: flex;
@@ -532,7 +523,7 @@
       border-radius: 50px;
       border: none;
       background: transparent;
-      color: rgba(255,255,255,0.8); /* 淺色文字在深底上 */
+      color: rgba(255,255,255,0.8);
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
@@ -547,12 +538,12 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     
-    /* --- 店家 Header 樣式 --- */
+    /* --- 店家 Header 樣式 (已修改 Logo 部分) --- */
     .brand-header {
       text-align: center;
       margin-bottom: 24px;
       position: relative;
-      background: rgba(255,255,255,0.8); /* 增加白底不透明度 */
+      background: rgba(255,255,255,0.8);
       padding: 24px 20px;
       border-radius: 20px;
       box-shadow: 0 4px 15px rgba(236,64,122,0.1);
@@ -560,32 +551,38 @@
     }
     
     .brand-logo {
-      width: 64px;
-      height: 64px;
+      width: 70px;  /* 稍微加大 */
+      height: 70px;
       background: #fff;
       border-radius: 50%;
       margin: 0 auto 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 30px;
       border: 3px solid #f8bbd9;
       box-shadow: 0 4px 10px rgba(236,64,122,0.1);
+      overflow: hidden; /* 關鍵：讓圖片被裁切成圓形 */
+    }
+    
+    /* 新增：Logo 圖片樣式 */
+    .brand-logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* 讓圖片填滿 */
     }
     
     .brand-name {
       font-size: 15px;
       font-weight: 500;
-      color: #666; /* 次要資訊深灰 */
+      color: #666;
       margin-bottom: 4px;
       letter-spacing: 1px;
     }
     
-    /* 開團名稱 */
     .group-title {
-      font-size: 28px; /* 再加大 */
-      font-weight: 800; /* 極粗 */
-      color: #c2185b;  /* 更深的粉紅/紅 */
+      font-size: 28px;
+      font-weight: 800;
+      color: #c2185b;
       margin-top: 4px;
       line-height: 1.3;
     }
@@ -600,7 +597,7 @@
     
     .success-content {
       text-align: center;
-      background: rgba(255,255,255,0.95); /* 幾近不透明白底 */
+      background: rgba(255,255,255,0.95);
       padding: 40px 30px;
       border-radius: 24px;
       box-shadow: 0 10px 40px rgba(180, 20, 80, 0.15);
@@ -615,7 +612,7 @@
     .success-svg {
       width: 80px;
       height: 80px;
-      fill: #10b981; /* 深綠色 */
+      fill: #10b981;
       filter: drop-shadow(0 4px 10px rgba(16, 185, 129, 0.2));
     }
     
@@ -623,15 +620,14 @@
       font-size: 30px;
       font-weight: 800;
       margin-bottom: 20px;
-      color: #1a1a1a; /* 純黑 */
+      color: #1a1a1a;
     }
     
     .success-info {
-      /* 修改：原本看不見的白色字，現在改為深黑 */
       color: #333; 
       margin-bottom: 24px;
       line-height: 1.8;
-      font-size: 18px; /* 加大字體 */
+      font-size: 18px;
       font-weight: 500;
       background: #f9f9f9;
       padding: 15px;
@@ -649,9 +645,9 @@
     }
     
     .success-item {
-      color: #000; /* 純黑 */
+      color: #000;
       padding: 8px 0;
-      font-size: 20px; /* 加大 */
+      font-size: 20px;
       font-weight: 700;
     }
     
@@ -661,7 +657,7 @@
       border: 1px solid #fecaca;
       border-radius: 12px;
       padding: 14px 18px;
-      color: #dc2626; /* 深紅 */
+      color: #dc2626;
       font-size: 15px;
       font-weight: 500;
       text-align: center;
@@ -672,14 +668,14 @@
     .loading {
       text-align: center;
       padding: 60px 20px;
-      color: #666; /* 改深 */
+      color: #666;
     }
     
     .spinner {
       width: 40px;
       height: 40px;
       border: 4px solid rgba(0,0,0,0.1);
-      border-top-color: #d81b60; /* 深粉 */
+      border-top-color: #d81b60;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin: 0 auto 16px;
@@ -693,7 +689,7 @@
     .empty-state {
       text-align: center;
       padding: 60px 20px;
-      color: #888; /* 改深 */
+      color: #888;
     }
     
     .empty-icon {
@@ -704,15 +700,15 @@
     
     /* 複製連結區塊 */
     .link-box {
-      background: #ecfdf5; /* 淺綠底 */
-      border: 1px solid #6ee7b7; /* 深一點的邊框 */
+      background: #ecfdf5;
+      border: 1px solid #6ee7b7;
       border-radius: 12px;
       padding: 16px;
       margin-top: 20px;
     }
     
     .link-label {
-      color: #059669; /* 深綠文字 */
+      color: #059669;
       font-size: 14px;
       font-weight: 700;
       margin-bottom: 8px;
@@ -727,7 +723,7 @@
       flex: 1;
       background: #fff;
       border: 1px solid #d1fae5;
-      color: #333; /* 連結改黑 */
+      color: #333;
       font-size: 14px;
       padding: 10px;
       border-radius: 8px;
@@ -737,7 +733,7 @@
       padding: 12px 20px;
       border-radius: 10px;
       border: none;
-      background: #10b981; /* 深綠按鈕 */
+      background: #10b981;
       color: #fff;
       font-weight: 600;
       font-size: 14px;
@@ -752,7 +748,7 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(30, 30, 30, 0.95); /* 深黑背景 */
+      background: rgba(30, 30, 30, 0.95);
       color: #fff;
       padding: 14px 28px;
       border-radius: 50px;
@@ -786,7 +782,7 @@
     }
     
     .upload-modal-content {
-      background: #fff; /* 改白底 */
+      background: #fff;
       border-radius: 20px;
       padding: 24px;
       width: 100%;
@@ -799,7 +795,7 @@
       font-weight: 700;
       text-align: center;
       margin-bottom: 20px;
-      color: #333; /* 黑字 */
+      color: #333;
     }
     
     .upload-option {
@@ -826,7 +822,7 @@
     
     .upload-option-text {
       font-size: 16px;
-      color: #333; /* 黑字 */
+      color: #333;
       font-weight: 500;
     }
     
@@ -1301,7 +1297,9 @@
       return `
         <div class="container">
           <div class="brand-header">
-            <div class="brand-logo">🥟</div>
+            <div class="brand-logo">
+              <img src="https://i.ibb.co/RTfWybqw/image.png" alt="Logo">
+            </div>
             <div class="brand-name">包子媽生鮮小舖</div>
             <div class="group-title">${state.formConfig.title}</div>
           </div>
