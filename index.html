@@ -391,18 +391,27 @@
       renderModal();
     }
     function triggerCameraUpload() {
-      hideUploadModal();
-      document.getElementById('file-input-camera').click();
+      state.showUploadModal = false;
+      renderModal();
+      setTimeout(function() {
+        document.getElementById('file-input-camera').click();
+      }, 100);
     }
     function triggerGalleryUpload() {
-      hideUploadModal();
-      document.getElementById('file-input-gallery').click();
+      state.showUploadModal = false;
+      renderModal();
+      setTimeout(function() {
+        document.getElementById('file-input-gallery').click();
+      }, 100);
     }
     async function handleFileSelect(event) {
       const file = event.target.files[0];
       if (!file) return;
       const index = state.uploadTargetIndex;
-      if (index < 0) return;
+      if (index < 0) {
+        console.error('No upload target index');
+        return;
+      }
       
       state.uploadingIndex = index;
       render();
@@ -727,7 +736,7 @@
               '<h2 class="success-title">登記成功！</h2>' +
               '<div class="success-info">取貨分店：' + info.store + '<br>電話末六碼：' + info.phone + '</div>' +
               '<div class="success-items">' + itemsHTML + '</div>' +
-              '<button class="btn btn-primary" style="margin-top:24px; width: auto; padding: 12px 30px;" onclick="resetCustomerForm()">繼續登記其他品項</button>' +
+              '<button class="btn btn-primary" style="margin-top:24px;" onclick="resetCustomerForm()">繼續登記其他品項</button>' +
             '</div>' +
           '</div>' +
         '</div>';
