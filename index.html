@@ -551,7 +551,6 @@
     }
     
     .brand-logo {
-      /* 修改：Logo 加大到 120px */
       width: 120px;  
       height: 120px;
       background: #fff;
@@ -560,8 +559,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      border: 3px solid #f8bbd9;
-      box-shadow: 0 4px 10px rgba(236,64,122,0.1);
+      /* 修改：移除粉紅色邊框 */
+      /* border: 3px solid #f8bbd9; */
+      /* 修改：將陰影改為極淡的中性灰色，或者可以直接移除 box-shadow */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
       overflow: hidden; 
     }
     
@@ -1012,7 +1013,6 @@
       }
       
       // 修改：只有在「非」客人連結（也就是沒有 ?sheet=xxx）時，才顯示底部導航
-      // 這樣客人用連結打開時，就不會看到管理按鈕了
       const urlParams = new URLSearchParams(window.location.search);
       if (!urlParams.has('sheet')) {
         content += renderBottomNav();
@@ -1130,6 +1130,9 @@
 
       const uniquePhones = new Set(state.orders.map(o => o.phone));
 
+      // 修改：過濾掉標題中的時間戳記
+      const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
+
       let itemStatsHTML = state.formConfig.items.map(item => {
         const ordered = ordersByItem[item.name] || 0;
         const percentage = Math.min((ordered / item.limit) * 100, 100);
@@ -1189,7 +1192,7 @@
         <div class="container">
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
-              <h1 style="text-align:left;margin:0;font-size:20px">📊 ${state.formConfig.title}</h1>
+              <h1 style="text-align:left;margin:0;font-size:20px">📊 ${displayTitle}</h1>
               <button class="btn btn-primary" style="width:auto;padding:10px 20px;font-size:14px" onclick="newForm()">
                 + 開新團
               </button>
@@ -1299,6 +1302,9 @@
         `;
       }).join('');
 
+      // 修改：過濾掉標題中的時間戳記
+      const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
+
       return `
         <div class="container">
           <div class="brand-header">
@@ -1306,7 +1312,7 @@
               <img src="https://i.ibb.co/RTfWybqw/image.png" alt="Logo">
             </div>
             <div class="brand-name">包子媽生鮮小舖</div>
-            <div class="group-title">${state.formConfig.title}</div>
+            <div class="group-title">${displayTitle}</div>
           </div>
           <div class="card">
             <p class="subtitle">請填寫以下資料完成登記</p>
