@@ -19,14 +19,14 @@
       color: #2c2c2c; 
     }
     
-    .container {
+    。container {
       max-width: 540px;
       margin: 0 auto;
       padding: 20px;
       padding-bottom: 100px;
     }
     
-    .card {
+    。card {
       background: rgba(255,255,255,0.9);
       border-radius: 20px;
       padding: 24px;
@@ -1094,7 +1094,7 @@
       `;
     }
 
-    function renderStats() {
+    functiofunction renderStats() {
       if (state.loading) {
         return `
           <div class="container">
@@ -1112,11 +1112,18 @@
             <div class="empty-state">
               <div class="empty-icon">📋</div>
               <div>找不到表單資料</div>
+              <div style="font-size:14px; color:#999; margin-bottom:20px;">
+                可能該開團分頁已被刪除
+              </div>
+              <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="newForm()">
+                + 開新團
+              </button>
             </div>
           </div>
         `;
       }
 
+      // ... (以下保持不變)
       const ordersByStore = {};
       const ordersByItem = {};
       
