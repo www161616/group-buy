@@ -321,13 +321,34 @@
   transform: translateY(-1px);
   box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
 }
-    /* === Toast === */
-    .toast {
-      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-      background: rgba(30, 30, 30, 0.95); color: #fff; padding: 14px 28px;
-      border-radius: 50px; font-size: 15px; font-weight: 500; z-index: 200;
-      animation: fadeInOut 2.5s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    }
+    /* === 終極醒目版 Toast (開團成功提示) === */
+.toast {
+  position: fixed; 
+  top: 60px; /* 往下移一點，在視角中央上方 */
+  left: 50%; 
+  transform: translateX(-50%);
+  background: #10b981; /* 極其鮮艷的成功綠 */
+  color: #ffffff; 
+  padding: 20px 50px; /* 加大內距，讓框框變大 */
+  border-radius: 20px;
+  font-size: 26px; /* 超大字體，保證醒目 */
+  font-weight: 900; /* 極粗體 */
+  z-index: 9999; /* 確保在所有東西的最前面 */
+  animation: toastIn 3s ease forwards;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3); /* 強力陰影，產生立體感 */
+  border: 4px solid #ffffff; /* 粗白邊框，這在粉紅背景下會非常跳脫 */
+  white-space: nowrap;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2); /* 字體陰影，增加可讀性 */
+}
+
+/* 讓提示出現時有個「彈跳」的動感，更吸引注意 */
+@keyframes toastIn {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-50px) scale(0.8); }
+  15% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.1); }
+  20% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  85% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(-50px); }
+}
     @keyframes fadeInOut {
       0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
       15% { opacity: 1; transform: translateX(-50%) translateY(0); }
