@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>開團系統</title>
+  <title>包子媽開團系統</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     * {
@@ -14,24 +14,25 @@
     
     body {
       font-family: 'Noto Sans TC', sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      background: linear-gradient(135deg, #fff5f5 0%, #fce4ec 50%, #f8bbd9 100%);
       min-height: 100vh;
-      color: #fff;
+      color: #4a4a4a;
     }
     
-    。container {
+    .container {
       max-width: 540px;
       margin: 0 auto;
       padding: 20px;
       padding-bottom: 100px;
     }
     
-    。card {
-      background: rgba(255,255,255,0.03);
+    .card {
+      background: rgba(255,255,255,0.85);
       border-radius: 20px;
       padding: 24px;
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(236,64,122,0.15);
       margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(236,64,122,0.1);
     }
     
     h1 {
@@ -42,7 +43,7 @@
     }
     
     .subtitle {
-      color: rgba(255,255,255,0.5);
+      color: #b0838a;
       text-align: center;
       font-size: 14px;
       margin-bottom: 28px;
@@ -50,7 +51,7 @@
     
     label {
       display: block;
-      color: rgba(255,255,255,0.7);
+      color: #9c6b74;
       font-size: 14px;
       margin-bottom: 8px;
     }
@@ -59,9 +60,9 @@
       width: 100%;
       padding: 14px 16px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.05);
-      color: #fff;
+      border: 1px solid rgba(236,64,122,0.2);
+      background: rgba(255,255,255,0.9);
+      color: #4a4a4a;
       font-size: 16px;
       font-family: inherit;
       outline: none;
@@ -69,24 +70,24 @@
     }
     
     input:focus, select:focus, textarea:focus {
-      border-color: rgba(102, 126, 234, 0.5);
+      border-color: #ec407a;
     }
     
     input::placeholder, textarea::placeholder {
-      color: rgba(255,255,255,0.3);
+      color: #c9a0a7;
     }
     
     select {
       cursor: pointer;
       appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ec407a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 16px center;
     }
     
     select option {
-      background: #1a1a2e;
-      color: #fff;
+      background: #fff;
+      color: #4a4a4a;
     }
     
     .btn {
@@ -102,14 +103,14 @@
     }
     
     .btn-primary {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
       color: #fff;
-      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.35);
+      box-shadow: 0 8px 32px rgba(236,64,122,0.35);
     }
     
     .btn-primary:hover {
       transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.45);
+      box-shadow: 0 12px 40px rgba(236,64,122,0.45);
     }
     
     .btn-primary:disabled {
@@ -120,13 +121,13 @@
     
     .btn-outline {
       background: transparent;
-      border: 2px dashed rgba(255,255,255,0.2);
-      color: rgba(255,255,255,0.5);
+      border: 2px dashed rgba(236,64,122,0.3);
+      color: #ec407a;
     }
     
     .btn-outline:hover {
-      border-color: rgba(255,255,255,0.4);
-      color: rgba(255,255,255,0.8);
+      border-color: rgba(236,64,122,0.5);
+      background: rgba(236,64,122,0.05);
     }
     
     .form-group {
@@ -135,16 +136,16 @@
     
     /* 品項卡片 */
     .item-card {
-      background: rgba(255,255,255,0.03);
+      background: rgba(255,255,255,0.7);
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 12px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(236,64,122,0.1);
     }
     
     .item-card.sold-out {
-      background: rgba(255,100,100,0.08);
-      border-color: rgba(255,100,100,0.2);
+      background: rgba(255,200,200,0.3);
+      border-color: rgba(255,100,100,0.3);
     }
     
     .item-header {
@@ -166,7 +167,7 @@
       width: 72px;
       height: 72px;
       border-radius: 12px;
-      background: rgba(255,255,255,0.05);
+      background: rgba(236,64,122,0.08);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -183,11 +184,12 @@
       font-size: 17px;
       font-weight: 600;
       margin-bottom: 4px;
+      color: #4a4a4a;
     }
     
     .item-desc {
       font-size: 13px;
-      color: rgba(255,255,255,0.5);
+      color: #9c6b74;
       line-height: 1.4;
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -201,7 +203,7 @@
     }
     
     .item-stock.available {
-      color: #4ade80;
+      color: #ec407a;
     }
     
     .item-stock.sold-out {
@@ -220,19 +222,20 @@
       height: 38px;
       border-radius: 10px;
       border: none;
-      background: rgba(255,255,255,0.1);
-      color: #fff;
+      background: rgba(236,64,122,0.1);
+      color: #ec407a;
       font-size: 20px;
       cursor: pointer;
       transition: all 0.2s;
     }
     
     .qty-btn:hover {
-      background: rgba(255,255,255,0.2);
+      background: rgba(236,64,122,0.2);
     }
     
     .qty-btn.plus {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
+      color: #fff;
     }
     
     .qty-btn:disabled {
@@ -260,6 +263,7 @@
       display: flex;
       gap: 10px;
       margin-bottom: 10px;
+      align-items: center;
     }
     
     .admin-item-row:last-child {
@@ -293,6 +297,80 @@
       font-size: 20px;
       cursor: pointer;
       flex-shrink: 0;
+    }
+    
+    /* 圖片上傳區 */
+    .image-upload-area {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    
+    .image-preview {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+    
+    .image-preview-placeholder {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.05);
+      border: 2px dashed rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .image-preview-placeholder:hover {
+      border-color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.08);
+    }
+    
+    .image-input-wrapper {
+      flex: 1;
+      display: flex;
+      gap: 8px;
+    }
+    
+    .upload-btn {
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(102, 126, 234, 0.2);
+      color: #a5b4fc;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    
+    .upload-btn:hover {
+      background: rgba(102, 126, 234, 0.3);
+    }
+    
+    .upload-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .upload-btn.uploading {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+    
+    /* 隱藏的 file input */
+    .hidden-file-input {
+      display: none;
     }
     
     /* 進度條 */
@@ -384,20 +462,21 @@
       color: rgba(255,255,255,0.9);
     }
     
-    /* 底部導航 */
+    /* --- 底部導航 (更新為粉色系) --- */
     .bottom-nav {
       position: fixed;
       bottom: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(0,0,0,0.85);
+      background: rgba(236, 64, 122, 0.95); /* 深粉色背景 */
       border-radius: 50px;
       padding: 6px;
       display: flex;
       gap: 4px;
       backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
       z-index: 100;
+      box-shadow: 0 4px 20px rgba(236, 64, 122, 0.4);
     }
     
     .nav-btn {
@@ -405,7 +484,7 @@
       border-radius: 50px;
       border: none;
       background: transparent;
-      color: rgba(255,255,255,0.6);
+      color: rgba(255,255,255,0.7); /* 淺色文字 */
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
@@ -414,10 +493,47 @@
     }
     
     .nav-btn.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
+      background: #fff; /* 選中時變白色 */
+      color: #ec407a;    /* 選中時文字變粉色 */
+      font-weight: 700;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     
+    /* --- 店家 Header 樣式 --- */
+    .brand-header {
+      text-align: center;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    
+    .brand-logo {
+      width: 70px;
+      height: 70px;
+      background: #fff;
+      border-radius: 50%;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      border: 3px solid #f8bbd9;
+      box-shadow: 0 4px 15px rgba(236,64,122,0.15);
+    }
+    
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #d81b60;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+    
+    .brand-subtitle {
+      font-size: 15px;
+      color: #888;
+      font-weight: normal;
+    }
+
     /* 成功畫面 */
     .success-screen {
       min-height: 80vh;
@@ -555,14 +671,111 @@
       font-size: 12px;
       margin-right: 6px;
     }
+
+    /* Toast 通知 */
+    .toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.9);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 14px;
+      z-index: 200;
+      animation: fadeInOut 2.5s ease;
+    }
+    
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+
+    /* 圖片上傳選項彈窗 */
+    .upload-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 150;
+      padding: 20px;
+    }
+    
+    .upload-modal-content {
+      background: #1a1a2e;
+      border-radius: 20px;
+      padding: 24px;
+      width: 100%;
+      max-width: 320px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .upload-modal-title {
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    
+    .upload-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .upload-option:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .upload-option-icon {
+      font-size: 28px;
+    }
+    
+    .upload-option-text {
+      font-size: 15px;
+    }
+    
+    .upload-modal-cancel {
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      font-size: 15px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div id="app"></div>
+  <div id="toast-container"></div>
+  <div id="modal-container"></div>
+
+  <input type="file" id="file-input-camera" accept="image/*" capture="environment" class="hidden-file-input">
+  <input type="file" id="file-input-gallery" accept="image/*" class="hidden-file-input">
 
   <script>
     // ====== 設定 ======
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ-AcwAJQcfq8npulJ07SDRuKN7_JSjP-C6Dze6PXRYHUeswZbUwefn2HVvYEsFmWFzw/exec';
+    
+    // Imgur API (使用匿名上傳)
+    const IMGUR_CLIENT_ID = 'f9ae284a4535206';
     
     const STORES = [
       '中和', '文山', '永和', '林口', '平鎮', '古華', '南平', '萬華', '三峽',
@@ -571,110 +784,138 @@
 
     // ====== 狀態管理 ======
     let state = {
-      view: 'admin', // 'admin', 'customer', 'success'
-      adminMode: 'create', // 'create', 'stats'
+      view: 'admin',
+      adminMode: 'create',
       currentSheet: localStorage.getItem('currentSheet') || '',
       formConfig: null,
       orders: [],
       loading: false,
       error: '',
-      // 開團表單
       formTitle: '',
       items: [{ name: '', limit: 30, image: '', description: '' }],
-      // 客人表單
       selectedStore: '',
       phone: '',
       selectedItems: {},
-      // 成功資訊
-      successInfo: null
+      successInfo: null,
+      uploadingIndex: -1, // 正在上傳圖片的品項 index
+      showUploadModal: false,
+      uploadTargetIndex: -1
     };
 
-    // ====== API 呼叫 ======
-    async function callAPI(data) {
+    // ====== 圖片上傳 ======
+    async function uploadToImgur(file) {
+      const formData = new FormData();
+      formData.append('image', file);
+      
       try {
-        const response = await fetch(SCRIPT_URL, {
+        const response = await fetch('https://api.imgur.com/3/image', {
           method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
+          headers: {
+            'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`
+          },
+          body: formData
         });
-        return { success: true };
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          return data.data.link;
+        } else {
+          throw new Error(data.data.error || '上傳失敗');
+        }
       } catch (error) {
-        // no-cors 模式下無法讀取回應，改用 GET + JSONP 方式
-        return { success: false, error: error.message };
+        console.error('Imgur upload error:', error);
+        throw error;
       }
     }
 
-    async function callAPIWithResponse(data) {
-      return new Promise((resolve, reject) => {
-        const callbackName = 'callback_' + Date.now();
-        const params = new URLSearchParams({
-          ...data,
-          callback: callbackName
-        });
-        
-        // 使用 fetch + URL 參數
-        fetch(`${SCRIPT_URL}?${params.toString()}`)
-          .then(res => res.text())
-          .then(text => {
-            try {
-              const json = JSON.parse(text);
-              resolve(json);
-            } catch(e) {
-              resolve({ success: true });
-            }
-          })
-          .catch(reject);
-      });
+    function showUploadOptions(index) {
+      state.showUploadModal = true;
+      state.uploadTargetIndex = index;
+      renderModal();
     }
 
-    // 使用 iframe 方式提交 POST 請求
-    async function postToSheet(data) {
-      return new Promise((resolve) => {
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = SCRIPT_URL;
-        form.target = 'hidden_iframe';
-        
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'data';
-        input.value = JSON.stringify(data);
-        form.appendChild(input);
-        
-        let iframe = document.getElementById('hidden_iframe');
-        if (!iframe) {
-          iframe = document.createElement('iframe');
-          iframe.id = 'hidden_iframe';
-          iframe.name = 'hidden_iframe';
-          iframe.style.display = 'none';
-          document.body.appendChild(iframe);
-        }
-        
-        document.body.appendChild(form);
-        form.submit();
-        document.body.removeChild(form);
-        
-        // 因為 no-cors，假設成功
-        setTimeout(() => resolve({ success: true }), 1500);
-      });
+    function hideUploadModal() {
+      state.showUploadModal = false;
+      state.uploadTargetIndex = -1;
+      renderModal();
     }
 
-    // 使用 GET 請求讀取資料
-    async function fetchFromSheet(action, params = {}) {
-      const url = new URL(SCRIPT_URL);
-      url.searchParams.append('action', action);
-      Object.keys(params).forEach(key => {
-        url.searchParams.append(key, params[key]);
-      });
+    function triggerCameraUpload() {
+      hideUploadModal();
+      document.getElementById('file-input-camera').click();
+    }
+
+    function triggerGalleryUpload() {
+      hideUploadModal();
+      document.getElementById('file-input-gallery').click();
+    }
+
+    async function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      
+      const index = state.uploadTargetIndex;
+      if (index < 0) return;
+      
+      state.uploadingIndex = index;
+      render();
       
       try {
-        const response = await fetch(url.toString());
-        const data = await response.json();
-        return data;
+        showToast('📤 上傳中...');
+        const imageUrl = await uploadToImgur(file);
+        state.items[index].image = imageUrl;
+        showToast('✅ 上傳成功！');
       } catch (error) {
-        console.error('Fetch error:', error);
-        return { success: false, error: error.message };
+        showToast('❌ 上傳失敗，請重試');
+        console.error(error);
+      }
+      
+      state.uploadingIndex = -1;
+      state.uploadTargetIndex = -1;
+      event.target.value = ''; // 清除選擇，允許重複選同一檔案
+      render();
+    }
+
+    // 設定 file input 事件
+    document.getElementById('file-input-camera').addEventListener('change', handleFileSelect);
+    document.getElementById('file-input-gallery').addEventListener('change', handleFileSelect);
+
+    // ====== Toast 通知 ======
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      container.innerHTML = `<div class="toast">${message}</div>`;
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 2500);
+    }
+
+    // ====== Modal 渲染 ======
+    function renderModal() {
+      const container = document.getElementById('modal-container');
+      
+      if (state.showUploadModal) {
+        container.innerHTML = `
+          <div class="upload-modal" onclick="hideUploadModal()">
+            <div class="upload-modal-content" onclick="event.stopPropagation()">
+              <div class="upload-modal-title">📷 選擇圖片來源</div>
+              
+              <div class="upload-option" onclick="triggerCameraUpload()">
+                <span class="upload-option-icon">📸</span>
+                <span class="upload-option-text">拍照</span>
+              </div>
+              
+              <div class="upload-option" onclick="triggerGalleryUpload()">
+                <span class="upload-option-icon">🖼️</span>
+                <span class="upload-option-text">從相簿選擇</span>
+              </div>
+              
+              <button class="upload-modal-cancel" onclick="hideUploadModal()">取消</button>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = '';
       }
     }
 
@@ -707,7 +948,10 @@
     }
 
     function renderCreateForm() {
-      let itemsHTML = state.items.map((item, index) => `
+      let itemsHTML = state.items.map((item, index) => {
+        const isUploading = state.uploadingIndex === index;
+        
+        return `
         <div class="admin-item">
           <div class="admin-item-row">
             <input type="text" placeholder="品項名稱" value="${item.name}" onchange="updateItem(${index}, 'name', this.value)" style="flex:1">
@@ -715,14 +959,27 @@
             <span style="color:rgba(255,255,255,0.4);padding:12px 4px">份</span>
             ${state.items.length > 1 ? `<button class="remove-btn" onclick="removeItem(${index})">×</button>` : ''}
           </div>
+          
           <div class="admin-item-row">
-            <input type="text" placeholder="圖片網址（選填，可用 Imgur 連結）" value="${item.image}" onchange="updateItem(${index}, 'image', this.value)" style="flex:1">
+            <div class="image-upload-area" style="flex:1">
+              ${item.image ? 
+                `<img src="${item.image}" class="image-preview" onclick="showUploadOptions(${index})">` :
+                `<div class="image-preview-placeholder" onclick="showUploadOptions(${index})">📷</div>`
+              }
+              <div class="image-input-wrapper">
+                <input type="text" placeholder="或貼上圖片網址" value="${item.image}" onchange="updateItem(${index}, 'image', this.value)" style="flex:1">
+                <button class="upload-btn ${isUploading ? 'uploading' : ''}" onclick="showUploadOptions(${index})" ${isUploading ? 'disabled' : ''}>
+                  ${isUploading ? '上傳中...' : '上傳'}
+                </button>
+              </div>
+            </div>
           </div>
+          
           <div class="admin-item-row">
             <textarea placeholder="商品簡介（選填）" onchange="updateItem(${index}, 'description', this.value)">${item.description}</textarea>
           </div>
         </div>
-      `).join('');
+      `}).join('');
 
       return `
         <div class="container">
@@ -777,7 +1034,6 @@
         `;
       }
 
-      // 計算統計
       const ordersByStore = {};
       const ordersByItem = {};
       
@@ -789,7 +1045,6 @@
         ordersByItem[order.item] += order.quantity;
       });
 
-      // 計算總訂單人數（依電話去重）
       const uniquePhones = new Set(state.orders.map(o => o.phone));
 
       let itemStatsHTML = state.formConfig.items.map(item => {
@@ -813,7 +1068,6 @@
       }).join('');
 
       let storeOrdersHTML = Object.entries(ordersByStore).map(([store, orders]) => {
-        // 合併同一人的訂單
         const ordersByPhone = {};
         orders.forEach(order => {
           if (!ordersByPhone[order.phone]) {
@@ -846,7 +1100,6 @@
         `;
       }).join('');
 
-      // 產生客人填寫連結
       const customerLink = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
 
       return `
@@ -965,8 +1218,12 @@
 
       return `
         <div class="container">
+          <div class="brand-header">
+            <div class="brand-logo">🥟</div>
+            <div class="brand-name">包子媽生鮮小舖</div>
+            <div class="brand-subtitle">${state.formConfig.title}</div>
+          </div>
           <div class="card">
-            <h1>🛍️ ${state.formConfig.title}</h1>
             <p class="subtitle">請填寫以下資料完成登記</p>
             
             <div class="form-group">
@@ -1042,9 +1299,7 @@
     }
 
     // ====== 事件處理 ======
-    function attachEventListeners() {
-      // 事件已經用 onclick 綁定
-    }
+    function attachEventListeners() {}
 
     function switchView(view) {
       state.view = view;
@@ -1059,7 +1314,6 @@
       render();
     }
 
-    // 管理員功能
     function addItem() {
       state.items.push({ name: '', limit: 30, image: '', description: '' });
       render();
@@ -1074,6 +1328,9 @@
 
     function updateItem(index, field, value) {
       state.items[index][field] = field === 'limit' ? (parseInt(value) || 0) : value;
+      if (field === 'image') {
+        render(); // 重新渲染以顯示圖片預覽
+      }
     }
 
     async function createForm() {
@@ -1110,12 +1367,11 @@
           state.adminMode = 'stats';
           state.orders = [];
           localStorage.setItem('currentSheet', state.currentSheet);
+          showToast('✅ 開團成功！');
         } else {
           state.error = result.error || '建立失敗，請重試';
         }
       } catch (error) {
-        // 即使發生錯誤，可能還是成功了（因為 CORS）
-        // 嘗試使用表單標題作為 sheet 名稱
         state.currentSheet = formTitle;
         state.formConfig = {
           title: formTitle,
@@ -1125,6 +1381,7 @@
         state.adminMode = 'stats';
         state.orders = [];
         localStorage.setItem('currentSheet', state.currentSheet);
+        showToast('✅ 開團成功！');
       }
       
       state.loading = false;
@@ -1162,16 +1419,12 @@
     function copyLink() {
       const input = document.getElementById('customerLink');
       input.select();
+      input.setSelectionRange(0, 99999); // 手機支援
       document.execCommand('copy');
       
-      const btn = document.querySelector('.copy-btn');
-      btn.textContent = '已複製！';
-      setTimeout(() => {
-        btn.textContent = '複製';
-      }, 2000);
+      showToast('✅ 連結已複製！');
     }
 
-    // 客人功能
     async function loadFormData() {
       state.loading = true;
       render();
@@ -1197,7 +1450,6 @@
       const currentQty = state.selectedItems[itemName] || 0;
       const newQty = Math.max(0, currentQty + delta);
       
-      // 檢查是否超過剩餘數量
       const item = state.formConfig.items.find(i => i.name === itemName);
       if (item) {
         const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
@@ -1267,7 +1519,6 @@
           state.error = result.error || '送出失敗，請重試';
         }
       } catch (error) {
-        // 可能成功了
         state.successInfo = {
           store: state.selectedStore,
           phone: state.phone,
@@ -1291,7 +1542,6 @@
 
     // ====== 初始化 ======
     function init() {
-      // 檢查 URL 參數
       const urlParams = new URLSearchParams(window.location.search);
       const sheetParam = urlParams.get('sheet');
       
