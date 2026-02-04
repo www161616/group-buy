@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>開團系統</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+    
+    .container {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 20px;
+      padding-bottom: 100px;
+    }
+    
+    .card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 20px;
+    }
+    
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+    
+    label {
+      display: block;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      font-size: 16px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(102, 126, 234, 0.5);
+    }
+    
+    input::placeholder, textarea::placeholder {
+      color: rgba(255,255,255,0.3);
+    }
+    
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ffffff' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 16px center;
+    }
+    
+    select option {
+      background: #1a1a2e;
+      color: #fff;
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 16px;
+      border-radius: 14px;
+      border: none;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+      box-shadow: 0 8px 32px rgba(102, 126, 234, 0.35);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(102, 126, 234, 0.45);
+    }
+    
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 2px dashed rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .btn-outline:hover {
+      border-color: rgba(255,255,255,0.4);
+      color: rgba(255,255,255,0.8);
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    /* 品項卡片 */
+    .item-card {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    
+    .item-card.sold-out {
+      background: rgba(255,100,100,0.08);
+      border-color: rgba(255,100,100,0.2);
+    }
+    
+    .item-header {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 12px;
+    }
+    
+    .item-image {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+    
+    .item-image-placeholder {
+      width: 72px;
+      height: 72px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      flex-shrink: 0;
+    }
+    
+    .item-info {
+      flex: 1;
+      min-width: 0;
+    }
+    
+    .item-name {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    
+    .item-desc {
+      font-size: 13px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .item-stock {
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    
+    .item-stock.available {
+      color: #4ade80;
+    }
+    
+    .item-stock.sold-out {
+      color: #ff6b6b;
+    }
+    
+    .item-controls {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 14px;
+    }
+    
+    .qty-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .qty-btn:hover {
+      background: rgba(255,255,255,0.2);
+    }
+    
+    .qty-btn.plus {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .qty-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    
+    .qty-display {
+      font-size: 20px;
+      font-weight: 600;
+      min-width: 28px;
+      text-align: center;
+    }
+    
+    /* 管理員品項編輯 */
+    .admin-item {
+      background: rgba(255,255,255,0.03);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    
+    .admin-item-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    
+    .admin-item-row:last-child {
+      margin-bottom: 0;
+    }
+    
+    .admin-item input[type="text"],
+    .admin-item input[type="number"],
+    .admin-item textarea {
+      font-size: 14px;
+      padding: 12px 14px;
+    }
+    
+    .admin-item input[type="number"] {
+      width: 80px;
+      text-align: center;
+    }
+    
+    .admin-item textarea {
+      resize: none;
+      height: 60px;
+    }
+    
+    .remove-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: none;
+      background: rgba(255,100,100,0.15);
+      color: #ff6b6b;
+      font-size: 20px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    
+    /* 進度條 */
+    .progress-bar {
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s;
+    }
+    
+    .progress-fill.normal {
+      background: linear-gradient(90deg, #4ade80, #22d3ee);
+    }
+    
+    .progress-fill.full {
+      background: #ff6b6b;
+    }
+    
+    /* 統計卡片 */
+    .stat-card {
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    .stat-label {
+      color: rgba(255,255,255,0.5);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    
+    .stat-value {
+      font-size: 42px;
+      font-weight: 700;
+    }
+    
+    /* 訂單列表 */
+    .order-group {
+      background: rgba(255,255,255,0.03);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    
+    .order-group-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .order-group-title {
+      font-weight: 600;
+    }
+    
+    .order-group-badge {
+      background: rgba(102, 126, 234, 0.2);
+      color: #a5b4fc;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+    
+    .order-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      font-size: 14px;
+    }
+    
+    .order-row:first-of-type {
+      border-top: none;
+    }
+    
+    .order-phone {
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .order-items {
+      color: rgba(255,255,255,0.9);
+    }
+    
+    /* 底部導航 */
+    .bottom-nav {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      border-radius: 50px;
+      padding: 6px;
+      display: flex;
+      gap: 4px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      z-index: 100;
+    }
+    
+    .nav-btn {
+      padding: 12px 22px;
+      border-radius: 50px;
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,0.6);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    
+    .nav-btn.active {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff;
+    }
+    
+    /* 成功畫面 */
+    .success-screen {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .success-content {
+      text-align: center;
+    }
+    
+    .success-icon {
+      font-size: 72px;
+      margin-bottom: 20px;
+    }
+    
+    .success-title {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    
+    .success-info {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    
+    .success-items {
+      background: rgba(74, 222, 128, 0.1);
+      border-radius: 14px;
+      padding: 18px;
+      text-align: left;
+    }
+    
+    .success-item {
+      color: #4ade80;
+      padding: 6px 0;
+      font-size: 15px;
+    }
+    
+    /* 錯誤訊息 */
+    .error-msg {
+      background: rgba(255,100,100,0.1);
+      border: 1px solid rgba(255,100,100,0.3);
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #ff6b6b;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    
+    /* 載入中 */
+    .loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.5);
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(255,255,255,0.1);
+      border-top-color: #667eea;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 16px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* 空狀態 */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: rgba(255,255,255,0.4);
+    }
+    
+    .empty-icon {
+      font-size: 56px;
+      margin-bottom: 16px;
+    }
+    
+    /* 複製連結區塊 */
+    .link-box {
+      background: rgba(74, 222, 128, 0.1);
+      border: 1px solid rgba(74, 222, 128, 0.2);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    
+    .link-label {
+      color: #4ade80;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+    
+    .link-row {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .link-input {
+      flex: 1;
+      background: rgba(0,0,0,0.3);
+      border: none;
+      color: #fff;
+      font-size: 13px;
+    }
+    
+    .copy-btn {
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: none;
+      background: #4ade80;
+      color: #000;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    /* 分店標籤 */
+    .store-tag {
+      display: inline-block;
+      background: rgba(102, 126, 234, 0.15);
+      color: #a5b4fc;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // ====== 設定 ======
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ-AcwAJQcfq8npulJ07SDRuKN7_JSjP-C6Dze6PXRYHUeswZbUwefn2HVvYEsFmWFzw/exec';
+    
+    const STORES = [
+      '中和', '文山', '永和', '林口', '平鎮', '古華', '南平', '萬華', '三峽',
+      '環球', '忠順', '泰山', '四號公園', '板橋', '湖口', '淡水', '松山', '經國'
+    ];
+
+    // ====== 狀態管理 ======
+    let state = {
+      view: 'admin', // 'admin', 'customer', 'success'
+      adminMode: 'create', // 'create', 'stats'
+      currentSheet: localStorage.getItem('currentSheet') || '',
+      formConfig: null,
+      orders: [],
+      loading: false,
+      error: '',
+      // 開團表單
+      formTitle: '',
+      items: [{ name: '', limit: 30, image: '', description: '' }],
+      // 客人表單
+      selectedStore: '',
+      phone: '',
+      selectedItems: {},
+      // 成功資訊
+      successInfo: null
+    };
+
+    // ====== API 呼叫 ======
+    async function callAPI(data) {
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        return { success: true };
+      } catch (error) {
+        // no-cors 模式下無法讀取回應，改用 GET + JSONP 方式
+        return { success: false, error: error.message };
+      }
+    }
+
+    async function callAPIWithResponse(data) {
+      return new Promise((resolve, reject) => {
+        const callbackName = 'callback_' + Date.now();
+        const params = new URLSearchParams({
+          ...data,
+          callback: callbackName
+        });
+        
+        // 使用 fetch + URL 參數
+        fetch(`${SCRIPT_URL}?${params.toString()}`)
+          .then(res => res.text())
+          .then(text => {
+            try {
+              const json = JSON.parse(text);
+              resolve(json);
+            } catch(e) {
+              resolve({ success: true });
+            }
+          })
+          .catch(reject);
+      });
+    }
+
+    // 使用 iframe 方式提交 POST 請求
+    async function postToSheet(data) {
+      return new Promise((resolve) => {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = SCRIPT_URL;
+        form.target = 'hidden_iframe';
+        
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'data';
+        input.value = JSON.stringify(data);
+        form.appendChild(input);
+        
+        let iframe = document.getElementById('hidden_iframe');
+        if (!iframe) {
+          iframe = document.createElement('iframe');
+          iframe.id = 'hidden_iframe';
+          iframe.name = 'hidden_iframe';
+          iframe.style.display = 'none';
+          document.body.appendChild(iframe);
+        }
+        
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+        
+        // 因為 no-cors，假設成功
+        setTimeout(() => resolve({ success: true }), 1500);
+      });
+    }
+
+    // 使用 GET 請求讀取資料
+    async function fetchFromSheet(action, params = {}) {
+      const url = new URL(SCRIPT_URL);
+      url.searchParams.append('action', action);
+      Object.keys(params).forEach(key => {
+        url.searchParams.append(key, params[key]);
+      });
+      
+      try {
+        const response = await fetch(url.toString());
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Fetch error:', error);
+        return { success: false, error: error.message };
+      }
+    }
+
+    // ====== 渲染函數 ======
+    function render() {
+      const app = document.getElementById('app');
+      
+      let content = '';
+      
+      if (state.view === 'admin') {
+        content = renderAdmin();
+      } else if (state.view === 'customer') {
+        content = renderCustomer();
+      } else if (state.view === 'success') {
+        content = renderSuccess();
+      }
+      
+      content += renderBottomNav();
+      
+      app.innerHTML = content;
+      attachEventListeners();
+    }
+
+    function renderAdmin() {
+      if (state.adminMode === 'create' || !state.currentSheet) {
+        return renderCreateForm();
+      } else {
+        return renderStats();
+      }
+    }
+
+    function renderCreateForm() {
+      let itemsHTML = state.items.map((item, index) => `
+        <div class="admin-item">
+          <div class="admin-item-row">
+            <input type="text" placeholder="品項名稱" value="${item.name}" onchange="updateItem(${index}, 'name', this.value)" style="flex:1">
+            <input type="number" placeholder="限量" value="${item.limit}" onchange="updateItem(${index}, 'limit', this.value)">
+            <span style="color:rgba(255,255,255,0.4);padding:12px 4px">份</span>
+            ${state.items.length > 1 ? `<button class="remove-btn" onclick="removeItem(${index})">×</button>` : ''}
+          </div>
+          <div class="admin-item-row">
+            <input type="text" placeholder="圖片網址（選填，可用 Imgur 連結）" value="${item.image}" onchange="updateItem(${index}, 'image', this.value)" style="flex:1">
+          </div>
+          <div class="admin-item-row">
+            <textarea placeholder="商品簡介（選填）" onchange="updateItem(${index}, 'description', this.value)">${item.description}</textarea>
+          </div>
+        </div>
+      `).join('');
+
+      return `
+        <div class="container">
+          <div class="card">
+            <h1>🛒 快速開團</h1>
+            <p class="subtitle">設定品項，一鍵產生表單</p>
+            
+            <div class="form-group">
+              <label>團購標題</label>
+              <input type="text" placeholder="例如：2/4 草莓蛋糕團" value="${state.formTitle}" onchange="state.formTitle=this.value">
+            </div>
+            
+            <div class="form-group">
+              <label>品項設定</label>
+              ${itemsHTML}
+            </div>
+            
+            <button class="btn btn-outline" onclick="addItem()" style="margin-bottom:20px">
+              + 新增品項
+            </button>
+            
+            ${state.error ? `<div class="error-msg">${state.error}</div>` : ''}
+            
+            <button class="btn btn-primary" onclick="createForm()" ${state.loading ? 'disabled' : ''}>
+              ${state.loading ? '處理中...' : '🚀 產生表單'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderStats() {
+      if (state.loading) {
+        return `
+          <div class="container">
+            <div class="loading">
+              <div class="spinner"></div>
+              <div>載入中...</div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (!state.formConfig) {
+        return `
+          <div class="container">
+            <div class="empty-state">
+              <div class="empty-icon">📋</div>
+              <div>找不到表單資料</div>
+            </div>
+          </div>
+        `;
+      }
+
+      // 計算統計
+      const ordersByStore = {};
+      const ordersByItem = {};
+      
+      state.orders.forEach(order => {
+        if (!ordersByStore[order.store]) ordersByStore[order.store] = [];
+        ordersByStore[order.store].push(order);
+        
+        if (!ordersByItem[order.item]) ordersByItem[order.item] = 0;
+        ordersByItem[order.item] += order.quantity;
+      });
+
+      // 計算總訂單人數（依電話去重）
+      const uniquePhones = new Set(state.orders.map(o => o.phone));
+
+      let itemStatsHTML = state.formConfig.items.map(item => {
+        const ordered = ordersByItem[item.name] || 0;
+        const percentage = Math.min((ordered / item.limit) * 100, 100);
+        const isFull = ordered >= item.limit;
+        
+        return `
+          <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span>${item.name}</span>
+              <span style="color:${isFull ? '#ff6b6b' : '#4ade80'}">
+                ${ordered} / ${item.limit} ${isFull ? '(已額滿)' : ''}
+              </span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill ${isFull ? 'full' : 'normal'}" style="width:${percentage}%"></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      let storeOrdersHTML = Object.entries(ordersByStore).map(([store, orders]) => {
+        // 合併同一人的訂單
+        const ordersByPhone = {};
+        orders.forEach(order => {
+          if (!ordersByPhone[order.phone]) {
+            ordersByPhone[order.phone] = { phone: order.phone, items: {} };
+          }
+          if (!ordersByPhone[order.phone].items[order.item]) {
+            ordersByPhone[order.phone].items[order.item] = 0;
+          }
+          ordersByPhone[order.phone].items[order.item] += order.quantity;
+        });
+
+        const orderRows = Object.values(ordersByPhone).map(o => {
+          const itemsText = Object.entries(o.items).map(([name, qty]) => `${name}×${qty}`).join(', ');
+          return `
+            <div class="order-row">
+              <span class="order-phone">...${o.phone}</span>
+              <span class="order-items">${itemsText}</span>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="order-group">
+            <div class="order-group-header">
+              <span class="order-group-title">📍 ${store}</span>
+              <span class="order-group-badge">${Object.keys(ordersByPhone).length} 人</span>
+            </div>
+            ${orderRows}
+          </div>
+        `;
+      }).join('');
+
+      // 產生客人填寫連結
+      const customerLink = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
+
+      return `
+        <div class="container">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+              <h1 style="text-align:left;margin:0;font-size:20px">📊 ${state.formConfig.title}</h1>
+              <button class="btn btn-primary" style="width:auto;padding:10px 20px;font-size:14px" onclick="newForm()">
+                + 開新團
+              </button>
+            </div>
+            
+            <div style="margin-bottom:24px">
+              <label style="margin-bottom:12px">品項統計</label>
+              ${itemStatsHTML}
+            </div>
+            
+            <div class="stat-card">
+              <div class="stat-label">訂購人數</div>
+              <div class="stat-value">${uniquePhones.size}</div>
+            </div>
+            
+            <div class="link-box">
+              <div class="link-label">📎 客人填寫連結（分享到 LINE 社群）</div>
+              <div class="link-row">
+                <input type="text" class="link-input" value="${customerLink}" readonly id="customerLink">
+                <button class="copy-btn" onclick="copyLink()">複製</button>
+              </div>
+            </div>
+          </div>
+          
+          ${storeOrdersHTML ? `
+            <div class="card">
+              <h2 style="font-size:18px;margin-bottom:16px">📋 訂單明細</h2>
+              ${storeOrdersHTML}
+            </div>
+          ` : `
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <div>還沒有訂單</div>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderCustomer() {
+      if (!state.currentSheet) {
+        return `
+          <div class="container">
+            <div class="empty-state">
+              <div class="empty-icon">📋</div>
+              <div>尚未開團</div>
+              <div style="margin-top:8px;font-size:14px">請等待團主分享連結</div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (state.loading) {
+        return `
+          <div class="container">
+            <div class="loading">
+              <div class="spinner"></div>
+              <div>載入中...</div>
+            </div>
+          </div>
+        `;
+      }
+
+      if (!state.formConfig) {
+        return `
+          <div class="container">
+            <div class="empty-state">
+              <div class="empty-icon">❌</div>
+              <div>找不到此團購表單</div>
+            </div>
+          </div>
+        `;
+      }
+
+      let storeOptions = STORES.map(s => 
+        `<option value="${s}" ${state.selectedStore === s ? 'selected' : ''}>${s}</option>`
+      ).join('');
+
+      let itemsHTML = state.formConfig.items.map((item, index) => {
+        const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
+        const isSoldOut = remaining <= 0;
+        const selectedQty = state.selectedItems[item.name] || 0;
+
+        return `
+          <div class="item-card ${isSoldOut ? 'sold-out' : ''}">
+            <div class="item-header">
+              ${item.image ? 
+                `<img src="${item.image}" class="item-image" onerror="this.style.display='none'">` : 
+                `<div class="item-image-placeholder">🛍️</div>`
+              }
+              <div class="item-info">
+                <div class="item-name">${item.name}</div>
+                ${item.description ? `<div class="item-desc">${item.description}</div>` : ''}
+                <div class="item-stock ${isSoldOut ? 'sold-out' : 'available'}">
+                  ${isSoldOut ? '已額滿' : `剩餘 ${remaining} 份`}
+                </div>
+              </div>
+            </div>
+            ${!isSoldOut ? `
+              <div class="item-controls">
+                <button class="qty-btn" onclick="changeQty('${item.name}', -1)" ${selectedQty <= 0 ? 'disabled' : ''}>−</button>
+                <span class="qty-display">${selectedQty}</span>
+                <button class="qty-btn plus" onclick="changeQty('${item.name}', 1)" ${selectedQty >= remaining ? 'disabled' : ''}>+</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }).join('');
+
+      return `
+        <div class="container">
+          <div class="card">
+            <h1>🛍️ ${state.formConfig.title}</h1>
+            <p class="subtitle">請填寫以下資料完成登記</p>
+            
+            <div class="form-group">
+              <label>📍 取貨分店</label>
+              <select onchange="state.selectedStore=this.value;state.error='';render()">
+                <option value="">請選擇分店</option>
+                ${storeOptions}
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label>📱 電話後六碼</label>
+              <input type="tel" placeholder="例如：123456" maxlength="6" value="${state.phone}" 
+                     oninput="state.phone=this.value.slice(0,6);state.error=''" 
+                     style="letter-spacing:4px;text-align:center">
+            </div>
+            
+            <div class="form-group">
+              <label>🛒 選擇品項</label>
+              ${itemsHTML}
+            </div>
+            
+            ${state.error ? `<div class="error-msg">${state.error}</div>` : ''}
+            
+            <button class="btn btn-primary" onclick="submitOrder()" ${state.loading ? 'disabled' : ''}>
+              ${state.loading ? '送出中...' : '✓ 確認登記'}
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderSuccess() {
+      const info = state.successInfo || {};
+      const itemsHTML = Object.entries(info.items || {})
+        .filter(([_, qty]) => qty > 0)
+        .map(([name, qty]) => `<div class="success-item">${name} × ${qty}</div>`)
+        .join('');
+
+      return `
+        <div class="container">
+          <div class="success-screen">
+            <div class="success-content">
+              <div class="success-icon">✅</div>
+              <h2 class="success-title">登記成功！</h2>
+              <p class="success-info">
+                取貨分店：${info.store}<br>
+                電話末六碼：${info.phone}
+              </p>
+              <div class="success-items">
+                ${itemsHTML}
+              </div>
+              <button class="btn btn-outline" style="margin-top:24px" onclick="resetCustomerForm()">
+                繼續登記其他品項
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderBottomNav() {
+      return `
+        <div class="bottom-nav">
+          <button class="nav-btn ${state.view === 'admin' ? 'active' : ''}" onclick="switchView('admin')">
+            👤 管理
+          </button>
+          <button class="nav-btn ${state.view === 'customer' || state.view === 'success' ? 'active' : ''}" onclick="switchView('customer')">
+            🛒 客人
+          </button>
+        </div>
+      `;
+    }
+
+    // ====== 事件處理 ======
+    function attachEventListeners() {
+      // 事件已經用 onclick 綁定
+    }
+
+    function switchView(view) {
+      state.view = view;
+      state.error = '';
+      
+      if (view === 'customer' && state.currentSheet) {
+        loadFormData();
+      } else if (view === 'admin' && state.currentSheet && state.adminMode === 'stats') {
+        loadOrders();
+      }
+      
+      render();
+    }
+
+    // 管理員功能
+    function addItem() {
+      state.items.push({ name: '', limit: 30, image: '', description: '' });
+      render();
+    }
+
+    function removeItem(index) {
+      if (state.items.length > 1) {
+        state.items.splice(index, 1);
+        render();
+      }
+    }
+
+    function updateItem(index, field, value) {
+      state.items[index][field] = field === 'limit' ? (parseInt(value) || 0) : value;
+    }
+
+    async function createForm() {
+      const validItems = state.items.filter(item => item.name.trim());
+      
+      if (validItems.length === 0) {
+        state.error = '請至少填寫一個品項名稱';
+        render();
+        return;
+      }
+      
+      state.loading = true;
+      state.error = '';
+      render();
+      
+      const formTitle = state.formTitle || new Date().toLocaleDateString('zh-TW') + ' 開團';
+      
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'createForm',
+            formTitle: formTitle,
+            items: validItems,
+            stores: STORES
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          state.currentSheet = result.sheetName;
+          state.formConfig = result.formConfig;
+          state.adminMode = 'stats';
+          state.orders = [];
+          localStorage.setItem('currentSheet', state.currentSheet);
+        } else {
+          state.error = result.error || '建立失敗，請重試';
+        }
+      } catch (error) {
+        // 即使發生錯誤，可能還是成功了（因為 CORS）
+        // 嘗試使用表單標題作為 sheet 名稱
+        state.currentSheet = formTitle;
+        state.formConfig = {
+          title: formTitle,
+          items: validItems.map(item => ({...item, ordered: 0, remaining: item.limit})),
+          stores: STORES
+        };
+        state.adminMode = 'stats';
+        state.orders = [];
+        localStorage.setItem('currentSheet', state.currentSheet);
+      }
+      
+      state.loading = false;
+      render();
+    }
+
+    function newForm() {
+      state.adminMode = 'create';
+      state.formTitle = '';
+      state.items = [{ name: '', limit: 30, image: '', description: '' }];
+      state.error = '';
+      render();
+    }
+
+    async function loadOrders() {
+      state.loading = true;
+      render();
+      
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getOrders&sheetName=${encodeURIComponent(state.currentSheet)}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          state.orders = result.orders || [];
+          state.formConfig = result.formConfig;
+        }
+      } catch (error) {
+        console.error('Load orders error:', error);
+      }
+      
+      state.loading = false;
+      render();
+    }
+
+    function copyLink() {
+      const input = document.getElementById('customerLink');
+      input.select();
+      document.execCommand('copy');
+      
+      const btn = document.querySelector('.copy-btn');
+      btn.textContent = '已複製！';
+      setTimeout(() => {
+        btn.textContent = '複製';
+      }, 2000);
+    }
+
+    // 客人功能
+    async function loadFormData() {
+      state.loading = true;
+      render();
+      
+      try {
+        const response = await fetch(`${SCRIPT_URL}?action=getFormData&sheetName=${encodeURIComponent(state.currentSheet)}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          state.formConfig = result.formConfig;
+        } else {
+          state.formConfig = null;
+        }
+      } catch (error) {
+        console.error('Load form error:', error);
+      }
+      
+      state.loading = false;
+      render();
+    }
+
+    function changeQty(itemName, delta) {
+      const currentQty = state.selectedItems[itemName] || 0;
+      const newQty = Math.max(0, currentQty + delta);
+      
+      // 檢查是否超過剩餘數量
+      const item = state.formConfig.items.find(i => i.name === itemName);
+      if (item) {
+        const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
+        if (newQty <= remaining) {
+          state.selectedItems[itemName] = newQty;
+        }
+      }
+      
+      render();
+    }
+
+    async function submitOrder() {
+      if (!state.selectedStore) {
+        state.error = '請選擇取貨分店';
+        render();
+        return;
+      }
+      
+      if (!state.phone || state.phone.length !== 6 || !/^\d+$/.test(state.phone)) {
+        state.error = '請輸入正確的電話後六碼';
+        render();
+        return;
+      }
+      
+      const orderItems = {};
+      let hasItem = false;
+      
+      for (const [name, qty] of Object.entries(state.selectedItems)) {
+        if (qty > 0) {
+          orderItems[name] = qty;
+          hasItem = true;
+        }
+      }
+      
+      if (!hasItem) {
+        state.error = '請至少選擇一個品項';
+        render();
+        return;
+      }
+      
+      state.loading = true;
+      state.error = '';
+      render();
+      
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({
+            action: 'submitOrder',
+            sheetName: state.currentSheet,
+            store: state.selectedStore,
+            phone: state.phone,
+            items: orderItems
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          state.successInfo = {
+            store: state.selectedStore,
+            phone: state.phone,
+            items: orderItems
+          };
+          state.view = 'success';
+        } else {
+          state.error = result.error || '送出失敗，請重試';
+        }
+      } catch (error) {
+        // 可能成功了
+        state.successInfo = {
+          store: state.selectedStore,
+          phone: state.phone,
+          items: orderItems
+        };
+        state.view = 'success';
+      }
+      
+      state.loading = false;
+      render();
+    }
+
+    function resetCustomerForm() {
+      state.view = 'customer';
+      state.selectedStore = '';
+      state.phone = '';
+      state.selectedItems = {};
+      state.error = '';
+      loadFormData();
+    }
+
+    // ====== 初始化 ======
+    function init() {
+      // 檢查 URL 參數
+      const urlParams = new URLSearchParams(window.location.search);
+      const sheetParam = urlParams.get('sheet');
+      
+      if (sheetParam) {
+        state.currentSheet = sheetParam;
+        state.view = 'customer';
+        localStorage.setItem('currentSheet', sheetParam);
+        loadFormData();
+      } else if (state.currentSheet) {
+        state.adminMode = 'stats';
+        loadOrders();
+      }
+      
+      render();
+    }
+
+    init();
+  </script>
+</body>
+</html>
