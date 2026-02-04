@@ -6,27 +6,18 @@
   <title>包子媽開團系統</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+    /* === 基礎設定 === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Noto Sans TC', sans-serif;
       background: linear-gradient(135deg, #fff5f5 0%, #fce4ec 50%, #f8bbd9 100%);
       min-height: 100vh;
       color: #2c2c2c; 
     }
+    .container { max-width: 540px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
     
-    。container {
-      max-width: 540px;
-      margin: 0 auto;
-      padding: 20px;
-      padding-bottom: 100px;
-    }
-    
-    。card {
+    /* === 卡片與容器 === */
+    .card {
       background: rgba(255,255,255,0.9);
       border-radius: 20px;
       padding: 24px;
@@ -35,731 +26,260 @@
       box-shadow: 0 8px 32px rgba(236,64,122,0.1);
     }
     
-    h1 {
-      font-size: 24px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 8px;
-      color: #1a1a1a;
-    }
+    /* === 文字排版 === */
+    h1 { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { color: #884455; text-align: center; font-size: 15px; margin-bottom: 28px; font-weight: 500; }
+    label { display: block; color: #442222; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
     
-    .subtitle {
-      color: #884455; 
-      text-align: center;
-      font-size: 15px;
-      margin-bottom: 28px;
-      font-weight: 500;
-    }
-    
-    label {
-      display: block;
-      color: #442222;
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    
+    /* === 輸入元件 === */
     input, select, textarea {
-      width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid rgba(236,64,122,0.3);
-      background: #fff;
-      color: #000; 
-      font-size: 16px;
-      font-family: inherit;
-      outline: none;
-      transition: border-color 0.2s;
-      font-weight: 500;
+      width: 100%; padding: 14px 16px; border-radius: 12px;
+      border: 1px solid rgba(236,64,122,0.3); background: #fff;
+      color: #000; font-size: 16px; font-family: inherit; outline: none;
+      transition: border-color 0.2s; font-weight: 500;
     }
-    
-    input:focus, select:focus, textarea:focus {
-      border-color: #ec407a;
-      background: #fffafa;
-    }
-    
-    input::placeholder, textarea::placeholder {
-      color: #997b80; 
-    }
+    input:focus, select:focus, textarea:focus { border-color: #ec407a; background: #fffafa; }
+    input::placeholder, textarea::placeholder { color: #997b80; }
     
     select {
-      cursor: pointer;
-      appearance: none;
+      cursor: pointer; appearance: none;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ec407a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 16px center;
+      background-repeat: no-repeat; background-position: right 16px center;
     }
+    select option { background: #fff; color: #000; }
     
-    select option {
-      background: #fff;
-      color: #000;
-    }
-    
+    /* === 按鈕 === */
     .btn {
-      width: 100%;
-      padding: 16px;
-      border-radius: 14px;
-      border: none;
-      font-size: 17px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
+      width: 100%; padding: 16px; border-radius: 14px; border: none;
+      font-size: 17px; font-weight: 700; cursor: pointer;
+      transition: all 0.2s; font-family: inherit;
     }
-    
     .btn-primary {
       background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
-      color: #fff;
-      box-shadow: 0 8px 32px rgba(236,64,122,0.35);
+      color: #fff; box-shadow: 0 8px 32px rgba(236,64,122,0.35);
       text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(236,64,122,0.45); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(236,64,122,0.45);
-    }
+    .btn-outline { background: transparent; border: 2px dashed #ec407a; color: #d81b60; }
+    .btn-outline:hover { border-color: #d81b60; background: rgba(236,64,122,0.05); }
     
-    .btn-primary:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .form-group { margin-bottom: 20px; }
     
-    .btn-outline {
-      background: transparent;
-      border: 2px dashed #ec407a;
-      color: #d81b60;
-    }
-    
-    .btn-outline:hover {
-      border-color: #d81b60;
-      background: rgba(236,64,122,0.05);
-    }
-    
-    .form-group {
-      margin-bottom: 20px;
-    }
-    
-    /* 品項卡片 */
+    /* === 品項卡片 === */
     .item-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 12px;
-      border: 1px solid rgba(236,64,122,0.2);
+      background: #fff; border-radius: 16px; padding: 16px;
+      margin-bottom: 12px; border: 1px solid rgba(236,64,122,0.2);
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
+    .item-card.sold-out { background: #fff0f0; border-color: #ffcccc; }
     
-    .item-card.sold-out {
-      background: #fff0f0;
-      border-color: #ffcccc;
-    }
-    
-    .item-header {
-      display: flex;
-      gap: 14px;
-      margin-bottom: 12px;
-    }
-    
+    .item-header { display: flex; gap: 14px; margin-bottom: 12px; }
     .item-image {
-      width: 72px;
-      height: 72px;
-      border-radius: 12px;
-      object-fit: cover;
-      background: #f5f5f5;
-      flex-shrink: 0;
-      border: 1px solid rgba(0,0,0,0.05);
+      width: 72px; height: 72px; border-radius: 12px; object-fit: cover;
+      background: #f5f5f5; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.05);
     }
-    
     .item-image-placeholder {
-      width: 72px;
-      height: 72px;
-      border-radius: 12px;
-      background: rgba(236,64,122,0.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      flex-shrink: 0;
+      width: 72px; height: 72px; border-radius: 12px;
+      background: rgba(236,64,122,0.08); display: flex;
+      align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;
     }
-    
-    .item-info {
-      flex: 1;
-      min-width: 0;
-    }
-    
-    .item-name {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 4px;
-      color: #222;
-    }
-    
+    .item-info { flex: 1; min-width: 0; }
+    .item-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: #222; }
     .item-desc {
-      font-size: 14px;
-      color: #555; 
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      margin-bottom: 4px;
+      font-size: 14px; color: #555; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; margin-bottom: 4px;
     }
+    .item-stock { font-size: 13px; margin-top: 6px; font-weight: 500; }
+    .item-stock.available { color: #d81b60; }
+    .item-stock.sold-out { color: #d32f2f; }
     
-    .item-stock {
-      font-size: 13px;
-      margin-top: 6px;
-      font-weight: 500;
-    }
-    
-    .item-stock.available {
-      color: #d81b60;
-    }
-    
-    .item-stock.sold-out {
-      color: #d32f2f;
-    }
-    
-    .item-controls {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      gap: 14px;
-    }
-    
+    .item-controls { display: flex; align-items: center; justify-content: flex-end; gap: 14px; }
     .qty-btn {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      border: 1px solid rgba(236,64,122,0.2);
-      background: #fff;
-      color: #d81b60;
-      font-size: 20px;
-      cursor: pointer;
-      transition: all 0.2s;
+      width: 38px; height: 38px; border-radius: 10px;
+      border: 1px solid rgba(236,64,122,0.2); background: #fff;
+      color: #d81b60; font-size: 20px; cursor: pointer; transition: all 0.2s;
     }
+    .qty-btn:hover { background: #fff0f5; border-color: #ec407a; }
+    .qty-btn.plus { background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%); color: #fff; border: none; }
+    .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #ddd; color: #999; }
+    .qty-display { font-size: 20px; font-weight: 700; min-width: 28px; text-align: center; color: #333; }
     
-    .qty-btn:hover {
-      background: #fff0f5;
-      border-color: #ec407a;
-    }
-    
-    .qty-btn.plus {
-      background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
-      color: #fff;
-      border: none;
-    }
-    
-    .qty-btn:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-      border-color: #ddd;
-      color: #999;
-    }
-    
-    .qty-display {
-      font-size: 20px;
-      font-weight: 700;
-      min-width: 28px;
-      text-align: center;
-      color: #333;
-    }
-    
-    /* 管理員品項編輯 */
+    /* === 管理員介面 === */
     .admin-item {
-      background: rgba(255,255,255,0.5);
-      border-radius: 16px;
-      padding: 16px;
-      margin-bottom: 12px;
-      border: 1px solid rgba(0,0,0,0.1);
+      background: rgba(255,255,255,0.5); border-radius: 16px;
+      padding: 16px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.1);
     }
-    
-    .admin-item-row {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 10px;
-      align-items: center;
-    }
-    
-    .admin-item-row:last-child {
-      margin-bottom: 0;
-    }
-    
-    .admin-item input[type="text"],
-    .admin-item input[type="number"],
-    .admin-item textarea {
-      font-size: 14px;
-      padding: 12px 14px;
-      background: #fff;
-    }
-    
-    .admin-item input[type="number"] {
-      width: 80px;
-      text-align: center;
-    }
-    
-    .admin-item textarea {
-      resize: none;
-      height: 60px;
-    }
-    
+    .admin-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+    .admin-item-row:last-child { margin-bottom: 0; }
+    .admin-item input, .admin-item textarea { font-size: 14px; padding: 12px 14px; background: #fff; }
+    .admin-item input[type="number"] { width: 80px; text-align: center; }
+    .admin-item textarea { resize: none; height: 60px; }
     .remove-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
-      border: none;
-      background: rgba(255,100,100,0.15);
-      color: #d32f2f;
-      font-size: 20px;
-      cursor: pointer;
-      flex-shrink: 0;
+      width: 40px; height: 40px; border-radius: 10px; border: none;
+      background: rgba(255,100,100,0.15); color: #d32f2f; font-size: 20px;
+      cursor: pointer; flex-shrink: 0;
     }
     
-    /* 圖片上傳區 */
-    .image-upload-area {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-    
+    /* === 圖片上傳 === */
+    .image-upload-area { display: flex; gap: 10px; align-items: center; }
     .image-preview {
-      width: 60px;
-      height: 60px;
-      border-radius: 10px;
-      object-fit: cover;
-      background: #fff;
-      flex-shrink: 0;
-      border: 1px solid rgba(0,0,0,0.1);
+      width: 60px; height: 60px; border-radius: 10px; object-fit: cover;
+      background: #fff; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1);
     }
-    
     .image-preview-placeholder {
-      width: 60px;
-      height: 60px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.5);
-      border: 2px dashed rgba(236,64,122,0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      flex-shrink: 0;
-      cursor: pointer;
-      transition: all 0.2s;
+      width: 60px; height: 60px; border-radius: 10px;
+      background: rgba(255,255,255,0.5); border: 2px dashed rgba(236,64,122,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0; cursor: pointer; transition: all 0.2s;
     }
-    
-    .image-preview-placeholder:hover {
-      border-color: #ec407a;
-      background: rgba(255,255,255,0.8);
-    }
-    
-    .image-input-wrapper {
-      flex: 1;
-      display: flex;
-      gap: 8px;
-    }
-    
+    .image-input-wrapper { flex: 1; display: flex; gap: 8px; }
     .upload-btn {
-      padding: 12px 16px;
-      border-radius: 10px;
-      border: 1px solid rgba(102, 126, 234, 0.3);
-      background: #fff;
-      color: #5c6ac4;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
+      padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(102, 126, 234, 0.3);
+      background: #fff; color: #5c6ac4; font-size: 14px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: all 0.2s;
     }
-    
-    .upload-btn:hover {
-      background: #f0f4ff;
-    }
-    
-    .upload-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-    
-    .upload-btn.uploading {
-      background: #fff8e1;
-      color: #f57f17;
-      border-color: #ffe0b2;
-    }
-    
-    /* 隱藏的 file input */
+    .upload-btn.uploading { background: #fff8e1; color: #f57f17; border-color: #ffe0b2; }
     .hidden-file-input {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      margin: -1px;
-      overflow: hidden;
-      clip: rect(0,0,0,0);
-      border: 0;
-      opacity: 0;
-      z-index: -1;
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0; opacity: 0; z-index: -1;
     }
     
-    /* 進度條 */
-    .progress-bar {
-      height: 8px;
-      background: rgba(0,0,0,0.05);
-      border-radius: 4px;
-      overflow: hidden;
-      margin-top: 8px;
-    }
+    /* === 統計與圖表 === */
+    .progress-bar { height: 8px; background: rgba(0,0,0,0.05); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .progress-fill.normal { background: linear-gradient(90deg, #4ade80, #10b981); }
+    .progress-fill.full { background: #ef4444; }
     
-    .progress-fill {
-      height: 100%;
-      border-radius: 4px;
-      transition: width 0.3s;
-    }
-    
-    .progress-fill.normal {
-      background: linear-gradient(90deg, #4ade80, #10b981);
-    }
-    
-    .progress-fill.full {
-      background: #ef4444;
-    }
-    
-    /* 統計卡片 */
     .stat-card {
-      background: rgba(102, 126, 234, 0.05);
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      border: 1px solid rgba(102, 126, 234, 0.2);
+      background: rgba(102, 126, 234, 0.05); border-radius: 16px; padding: 20px;
+      text-align: center; border: 1px solid rgba(102, 126, 234, 0.2);
     }
+    .stat-label { color: #666; font-size: 15px; margin-bottom: 4px; font-weight: 500; }
+    .stat-value { font-size: 48px; font-weight: 700; color: #333; }
     
-    .stat-label {
-      color: #666; 
-      font-size: 15px;
-      margin-bottom: 4px;
-      font-weight: 500;
-    }
-    
-    .stat-value {
-      font-size: 48px;
-      font-weight: 700;
-      color: #333;
-    }
-    
-    /* 訂單列表 */
+    /* === 訂單列表 === */
     .order-group {
-      background: #fff;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-      border: 1px solid rgba(0,0,0,0.05);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+      background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px;
+      border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
     }
-    
     .order-group-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 8px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;
     }
-    
-    .order-group-title {
-      font-weight: 700;
-      color: #333;
-      font-size: 16px;
-    }
-    
+    .order-group-title { font-weight: 700; color: #333; font-size: 16px; }
     .order-group-badge {
-      background: #eef2ff;
-      color: #4f46e5;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: 600;
+      background: #eef2ff; color: #4f46e5; padding: 4px 12px;
+      border-radius: 20px; font-size: 13px; font-weight: 600;
     }
-    
     .order-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-top: 1px solid #f5f5f5;
-      font-size: 15px;
+      display: flex; justify-content: space-between; padding: 10px 0;
+      border-top: 1px solid #f5f5f5; font-size: 15px;
     }
+    .order-row:first-of-type { border-top: none; }
+    .order-phone { color: #666; font-family: monospace; }
+    .order-items { color: #111; font-weight: 500; }
     
-    .order-row:first-of-type {
-      border-top: none;
-    }
-    
-    .order-phone {
-      color: #666;
-      font-family: monospace;
-    }
-    
-    .order-items {
-      color: #111; 
-      font-weight: 500;
-    }
-    
-    /* --- 底部導航 --- */
+    /* === 底部導航 === */
     .bottom-nav {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(216, 27, 96, 0.95);
-      border-radius: 50px;
-      padding: 6px;
-      display: flex;
-      gap: 4px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2);
-      z-index: 100;
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(216, 27, 96, 0.95); border-radius: 50px; padding: 6px;
+      display: flex; gap: 4px; backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2); z-index: 100;
       box-shadow: 0 4px 20px rgba(180, 20, 80, 0.4);
     }
-    
     .nav-btn {
-      padding: 12px 22px;
-      border-radius: 50px;
-      border: none;
-      background: transparent;
-      color: rgba(255,255,255,0.8);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
+      padding: 12px 22px; border-radius: 50px; border: none; background: transparent;
+      color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
     }
-    
     .nav-btn.active {
-      background: #fff; 
-      color: #d81b60;    
-      font-weight: 700;
+      background: #fff; color: #d81b60; font-weight: 700;
       box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     
-    /* --- 店家 Header 樣式 --- */
+    /* === 店家 Header (已加大 Logo & 移除邊框) === */
     .brand-header {
-      text-align: center;
-      margin-bottom: 24px;
-      position: relative;
-      background: rgba(255,255,255,0.8);
-      padding: 24px 20px;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(236,64,122,0.1);
+      text-align: center; margin-bottom: 24px; position: relative;
+      background: rgba(255,255,255,0.8); padding: 24px 20px;
+      border-radius: 20px; box-shadow: 0 4px 15px rgba(236,64,122,0.1);
       border: 1px solid rgba(255,255,255,0.5);
     }
-    
     .brand-logo {
-      width: 120px;  
-      height: 120px;
-      background: #fff;
-      border-radius: 50%;
-      margin: 0 auto 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      /* 修改：移除粉紅色邊框 */
-      /* border: 3px solid #f8bbd9; */
-      /* 修改：將陰影改為極淡的中性灰色，或者可以直接移除 box-shadow */
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-      overflow: hidden; 
+      width: 120px; height: 120px; background: #fff; border-radius: 50%;
+      margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;
+      /* 移除 border */
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden;
     }
-    
-    .brand-logo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; 
-    }
-    
-    .brand-name {
-      font-size: 15px;
-      font-weight: 500;
-      color: #666;
-      margin-bottom: 4px;
-      letter-spacing: 1px;
-    }
-    
-    .group-title {
-      font-size: 28px;
-      font-weight: 800;
-      color: #c2185b;
-      margin-top: 4px;
-      line-height: 1.3;
-    }
+    .brand-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-name { font-size: 15px; font-weight: 500; color: #666; margin-bottom: 4px; letter-spacing: 1px; }
+    .group-title { font-size: 28px; font-weight: 800; color: #c2185b; margin-top: 4px; line-height: 1.3; }
 
-    /* 成功畫面 */
-    .success-screen {
-      min-height: 80vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    
+    /* === 成功畫面 === */
+    .success-screen { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
     .success-content {
-      text-align: center;
-      background: rgba(255,255,255,0.95);
-      padding: 40px 30px;
-      border-radius: 24px;
-      box-shadow: 0 10px 40px rgba(180, 20, 80, 0.15);
-      border: 1px solid rgba(255,255,255,1);
-      width: 100%;
+      text-align: center; background: rgba(255,255,255,0.95); padding: 40px 30px;
+      border-radius: 24px; box-shadow: 0 10px 40px rgba(180, 20, 80, 0.15);
+      border: 1px solid rgba(255,255,255,1); width: 100%;
     }
-    
-    .success-icon-container {
-        margin-bottom: 20px;
-    }
-
     .success-svg {
-      width: 80px;
-      height: 80px;
-      fill: #10b981;
-      filter: drop-shadow(0 4px 10px rgba(16, 185, 129, 0.2));
+      width: 80px; height: 80px; fill: #10b981;
+      filter: drop-shadow(0 4px 10px rgba(16, 185, 129, 0.2)); margin-bottom: 20px;
     }
-    
-    .success-title {
-      font-size: 30px;
-      font-weight: 800;
-      margin-bottom: 20px;
-      color: #1a1a1a;
-    }
-    
+    .success-title { font-size: 30px; font-weight: 800; margin-bottom: 20px; color: #1a1a1a; }
     .success-info {
-      color: #333; 
-      margin-bottom: 24px;
-      line-height: 1.8;
-      font-size: 18px;
-      font-weight: 500;
-      background: #f9f9f9;
-      padding: 15px;
-      border-radius: 12px;
+      color: #333; margin-bottom: 24px; line-height: 1.8; font-size: 18px;
+      font-weight: 500; background: #f9f9f9; padding: 15px; border-radius: 12px;
     }
-    
     .success-items {
-      background: transparent; 
-      border-radius: 14px;
-      padding: 10px 0;
-      text-align: center;
-      margin-bottom: 24px;
-      border-top: 2px dashed #ddd;
-      border-bottom: 2px dashed #ddd;
+      background: transparent; border-radius: 14px; padding: 10px 0; text-align: center;
+      margin-bottom: 24px; border-top: 2px dashed #ddd; border-bottom: 2px dashed #ddd;
     }
+    .success-item { color: #000; padding: 8px 0; font-size: 20px; font-weight: 700; }
     
-    .success-item {
-      color: #000;
-      padding: 8px 0;
-      font-size: 20px;
-      font-weight: 700;
-    }
-    
-    /* 錯誤訊息 */
+    /* === 錯誤與載入 === */
     .error-msg {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 12px;
-      padding: 14px 18px;
-      color: #dc2626;
-      font-size: 15px;
-      font-weight: 500;
-      text-align: center;
-      margin-bottom: 16px;
+      background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px;
+      padding: 14px 18px; color: #dc2626; font-size: 15px; font-weight: 500;
+      text-align: center; margin-bottom: 16px;
     }
-    
-    /* 載入中 */
-    .loading {
-      text-align: center;
-      padding: 60px 20px;
-      color: #666;
-    }
-    
+    .loading { text-align: center; padding: 60px 20px; color: #666; }
     .spinner {
-      width: 40px;
-      height: 40px;
-      border: 4px solid rgba(0,0,0,0.1);
-      border-top-color: #d81b60;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 16px;
+      width: 40px; height: 40px; border: 4px solid rgba(0,0,0,0.1);
+      border-top-color: #d81b60; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 16px;
     }
+    @keyframes spin { to { transform: rotate(360deg); } }
     
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+    .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.5; }
     
-    /* 空狀態 */
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: #888;
-    }
-    
-    .empty-icon {
-      font-size: 56px;
-      margin-bottom: 16px;
-      opacity: 0.5;
-    }
-    
-    /* 複製連結區塊 */
+    /* === 複製連結 === */
     .link-box {
-      background: #ecfdf5;
-      border: 1px solid #6ee7b7;
-      border-radius: 12px;
-      padding: 16px;
-      margin-top: 20px;
+      background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 12px;
+      padding: 16px; margin-top: 20px;
     }
-    
-    .link-label {
-      color: #059669;
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    
-    .link-row {
-      display: flex;
-      gap: 10px;
-    }
-    
+    .link-label { color: #059669; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .link-row { display: flex; gap: 10px; }
     .link-input {
-      flex: 1;
-      background: #fff;
-      border: 1px solid #d1fae5;
-      color: #333;
-      font-size: 14px;
-      padding: 10px;
-      border-radius: 8px;
+      flex: 1; background: #fff; border: 1px solid #d1fae5; color: #333;
+      font-size: 14px; padding: 10px; border-radius: 8px;
     }
-    
     .copy-btn {
-      padding: 12px 20px;
-      border-radius: 10px;
-      border: none;
-      background: #10b981;
-      color: #fff;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      white-space: nowrap;
-      box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+      padding: 12px 20px; border-radius: 10px; border: none; background: #10b981;
+      color: #fff; font-weight: 600; font-size: 14px; cursor: pointer;
+      white-space: nowrap; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
     }
 
-    /* Toast 通知 */
+    /* === Toast === */
     .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(30, 30, 30, 0.95);
-      color: #fff;
-      padding: 14px 28px;
-      border-radius: 50px;
-      font-size: 15px;
-      font-weight: 500;
-      z-index: 200;
-      animation: fadeInOut 2.5s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(30, 30, 30, 0.95); color: #fff; padding: 14px 28px;
+      border-radius: 50px; font-size: 15px; font-weight: 500; z-index: 200;
+      animation: fadeInOut 2.5s ease; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
-    
     @keyframes fadeInOut {
       0% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
       15% { opacity: 1; transform: translateX(-50%) translateY(0); }
@@ -767,77 +287,29 @@
       100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
     }
 
-    /* 圖片上傳選項彈窗 */
+    /* === Upload Modal === */
     .upload-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 150;
-      padding: 20px;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8); display: flex; align-items: center;
+      justify-content: center; z-index: 150; padding: 20px;
     }
-    
     .upload-modal-content {
-      background: #fff;
-      border-radius: 20px;
-      padding: 24px;
-      width: 100%;
-      max-width: 320px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      background: #fff; border-radius: 20px; padding: 24px;
+      width: 100%; max-width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
     }
-    
-    .upload-modal-title {
-      font-size: 18px;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333;
-    }
-    
+    .upload-modal-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #333; }
     .upload-option {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px;
-      background: #f9fafb;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
-      border: 1px solid #eee;
+      display: flex; align-items: center; gap: 14px; padding: 16px;
+      background: #f9fafb; border-radius: 12px; margin-bottom: 10px;
+      cursor: pointer; transition: all 0.2s; border: 1px solid #eee;
     }
-    
-    .upload-option:hover {
-      background: #f3f4f6;
-      border-color: #ddd;
-    }
-    
-    .upload-option-icon {
-      font-size: 28px;
-    }
-    
-    .upload-option-text {
-      font-size: 16px;
-      color: #333;
-      font-weight: 500;
-    }
-    
+    .upload-option:hover { background: #f3f4f6; border-color: #ddd; }
+    .upload-option-icon { font-size: 28px; }
+    .upload-option-text { font-size: 16px; color: #333; font-weight: 500; }
     .upload-modal-cancel {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: 1px solid #ddd;
-      background: transparent;
-      color: #666;
-      font-size: 15px;
-      cursor: pointer;
-      margin-top: 10px;
-      font-weight: 500;
+      width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ddd;
+      background: transparent; color: #666; font-size: 15px; cursor: pointer;
+      margin-top: 10px; font-weight: 500;
     }
   </style>
 </head>
@@ -852,10 +324,7 @@
   <script>
     // ====== 設定 ======
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ-AcwAJQcfq8npulJ07SDRuKN7_JSjP-C6Dze6PXRYHUeswZbUwefn2HVvYEsFmWFzw/exec';
-    
-    // Imgur API (使用匿名上傳)
     const IMGUR_CLIENT_ID = 'f9ae284a4535206';
-    
     const STORES = [
       '中和', '文山', '永和', '林口', '平鎮', '古華', '南平', '萬華', '三峽',
       '環球', '忠順', '泰山', '四號公園', '板橋', '湖口', '淡水', '松山', '經國'
@@ -876,32 +345,24 @@
       phone: '',
       selectedItems: {},
       successInfo: null,
-      uploadingIndex: -1, // 正在上傳圖片的品項 index
+      uploadingIndex: -1,
       showUploadModal: false,
       uploadTargetIndex: -1
     };
 
-    // ====== 圖片上傳 ======
+    // ====== 圖片上傳 (Imgur) ======
     async function uploadToImgur(file) {
       const formData = new FormData();
       formData.append('image', file);
-      
       try {
         const response = await fetch('https://api.imgur.com/3/image', {
           method: 'POST',
-          headers: {
-            'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`
-          },
+          headers: { 'Authorization': `Client-ID ${IMGUR_CLIENT_ID}` },
           body: formData
         });
-        
         const data = await response.json();
-        
-        if (data.success) {
-          return data.data.link;
-        } else {
-          throw new Error(data.data.error || '上傳失敗');
-        }
+        if (data.success) return data.data.link;
+        else throw new Error(data.data.error || '上傳失敗');
       } catch (error) {
         console.error('Imgur upload error:', error);
         throw error;
@@ -913,33 +374,27 @@
       state.uploadTargetIndex = index;
       renderModal();
     }
-
     function hideUploadModal() {
       state.showUploadModal = false;
       state.uploadTargetIndex = -1;
       renderModal();
     }
-
     function triggerCameraUpload() {
       hideUploadModal();
       document.getElementById('file-input-camera').click();
     }
-
     function triggerGalleryUpload() {
       hideUploadModal();
       document.getElementById('file-input-gallery').click();
     }
-
     async function handleFileSelect(event) {
       const file = event.target.files[0];
       if (!file) return;
-      
       const index = state.uploadTargetIndex;
       if (index < 0) return;
       
       state.uploadingIndex = index;
       render();
-      
       try {
         showToast('📤 上傳中...');
         const imageUrl = await uploadToImgur(file);
@@ -949,46 +404,37 @@
         showToast('❌ 上傳失敗，請重試');
         console.error(error);
       }
-      
       state.uploadingIndex = -1;
       state.uploadTargetIndex = -1;
-      event.target.value = ''; // 清除選擇，允許重複選同一檔案
+      event.target.value = '';
       render();
     }
-
-    // 設定 file input 事件
     document.getElementById('file-input-camera').addEventListener('change', handleFileSelect);
     document.getElementById('file-input-gallery').addEventListener('change', handleFileSelect);
 
-    // ====== Toast 通知 ======
+    // ====== Helper Functions ======
     function showToast(message) {
       const container = document.getElementById('toast-container');
       container.innerHTML = `<div class="toast">${message}</div>`;
-      setTimeout(() => {
-        container.innerHTML = '';
-      }, 2500);
+      setTimeout(() => { container.innerHTML = ''; }, 2500);
     }
 
-    // ====== Modal 渲染 ======
+    // ====== Renders ======
     function renderModal() {
       const container = document.getElementById('modal-container');
-      
       if (state.showUploadModal) {
         container.innerHTML = `
           <div class="upload-modal" onclick="hideUploadModal()">
             <div class="upload-modal-content" onclick="event.stopPropagation()">
               <div class="upload-modal-title">📷 選擇圖片來源</div>
-              
               <div class="upload-option" onclick="triggerCameraUpload()">
                 <span class="upload-option-icon">📸</span>
                 <span class="upload-option-text">拍照</span>
               </div>
-              
               <div class="upload-option" onclick="triggerGalleryUpload()">
                 <span class="upload-option-icon">🖼️</span>
                 <span class="upload-option-text">從相簿選擇</span>
               </div>
-              
               <button class="upload-modal-cancel" onclick="hideUploadModal()">取消</button>
             </div>
           </div>
@@ -998,28 +444,20 @@
       }
     }
 
-    // ====== 渲染函數 ======
     function render() {
       const app = document.getElementById('app');
-      
       let content = '';
+      if (state.view === 'admin') content = renderAdmin();
+      else if (state.view === 'customer') content = renderCustomer();
+      else if (state.view === 'success') content = renderSuccess();
       
-      if (state.view === 'admin') {
-        content = renderAdmin();
-      } else if (state.view === 'customer') {
-        content = renderCustomer();
-      } else if (state.view === 'success') {
-        content = renderSuccess();
-      }
-      
-      // 修改：只有在「非」客人連結（也就是沒有 ?sheet=xxx）時，才顯示底部導航
+      // 客人連結模式下不顯示底部導航
       const urlParams = new URLSearchParams(window.location.search);
       if (!urlParams.has('sheet')) {
         content += renderBottomNav();
       }
       
       app.innerHTML = content;
-      attachEventListeners();
     }
 
     function renderAdmin() {
@@ -1033,7 +471,6 @@
     function renderCreateForm() {
       let itemsHTML = state.items.map((item, index) => {
         const isUploading = state.uploadingIndex === index;
-        
         return `
         <div class="admin-item">
           <div class="admin-item-row">
@@ -1042,7 +479,6 @@
             <span style="color:#666;padding:12px 4px;font-size:14px">份</span>
             ${state.items.length > 1 ? `<button class="remove-btn" onclick="removeItem(${index})">×</button>` : ''}
           </div>
-          
           <div class="admin-item-row">
             <div class="image-upload-area" style="flex:1">
               ${item.image ? 
@@ -1057,7 +493,6 @@
               </div>
             </div>
           </div>
-          
           <div class="admin-item-row">
             <textarea placeholder="商品簡介（選填）" onchange="updateItem(${index}, 'description', this.value)">${item.description}</textarea>
           </div>
@@ -1069,23 +504,16 @@
           <div class="card">
             <h1>🛒 快速開團</h1>
             <p class="subtitle">設定品項，一鍵產生表單</p>
-            
             <div class="form-group">
               <label>團購標題</label>
               <input type="text" placeholder="例如：2/4 草莓蛋糕團" value="${state.formTitle}" onchange="state.formTitle=this.value">
             </div>
-            
             <div class="form-group">
               <label>品項設定</label>
               ${itemsHTML}
             </div>
-            
-            <button class="btn btn-outline" onclick="addItem()" style="margin-bottom:20px">
-              + 新增品項
-            </button>
-            
+            <button class="btn btn-outline" onclick="addItem()" style="margin-bottom:20px"> + 新增品項 </button>
             ${state.error ? `<div class="error-msg">${state.error}</div>` : ''}
-            
             <button class="btn btn-primary" onclick="createForm()" ${state.loading ? 'disabled' : ''}>
               ${state.loading ? '處理中...' : '🚀 產生表單'}
             </button>
@@ -1094,27 +522,17 @@
       `;
     }
 
-    functiofunction renderStats() {
-      if (state.loading) {
-        return `
-          <div class="container">
-            <div class="loading">
-              <div class="spinner"></div>
-              <div>載入中...</div>
-            </div>
-          </div>
-        `;
-      }
-
+    function renderStats() {
+      if (state.loading) return `<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>`;
+      
+      // === 關鍵修正：若找不到資料，顯示重新開團按鈕 ===
       if (!state.formConfig) {
         return `
           <div class="container">
             <div class="empty-state">
               <div class="empty-icon">📋</div>
               <div>找不到表單資料</div>
-              <div style="font-size:14px; color:#999; margin-bottom:20px;">
-                可能該開團分頁已被刪除
-              </div>
+              <div style="font-size:14px; color:#999; margin-bottom:20px;">可能該開團分頁已被刪除</div>
               <button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="newForm()">
                 + 開新團
               </button>
@@ -1123,28 +541,23 @@
         `;
       }
 
-      // ... (以下保持不變)
       const ordersByStore = {};
       const ordersByItem = {};
-      
       state.orders.forEach(order => {
         if (!ordersByStore[order.store]) ordersByStore[order.store] = [];
         ordersByStore[order.store].push(order);
-        
         if (!ordersByItem[order.item]) ordersByItem[order.item] = 0;
         ordersByItem[order.item] += order.quantity;
       });
-
       const uniquePhones = new Set(state.orders.map(o => o.phone));
-
-      // 修改：過濾掉標題中的時間戳記
+      
+      // 標題過濾亂數
       const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
 
       let itemStatsHTML = state.formConfig.items.map(item => {
         const ordered = ordersByItem[item.name] || 0;
         const percentage = Math.min((ordered / item.limit) * 100, 100);
         const isFull = ordered >= item.limit;
-        
         return `
           <div style="margin-bottom:16px">
             <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-weight:500;">
@@ -1163,25 +576,14 @@
       let storeOrdersHTML = Object.entries(ordersByStore).map(([store, orders]) => {
         const ordersByPhone = {};
         orders.forEach(order => {
-          if (!ordersByPhone[order.phone]) {
-            ordersByPhone[order.phone] = { phone: order.phone, items: {} };
-          }
-          if (!ordersByPhone[order.phone].items[order.item]) {
-            ordersByPhone[order.phone].items[order.item] = 0;
-          }
+          if (!ordersByPhone[order.phone]) ordersByPhone[order.phone] = { phone: order.phone, items: {} };
+          if (!ordersByPhone[order.phone].items[order.item]) ordersByPhone[order.phone].items[order.item] = 0;
           ordersByPhone[order.phone].items[order.item] += order.quantity;
         });
-
         const orderRows = Object.values(ordersByPhone).map(o => {
           const itemsText = Object.entries(o.items).map(([name, qty]) => `${name}×${qty}`).join(', ');
-          return `
-            <div class="order-row">
-              <span class="order-phone">...${o.phone}</span>
-              <span class="order-items">${itemsText}</span>
-            </div>
-          `;
+          return `<div class="order-row"><span class="order-phone">...${o.phone}</span><span class="order-items">${itemsText}</span></div>`;
         }).join('');
-
         return `
           <div class="order-group">
             <div class="order-group-header">
@@ -1200,21 +602,16 @@
           <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
               <h1 style="text-align:left;margin:0;font-size:20px">📊 ${displayTitle}</h1>
-              <button class="btn btn-primary" style="width:auto;padding:10px 20px;font-size:14px" onclick="newForm()">
-                + 開新團
-              </button>
+              <button class="btn btn-primary" style="width:auto;padding:10px 20px;font-size:14px" onclick="newForm()"> + 開新團 </button>
             </div>
-            
             <div style="margin-bottom:24px">
               <label style="margin-bottom:12px;color:#666">品項統計</label>
               ${itemStatsHTML}
             </div>
-            
             <div class="stat-card">
               <div class="stat-label">訂購人數</div>
               <div class="stat-value">${uniquePhones.size}</div>
             </div>
-            
             <div class="link-box">
               <div class="link-label">📎 客人填寫連結（分享到 LINE 社群）</div>
               <div class="link-row">
@@ -1223,73 +620,25 @@
               </div>
             </div>
           </div>
-          
-          ${storeOrdersHTML ? `
-            <div class="card">
-              <h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>
-              ${storeOrdersHTML}
-            </div>
-          ` : `
-            <div class="empty-state">
-              <div class="empty-icon">📭</div>
-              <div>還沒有訂單</div>
-            </div>
-          `}
+          ${storeOrdersHTML ? `<div class="card"><h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>${storeOrdersHTML}</div>` : `<div class="empty-state"><div class="empty-icon">📭</div><div>還沒有訂單</div></div>`}
         </div>
       `;
     }
 
     function renderCustomer() {
-      if (!state.currentSheet) {
-        return `
-          <div class="container">
-            <div class="empty-state">
-              <div class="empty-icon">📋</div>
-              <div>尚未開團</div>
-              <div style="margin-top:8px;font-size:14px">請等待團主分享連結</div>
-            </div>
-          </div>
-        `;
-      }
+      if (!state.currentSheet) return `<div class="container"><div class="empty-state"><div class="empty-icon">📋</div><div>尚未開團</div><div style="margin-top:8px;font-size:14px">請等待團主分享連結</div></div></div>`;
+      if (state.loading) return `<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>`;
+      if (!state.formConfig) return `<div class="container"><div class="empty-state"><div class="empty-icon">❌</div><div>找不到此團購表單</div></div></div>`;
 
-      if (state.loading) {
-        return `
-          <div class="container">
-            <div class="loading">
-              <div class="spinner"></div>
-              <div>載入中...</div>
-            </div>
-          </div>
-        `;
-      }
-
-      if (!state.formConfig) {
-        return `
-          <div class="container">
-            <div class="empty-state">
-              <div class="empty-icon">❌</div>
-              <div>找不到此團購表單</div>
-            </div>
-          </div>
-        `;
-      }
-
-      let storeOptions = STORES.map(s => 
-        `<option value="${s}" ${state.selectedStore === s ? 'selected' : ''}>${s}</option>`
-      ).join('');
-
+      let storeOptions = STORES.map(s => `<option value="${s}" ${state.selectedStore === s ? 'selected' : ''}>${s}</option>`).join('');
       let itemsHTML = state.formConfig.items.map((item, index) => {
         const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
         const isSoldOut = remaining <= 0;
         const selectedQty = state.selectedItems[item.name] || 0;
-
         return `
           <div class="item-card ${isSoldOut ? 'sold-out' : ''}">
             <div class="item-header">
-              ${item.image ? 
-                `<img src="${item.image}" class="item-image" onerror="this.style.display='none'">` : 
-                `<div class="item-image-placeholder">🛍️</div>`
-              }
+              ${item.image ? `<img src="${item.image}" class="item-image" onerror="this.style.display='none'">` : `<div class="item-image-placeholder">🛍️</div>`}
               <div class="item-info">
                 <div class="item-name">${item.name}</div>
                 ${item.description ? `<div class="item-desc">${item.description}</div>` : ''}
@@ -1309,7 +658,6 @@
         `;
       }).join('');
 
-      // 修改：過濾掉標題中的時間戳記
       const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
 
       return `
@@ -1323,7 +671,6 @@
           </div>
           <div class="card">
             <p class="subtitle">請填寫以下資料完成登記</p>
-            
             <div class="form-group">
               <label>📍 取貨分店</label>
               <select onchange="state.selectedStore=this.value;state.error='';render()">
@@ -1331,21 +678,17 @@
                 ${storeOptions}
               </select>
             </div>
-            
             <div class="form-group">
               <label>📱 電話後六碼</label>
               <input type="tel" placeholder="例如：123456" maxlength="6" value="${state.phone}" 
                      oninput="state.phone=this.value.slice(0,6);state.error=''" 
                      style="letter-spacing:4px;text-align:center">
             </div>
-            
             <div class="form-group">
               <label>🛒 選擇品項</label>
               ${itemsHTML}
             </div>
-            
             ${state.error ? `<div class="error-msg">${state.error}</div>` : ''}
-            
             <button class="btn btn-primary" onclick="submitOrder()" ${state.loading ? 'disabled' : ''}>
               ${state.loading ? '送出中...' : '✓ 確認登記'}
             </button>
@@ -1356,11 +699,7 @@
 
     function renderSuccess() {
       const info = state.successInfo || {};
-      const itemsHTML = Object.entries(info.items || {})
-        .filter(([_, qty]) => qty > 0)
-        .map(([name, qty]) => `<div class="success-item">${name} × ${qty}</div>`)
-        .join('');
-
+      const itemsHTML = Object.entries(info.items || {}).filter(([_, qty]) => qty > 0).map(([name, qty]) => `<div class="success-item">${name} × ${qty}</div>`).join('');
       return `
         <div class="container">
           <div class="success-screen">
@@ -1371,16 +710,9 @@
                 </svg>
               </div>
               <h2 class="success-title">登記成功！</h2>
-              <div class="success-info">
-                取貨分店：${info.store}<br>
-                電話末六碼：${info.phone}
-              </div>
-              <div class="success-items">
-                ${itemsHTML}
-              </div>
-              <button class="btn btn-primary" style="margin-top:24px; width: auto; padding: 12px 30px;" onclick="resetCustomerForm()">
-                繼續登記其他品項
-              </button>
+              <div class="success-info">取貨分店：${info.store}<br>電話末六碼：${info.phone}</div>
+              <div class="success-items">${itemsHTML}</div>
+              <button class="btn btn-primary" style="margin-top:24px; width: auto; padding: 12px 30px;" onclick="resetCustomerForm()">繼續登記其他品項</button>
             </div>
           </div>
         </div>
@@ -1390,276 +722,126 @@
     function renderBottomNav() {
       return `
         <div class="bottom-nav">
-          <button class="nav-btn ${state.view === 'admin' ? 'active' : ''}" onclick="switchView('admin')">
-            👤 管理
-          </button>
-          <button class="nav-btn ${state.view === 'customer' || state.view === 'success' ? 'active' : ''}" onclick="switchView('customer')">
-            🛒 客人
-          </button>
+          <button class="nav-btn ${state.view === 'admin' ? 'active' : ''}" onclick="switchView('admin')">👤 管理</button>
+          <button class="nav-btn ${state.view === 'customer' || state.view === 'success' ? 'active' : ''}" onclick="switchView('customer')">🛒 客人</button>
         </div>
       `;
     }
 
-    // ====== 事件處理 ======
-    function attachEventListeners() {}
-
+    // ====== Actions ======
     function switchView(view) {
-      state.view = view;
-      state.error = '';
-      
-      if (view === 'customer' && state.currentSheet) {
-        loadFormData();
-      } else if (view === 'admin' && state.currentSheet && state.adminMode === 'stats') {
-        loadOrders();
-      }
-      
+      state.view = view; state.error = '';
+      if (view === 'customer' && state.currentSheet) loadFormData();
+      else if (view === 'admin' && state.currentSheet && state.adminMode === 'stats') loadOrders();
       render();
     }
-
-    function addItem() {
-      state.items.push({ name: '', limit: 30, image: '', description: '' });
-      render();
-    }
-
-    function removeItem(index) {
-      if (state.items.length > 1) {
-        state.items.splice(index, 1);
-        render();
-      }
-    }
-
+    function addItem() { state.items.push({ name: '', limit: 30, image: '', description: '' }); render(); }
+    function removeItem(index) { if (state.items.length > 1) { state.items.splice(index, 1); render(); } }
     function updateItem(index, field, value) {
       state.items[index][field] = field === 'limit' ? (parseInt(value) || 0) : value;
-      if (field === 'image') {
-        render(); // 重新渲染以顯示圖片預覽
-      }
+      if (field === 'image') render();
     }
-
     async function createForm() {
       const validItems = state.items.filter(item => item.name.trim());
-      
-      if (validItems.length === 0) {
-        state.error = '請至少填寫一個品項名稱';
-        render();
-        return;
-      }
-      
-      state.loading = true;
-      state.error = '';
-      render();
-      
+      if (validItems.length === 0) { state.error = '請至少填寫一個品項名稱'; render(); return; }
+      state.loading = true; state.error = ''; render();
       const formTitle = state.formTitle || new Date().toLocaleDateString('zh-TW') + ' 開團';
-      
       try {
         const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({
-            action: 'createForm',
-            formTitle: formTitle,
-            items: validItems,
-            stores: STORES
-          })
+          method: 'POST', body: JSON.stringify({ action: 'createForm', formTitle: formTitle, items: validItems, stores: STORES })
         });
-        
         const result = await response.json();
-        
         if (result.success) {
-          state.currentSheet = result.sheetName;
-          state.formConfig = result.formConfig;
-          state.adminMode = 'stats';
-          state.orders = [];
-          localStorage.setItem('currentSheet', state.currentSheet);
-          showToast('✅ 開團成功！');
-        } else {
-          state.error = result.error || '建立失敗，請重試';
-        }
+          state.currentSheet = result.sheetName; state.formConfig = result.formConfig;
+          state.adminMode = 'stats'; state.orders = [];
+          localStorage.setItem('currentSheet', state.currentSheet); showToast('✅ 開團成功！');
+        } else { state.error = result.error || '建立失敗，請重試'; }
       } catch (error) {
+        // Fallback for demo without backend
         state.currentSheet = formTitle;
-        state.formConfig = {
-          title: formTitle,
-          items: validItems.map(item => ({...item, ordered: 0, remaining: item.limit})),
-          stores: STORES
-        };
-        state.adminMode = 'stats';
-        state.orders = [];
-        localStorage.setItem('currentSheet', state.currentSheet);
-        showToast('✅ 開團成功！');
+        state.formConfig = { title: formTitle, items: validItems.map(item => ({...item, ordered: 0, remaining: item.limit})), stores: STORES };
+        state.adminMode = 'stats'; state.orders = [];
+        localStorage.setItem('currentSheet', state.currentSheet); showToast('✅ 開團成功！');
       }
-      
-      state.loading = false;
-      render();
+      state.loading = false; render();
     }
-
     function newForm() {
-      state.adminMode = 'create';
-      state.formTitle = '';
+      state.adminMode = 'create'; state.formTitle = '';
       state.items = [{ name: '', limit: 30, image: '', description: '' }];
-      state.error = '';
-      render();
+      state.error = ''; render();
     }
-
     async function loadOrders() {
-      state.loading = true;
-      render();
-      
+      state.loading = true; render();
       try {
         const response = await fetch(`${SCRIPT_URL}?action=getOrders&sheetName=${encodeURIComponent(state.currentSheet)}`);
         const result = await response.json();
-        
-        if (result.success) {
-          state.orders = result.orders || [];
-          state.formConfig = result.formConfig;
-        }
-      } catch (error) {
-        console.error('Load orders error:', error);
-      }
-      
-      state.loading = false;
-      render();
+        if (result.success) { state.orders = result.orders || []; state.formConfig = result.formConfig; }
+        else { state.formConfig = null; } // 若後端回傳失敗，設為 null 以觸發救援按鈕
+      } catch (error) { console.error('Load orders error:', error); state.formConfig = null; }
+      state.loading = false; render();
     }
-
     function copyLink() {
-      const input = document.getElementById('customerLink');
-      input.select();
-      input.setSelectionRange(0, 99999); // 手機支援
-      document.execCommand('copy');
-      
-      showToast('✅ 連結已複製！');
+      const input = document.getElementById('customerLink'); input.select();
+      input.setSelectionRange(0, 99999); document.execCommand('copy'); showToast('✅ 連結已複製！');
     }
-
     async function loadFormData() {
-      state.loading = true;
-      render();
-      
+      state.loading = true; render();
       try {
         const response = await fetch(`${SCRIPT_URL}?action=getFormData&sheetName=${encodeURIComponent(state.currentSheet)}`);
         const result = await response.json();
-        
-        if (result.success) {
-          state.formConfig = result.formConfig;
-        } else {
-          state.formConfig = null;
-        }
-      } catch (error) {
-        console.error('Load form error:', error);
-      }
-      
-      state.loading = false;
-      render();
+        if (result.success) state.formConfig = result.formConfig; else state.formConfig = null;
+      } catch (error) { console.error('Load form error:', error); }
+      state.loading = false; render();
     }
-
     function changeQty(itemName, delta) {
       const currentQty = state.selectedItems[itemName] || 0;
       const newQty = Math.max(0, currentQty + delta);
-      
       const item = state.formConfig.items.find(i => i.name === itemName);
       if (item) {
         const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
-        if (newQty <= remaining) {
-          state.selectedItems[itemName] = newQty;
-        }
+        if (newQty <= remaining) state.selectedItems[itemName] = newQty;
       }
-      
       render();
     }
-
     async function submitOrder() {
-      if (!state.selectedStore) {
-        state.error = '請選擇取貨分店';
-        render();
-        return;
-      }
-      
-      if (!state.phone || state.phone.length !== 6 || !/^\d+$/.test(state.phone)) {
-        state.error = '請輸入正確的電話後六碼';
-        render();
-        return;
-      }
-      
-      const orderItems = {};
-      let hasItem = false;
-      
-      for (const [name, qty] of Object.entries(state.selectedItems)) {
-        if (qty > 0) {
-          orderItems[name] = qty;
-          hasItem = true;
-        }
-      }
-      
-      if (!hasItem) {
-        state.error = '請至少選擇一個品項';
-        render();
-        return;
-      }
-      
-      state.loading = true;
-      state.error = '';
-      render();
-      
+      if (!state.selectedStore) { state.error = '請選擇取貨分店'; render(); return; }
+      if (!state.phone || state.phone.length !== 6 || !/^\d+$/.test(state.phone)) { state.error = '請輸入正確的電話後六碼'; render(); return; }
+      const orderItems = {}; let hasItem = false;
+      for (const [name, qty] of Object.entries(state.selectedItems)) { if (qty > 0) { orderItems[name] = qty; hasItem = true; } }
+      if (!hasItem) { state.error = '請至少選擇一個品項'; render(); return; }
+      state.loading = true; state.error = ''; render();
       try {
         const response = await fetch(SCRIPT_URL, {
           method: 'POST',
-          body: JSON.stringify({
-            action: 'submitOrder',
-            sheetName: state.currentSheet,
-            store: state.selectedStore,
-            phone: state.phone,
-            items: orderItems
-          })
+          body: JSON.stringify({ action: 'submitOrder', sheetName: state.currentSheet, store: state.selectedStore, phone: state.phone, items: orderItems })
         });
-        
         const result = await response.json();
-        
         if (result.success) {
-          state.successInfo = {
-            store: state.selectedStore,
-            phone: state.phone,
-            items: orderItems
-          };
+          state.successInfo = { store: state.selectedStore, phone: state.phone, items: orderItems };
           state.view = 'success';
-        } else {
-          state.error = result.error || '送出失敗，請重試';
-        }
+        } else { state.error = result.error || '送出失敗，請重試'; }
       } catch (error) {
-        state.successInfo = {
-          store: state.selectedStore,
-          phone: state.phone,
-          items: orderItems
-        };
+        // Fallback for demo
+        state.successInfo = { store: state.selectedStore, phone: state.phone, items: orderItems };
         state.view = 'success';
       }
-      
-      state.loading = false;
-      render();
+      state.loading = false; render();
     }
-
     function resetCustomerForm() {
-      state.view = 'customer';
-      state.selectedStore = '';
-      state.phone = '';
-      state.selectedItems = {};
-      state.error = '';
-      loadFormData();
+      state.view = 'customer'; state.selectedStore = ''; state.phone = '';
+      state.selectedItems = {}; state.error = ''; loadFormData();
     }
-
-    // ====== 初始化 ======
     function init() {
       const urlParams = new URLSearchParams(window.location.search);
       const sheetParam = urlParams.get('sheet');
-      
       if (sheetParam) {
-        state.currentSheet = sheetParam;
-        state.view = 'customer';
-        localStorage.setItem('currentSheet', sheetParam);
-        loadFormData();
+        state.currentSheet = sheetParam; state.view = 'customer';
+        localStorage.setItem('currentSheet', sheetParam); loadFormData();
       } else if (state.currentSheet) {
-        state.adminMode = 'stats';
-        loadOrders();
+        state.adminMode = 'stats'; loadOrders();
       }
-      
       render();
     }
-
     init();
   </script>
 </body>
