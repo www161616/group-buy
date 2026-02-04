@@ -280,12 +280,47 @@
       flex: 1; background: #fff; border: 1px solid #d1fae5; color: #333;
       font-size: 14px; padding: 10px; border-radius: 8px;
     }
-    .copy-btn {
-      padding: 12px 20px; border-radius: 10px; border: none; background: #10b981;
-      color: #fff; font-weight: 600; font-size: 14px; cursor: pointer;
-      white-space: nowrap; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
-    }
+    /* === 弱化複製按鈕 === */
+.copy-btn {
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  background: #f8f9fa; /* 改為淺灰色，不搶眼 */
+  color: #666; /* 字體顏色也調淡 */
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.copy-btn:hover {
+  background: #edf2f7;
+}
 
+/* === 強化產生短網址按址 (醒目綠底白字) === */
+.btn-generate-short {
+  margin-top: 12px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: #10b981; /* 綠色底 */
+  color: #ffffff; /* 白色字 */
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.btn-generate-short:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+}
     /* === Toast === */
     .toast {
       position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
@@ -677,6 +712,8 @@
           '</div>';
       });
 
+      // === 這是更新後的 renderStats 內容，請直接覆蓋原本 return 的那一大串 ===
+
       const customerLink = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
       const displayLink = state.shortUrl || customerLink;
       const isShortUrl = !!state.shortUrl;
@@ -695,19 +732,30 @@
               '<div class="stat-label">訂購人數</div>' +
               '<div class="stat-value">' + uniquePhones.size + '</div>' +
             '</div>' +
+            
+            // --- 這是我們要改的重點區塊 ---
             '<div class="link-box">' +
-              '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）' + (isShortUrl ? ' <span style="background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:6px;">短網址</span>' : '') + '</div>' +
+              '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）' + 
+                (isShortUrl ? ' <span style="background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:6px;">已轉為短網址</span>' : '') + 
+              '</div>' +
               '<div class="link-row">' +
                 '<input type="text" class="link-input" value="' + displayLink + '" readonly id="customerLink">' +
-                '<button class="copy-btn" onclick="copyLink()">複製</button>' +
+                // 這裡套用了你寫的 .copy-btn (變灰色)
+                '<button class="copy-btn" onclick="copyLink()">複製連結</button>' +
               '</div>' +
-              (!isShortUrl ? '<button onclick="generateShortUrl()" style="margin-top:10px;width:100%;padding:12px;border-radius:10px;border:1px solid #10b981;background:#fff;color:#10b981;font-size:14px;font-weight:600;cursor:pointer;">🔗 產生短網址</button>' : '') +
+              
+              // 這裡套用了你寫的 .btn-generate-short (變醒目綠底白字)
+              (!isShortUrl ? 
+                '<button class="btn-generate-short" onclick="generateShortUrl()">' +
+                  '🚀 點此產生短網址給客人填寫 (推薦)' + 
+                '</button>' : ''
+              ) +
             '</div>' +
+            // ---------------------------
           '</div>' +
           (storeOrdersHTML ? '<div class="card"><h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>' + storeOrdersHTML + '</div>' : '<div class="empty-state"><div class="empty-icon">📭</div><div>還沒有訂單</div></div>') +
         '</div>';
     }
-
     function renderCustomer() {
       if (!state.currentSheet) return '<div class="container"><div class="empty-state"><div class="empty-icon">📋</div><div>尚未開團</div><div style="margin-top:8px;font-size:14px">請等待團主分享連結</div></div></div>';
       if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
