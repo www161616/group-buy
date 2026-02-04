@@ -921,39 +921,29 @@
   // 自動抓取目前的新網域長網址
   const longUrl = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
   
-  // 使用你剛產生的 Secret Key
-  const SHORTIO_API_KEY = 'sk_TkQbBau5AyHBtc4g'; 
-  const MY_SHORT_DOMAIN = 'go.www161616.com';
-
-  showToast('🔗 產生專屬短網址中...');
+  showToast('🔗 正在產製專屬短連結...');
 
   try {
-    const response = await fetch('https://api.short.io/links', {
+    const response = await fetch(SCRIPT_URL, {
       method: 'POST',
-      headers: {
-        'authorization': SHORTIO_API_KEY,
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify({
-        originalURL: longUrl,
-        domain: MY_SHORT_DOMAIN
+      body: JSON.stringify({ 
+        action: 'generateShortUrl', 
+        longUrl: longUrl 
       })
     });
 
-    const data = await response.json();
+    const result = await response.json();
 
-    if (data.shortURL) {
-      state.shortUrl = data.shortURL;
+    if (result.success && result.shortURL) {
+      state.shortUrl = result.shortURL;
       localStorage.setItem('shortUrl', state.shortUrl);
       showToast('✅ 專屬短網址已產生！');
       render();
     } else {
-      // 如果 Short.io 回傳錯誤，提取錯誤訊息
-      const errorMsg = data.error || (data.message ? data.message : '產生失敗');
-      throw new Error(errorMsg);
+      throw new Error(result.error || '後台產製失敗');
     }
   } catch (error) {
-    console.error('Short.io error:', error);
+    console.error('Short.io via GAS error:', error);
     showToast('❌ 產生失敗：' + error.message);
   }
 }
