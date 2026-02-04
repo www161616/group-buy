@@ -50,22 +50,26 @@
     
     /* === 按鈕 === */
     。btn {
-      width: 100%; padding: 16px; border-radius: 14px; border: none;
-      font-size: 17px; font-weight: 700; cursor: pointer;
-      transition: all 0.2s; font-family: inherit;
-    }
-    。btn-primary {
-      background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
-      color: #fff; box-shadow: 0 8px 32px rgba(236,64,122,0.35);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-    。btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(236,64,122,0.45); }
-    。btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    
-    。btn-outline { background: transparent; border: 2px dashed #ec407a; color: #d81b60; }
-    。btn-outline:hover { border-color: #d81b60; background: rgba(236,64,122,0.05); }
-    
-    。form-group { margin-bottom: 20px; }
+  width: 100%; padding: 18px 24px; border-radius: 14px; border: none;
+  font-size: 18px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; font-family: inherit;
+  display: block; text-align: center;
+}
+.btn-primary {
+  background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
+  color: #fff; box-shadow: 0 8px 32px rgba(236,64,122,0.35);
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(236,64,122,0.45); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.btn-outline { 
+  background: #fff; 
+  border: 2px dashed #ec407a; 
+  color: #d81b60;
+  margin-bottom: 16px;
+}
+.btn-outline:hover { border-color: #d81b60; background: rgba(236,64,122,0.05); }
     
     /* === 品項卡片 === */
     。item-card {
@@ -75,7 +79,7 @@
     }
     。item-card.sold-out { background: #fff0f0; border-color: #ffcccc; }
     
-    .item-header { display: flex; gap: 14px; margin-bottom: 12px; }
+    。item-header { display: flex; gap: 14px; margin-bottom: 12px; }
     .item-image {
       width: 72px; height: 72px; border-radius: 12px; object-fit: cover;
       background: #f5f5f5; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.05);
@@ -513,13 +517,16 @@ async function uploadToImgur(file) {
               <label>品項設定</label>
               ${itemsHTML}
             </div>
-            <button class="btn btn-outline" onclick="addItem()" style="margin-bottom:20px"> + 新增品項 </button>
-            ${state.error ? `<div class="error-msg">${state.error}</div>` : ''}
-            <button class="btn btn-primary" onclick="createForm()" ${state.loading ? 'disabled' : ''}>
-              ${state.loading ? '處理中...' : '🚀 產生表單'}
-            </button>
-          </div>
-        </div>
+        
+        <button class="btn btn-outline" onclick="addItem()">+ 新增品項</button>
+        
+        ${state.error ? `<div class="error-msg">${state.error}</div>` : ''}
+        
+        <button class="btn btn-primary" onclick="createForm()" ${state.loading ? 'disabled' : ''}>
+          ${state.loading ? '處理中...' : '🚀 產生表單'}
+        </button>
+      </div>
+    </div>
       `;
     }
 
