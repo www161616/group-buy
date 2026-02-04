@@ -14,10 +14,10 @@
       min-height: 100vh;
       color: #2c2c2c; 
     }
-    .container { max-width: 540px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+    。container { max-width: 540px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
     
     /* === 卡片與容器 === */
-    .card {
+    。card {
       background: rgba(255,255,255,0.9);
       border-radius: 20px;
       padding: 24px;
@@ -28,7 +28,7 @@
     
     /* === 文字排版 === */
     h1 { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #1a1a1a; }
-    .subtitle { color: #884455; text-align: center; font-size: 15px; margin-bottom: 28px; font-weight: 500; }
+    。subtitle { color: #884455; text-align: center; font-size: 15px; margin-bottom: 28px; font-weight: 500; }
     label { display: block; color: #442222; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
     
     /* === 輸入元件 === */
@@ -49,31 +49,31 @@
     select option { background: #fff; color: #000; }
     
     /* === 按鈕 === */
-    .btn {
+    。btn {
       width: 100%; padding: 16px; border-radius: 14px; border: none;
       font-size: 17px; font-weight: 700; cursor: pointer;
       transition: all 0.2s; font-family: inherit;
     }
-    .btn-primary {
+    。btn-primary {
       background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
       color: #fff; box-shadow: 0 8px 32px rgba(236,64,122,0.35);
       text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(236,64,122,0.45); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    。btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(236,64,122,0.45); }
+    。btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     
-    .btn-outline { background: transparent; border: 2px dashed #ec407a; color: #d81b60; }
-    .btn-outline:hover { border-color: #d81b60; background: rgba(236,64,122,0.05); }
+    。btn-outline { background: transparent; border: 2px dashed #ec407a; color: #d81b60; }
+    。btn-outline:hover { border-color: #d81b60; background: rgba(236,64,122,0.05); }
     
-    .form-group { margin-bottom: 20px; }
+    。form-group { margin-bottom: 20px; }
     
     /* === 品項卡片 === */
-    .item-card {
+    。item-card {
       background: #fff; border-radius: 16px; padding: 16px;
       margin-bottom: 12px; border: 1px solid rgba(236,64,122,0.2);
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
-    .item-card.sold-out { background: #fff0f0; border-color: #ffcccc; }
+    。item-card.sold-out { background: #fff0f0; border-color: #ffcccc; }
     
     .item-header { display: flex; gap: 14px; margin-bottom: 12px; }
     .item-image {
@@ -350,24 +350,25 @@
       uploadTargetIndex: -1
     };
 
-    // ====== 圖片上傳 (Imgur) ======
-    async function uploadToImgur(file) {
-      const formData = new FormData();
-      formData.append('image', file);
-      try {
-        const response = await fetch('https://api.imgur.com/3/image', {
-          method: 'POST',
-          headers: { 'Authorization': `Client-ID ${IMGUR_CLIENT_ID}` },
-          body: formData
-        });
-        const data = await response.json();
-        if (data.success) return data.data.link;
-        else throw new Error(data.data.error || '上傳失敗');
-      } catch (error) {
-        console.error('Imgur upload error:', error);
-        throw error;
-      }
-    }
+    // ====== 圖片上傳 (ImgBB) ======
+const IMGBB_API_KEY = '3d55c47c2d5b269a2864bd751cdb031e';
+
+async function uploadToImgur(file) {
+  const formData = new FormData();
+  formData.append('image', file);
+  try {
+    const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+      method: 'POST',
+      body: formData
+    });
+    const data = await response.json();
+    if (data.success) return data.data.url;
+    else throw new Error(data.error?.message || '上傳失敗');
+  } catch (error) {
+    console.error('ImgBB upload error:', error);
+    throw error;
+  }
+}
 
     function showUploadOptions(index) {
       state.showUploadModal = true;
