@@ -923,15 +923,13 @@
       showToast('🔗 產生短網址中...');
       
       try {
-        const response = await fetch('https://api.pics.ee/v1/links', {
+        const response = await fetch('https://api.pics.ee/v1/links?access_token=' + PICSEE_API_TOKEN, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + PICSEE_API_TOKEN
+            'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            url: longUrl,
-            title: state.formConfig?.title || '開團連結'
+            url: longUrl
           })
         });
         
@@ -943,7 +941,7 @@
           showToast('✅ 短網址產生成功！');
           render();
         } else {
-          throw new Error(data.message || '產生失敗');
+          throw new Error(data.message || data.error || '產生失敗');
         }
       } catch (error) {
         console.error('PicSee error:', error);
