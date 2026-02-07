@@ -609,6 +609,17 @@
     }
 
     function renderCreateForm() {
+      // 1. 準備下拉選單的選項
+      let sheetOptions = '<option value="">📂 切換至已建立的團購...</option>';
+      if (state.sheetList && state.sheetList.length > 0) {
+        state.sheetList.forEach(function(name) {
+          sheetOptions += '<option value="' + name + '">' + name + '</option>';
+        });
+      } else {
+        sheetOptions += '<option disabled>載入中或無資料...</option>';
+      }
+
+      // 2. 準備品項的 HTML (維持原樣)
       let itemsHTML = '';
       for (let index = 0; index < state.items.length; index++) {
         const item = state.items[index];
@@ -647,9 +658,20 @@
         '</div>';
       }
 
+      // 3. 回傳 HTML (加上頂部選單區塊)
       return '<div class="container">' +
           '<div class="card">' +
-            '<h1>🛒 快速開團</h1>' +
+            
+            // ★ 新增：頂部切換選單區塊 ★
+            '<div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px dashed #ddd;">' +
+              '<label style="color:#666;font-size:13px;margin-bottom:6px;">📂 管理現有團購</label>' +
+              '<select onchange="switchAdminSheet(this.value)" style="width:100%; font-weight:bold; font-size:16px; padding:12px; border:2px solid #ddd; border-radius:12px; background:#f9f9f9;">' +
+                 sheetOptions +
+              '</select>' +
+            '</div>' +
+            // ★ End ★
+
+            '<h1>🛒 建立新團購</h1>' +
             '<p class="subtitle">設定品項，一鍵產生表單</p>' +
             '<div class="form-group">' +
               '<label>團購標題</label>' +
@@ -664,6 +686,12 @@
             '<button class="btn btn-primary" onclick="createForm()" ' + (state.loading ? 'disabled' : '') + '>' +
               (state.loading ? '處理中...' : '🚀 產生表單') +
             '</button>' +
+            
+            // 登出按鈕也補一個在這裡
+            '<div style="margin-top:20px; text-align:center;">' +
+               '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
+            '</div>' +
+
           '</div>' +
         '</div>';
     }
