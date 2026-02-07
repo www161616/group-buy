@@ -232,7 +232,6 @@
     .brand-logo img { width: 100%; height: 100%; object-fit: cover; }
     .brand-name { font-size: 15px; font-weight: 500; color: #666; margin-bottom: 4px; letter-spacing: 1px; }
     .group-title { font-size: 28px; font-weight: 800; color: #c2185b; margin-top: 4px; line-height: 1.3; }
-
     /* === 成功畫面 === */
     .success-screen { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
     .success-content {
@@ -297,7 +296,6 @@
       transition: all 0.2s;
     }
     .copy-btn:hover { background: #edf2f7; }
-
     .btn-generate-short {
       margin-top: 12px;
       width: 100%;
@@ -340,7 +338,6 @@
       white-space: nowrap;
       text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
-
     @keyframes toastIn {
       0% { opacity: 0; transform: translateX(-50%) translateY(-50px) scale(0.8); }
       15% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.1); }
@@ -383,11 +380,11 @@
   <input type="file" id="file-input-gallery" accept="image/*" class="hidden-file-input">
   <script>
     // ====== 除錯用 - 完成後可刪除 ======
-    window.addEventListener('error', function(e) {
-      console.error('JavaScript 錯誤：', e.message, e);
-    });
-    console.log('✅ Script 開始載入');
-
+window.addEventListener('error', function(e) {
+  alert('JavaScript 錯誤：' + e.message);
+  console.error('錯誤詳情：', e);
+});
+console.log('✅ Script 開始載入');
     // ====== 設定 ======
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ-AcwAJQcfq8npulJ07SDRuKN7_JSjP-C6Dze6PXRYHUeswZbUwefn2HVvYEsFmWFzw/exec';
     const IMGBB_API_KEY = '3d55c47c2d5b269a2864bd751cdb031e';
@@ -396,11 +393,10 @@
       '中和', '文山', '永和', '林口', '平鎮', '古華', '南平', '萬華', '三峽',
       '環球', '忠順', '泰山', '四號公園', '板橋', '湖口', '淡水', '松山', '經國'
     ];
-
     // ====== 狀態管理 ======
     let state = {
-      view: 'login',
-      isLoggedIn: false,
+      view: 'login', // 預設改為 login
+      isLoggedIn: false, // ★ 新增：登入狀態
       adminMode: 'create',
       currentSheet: localStorage.getItem('currentSheet') || '',
       formConfig: null,
@@ -408,7 +404,7 @@
       loading: false,
       error: '',
       formTitle: '',
-      items: [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }],
+      items: [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }], // 加入 waitlist
       selectedStore: '',
       phone: '',
       selectedItems: {},
@@ -417,9 +413,8 @@
       showUploadModal: false,
       uploadTargetIndex: -1,
       shortUrl: localStorage.getItem('shortUrl') || '',
-      sheetList: [],
+      sheetList: [], // ★ 新增分頁清單
     };
-
     // ====== 圖片上傳 (ImgBB) ======
     async function uploadToImgur(file, onProgress) {
       return new Promise(function(resolve, reject) {
@@ -460,19 +455,16 @@
         xhr.send(formData);
       });
     }
-
     function showUploadOptions(index) {
       state.showUploadModal = true;
       state.uploadTargetIndex = index;
       renderModal();
     }
-
     function hideUploadModal() {
       state.showUploadModal = false;
       state.uploadTargetIndex = -1;
       renderModal();
     }
-
     function triggerCameraUpload() {
       state.showUploadModal = false;
       renderModal();
@@ -480,7 +472,6 @@
         document.getElementById('file-input-camera').click();
       }, 100);
     }
-
     function triggerGalleryUpload() {
       state.showUploadModal = false;
       renderModal();
@@ -488,7 +479,6 @@
         document.getElementById('file-input-gallery').click();
       }, 100);
     }
-
     async function handleFileSelect(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -546,17 +536,14 @@
       const overlay = document.getElementById('uploading-overlay');
       if (overlay) overlay.remove();
     }
-
     document.getElementById('file-input-camera').addEventListener('change', handleFileSelect);
     document.getElementById('file-input-gallery').addEventListener('change', handleFileSelect);
-
     // ====== Helper Functions ======
     function showToast(message) {
       const container = document.getElementById('toast-container');
       container.innerHTML = '<div class="toast">' + message + '</div>';
       setTimeout(function() { container.innerHTML = ''; }, 2500);
     }
-
     // ====== Renders ======
     function renderModal() {
       const container = document.getElementById('modal-container');
@@ -580,7 +567,6 @@
         container.innerHTML = '';
       }
     }
-
     function render() {
       const app = document.getElementById('app');
       let content = '';
@@ -596,7 +582,6 @@
       
       app.innerHTML = content;
     }
-
     function renderLogin() {
       return '<div class="container" style="display:flex;align-items:center;justify-content:center;min-height:80vh;">' +
           '<div class="card" style="width:100%;text-align:center;">' +
@@ -610,7 +595,6 @@
           '</div>' +
         '</div>';
     }
-
     function renderAdmin() {
       if (state.adminMode === 'create' || !state.currentSheet) {
         return renderCreateForm();
@@ -618,108 +602,701 @@
         return renderStats();
       }
     }
-
-    // 繼續貼上其他 render 函數...
-    // (renderCreateForm, renderStats, renderCustomer, renderSuccess, renderBottomNav)
-    // 這裡太長了，我先把最關鍵的 doLogin 和 init 修正給你
-
-    // ... (中間省略，保持你原本的 render 函數不變) ...
-
-    // ====== Actions ======
-    async function doLogin() {
-      const pwd = document.getElementById('admin-password').value;
-      if (!pwd) return;
+    function renderCreateForm() {
+      // 1. 準備下拉選單的選項
+      let sheetOptions = '<option value="">📂 切換至已建立的團購...</option>';
+      if (state.sheetList && state.sheetList.length > 0) {
+        state.sheetList.forEach(function(name) {
+          sheetOptions += '<option value="' + name + '">' + name + '</option>';
+        });
+      } else {
+        sheetOptions += '<option disabled>載入中或無資料...</option>';
+      }
+      let itemsHTML = '';
+      for (let index = 0; index < state.items.length; index++) {
+        const item = state.items[index];
+        const isUploading = state.uploadingIndex === index;
+        itemsHTML += 
+        '<div class="admin-item">' +
+          '<div class="admin-item-row">' +
+            '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:2">' +
+            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
+              '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center">' +
+              '<span style="font-size:12px;color:#666">正</span>' +
+            '</div>' +
+            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
+              '<input type="number" placeholder="候補" value="' + item.waitlist + '" onchange="updateItem(' + index + ', \'waitlist\', this.value)" style="text-align:center; color:#f59e0b; border-color:#fcd34d;">' +
+              '<span style="font-size:12px;color:#f59e0b">補</span>' +
+            '</div>' +
+            (state.items.length > 1 ? '<button class="remove-btn" onclick="removeItem(' + index + ')">×</button>' : '') +
+          '</div>' +
+          '<div class="admin-item-row">' +
+            '<div class="image-upload-area" style="flex:1">' +
+              (item.image ? 
+                '<img src="' + item.image + '" class="image-preview" onclick="showUploadOptions(' + index + ')">' :
+                '<div class="image-preview-placeholder" onclick="showUploadOptions(' + index + ')">📷</div>'
+              ) +
+              '<div class="image-input-wrapper">' +
+                '<input type="text" placeholder="或貼上圖片網址" value="' + item.image + '" onchange="updateItem(' + index + ', \'image\', this.value)" style="flex:1">' +
+                '<button class="upload-btn ' + (isUploading ? 'uploading' : '') + '" onclick="showUploadOptions(' + index + ')" ' + (isUploading ? 'disabled' : '') + '>' +
+                  (isUploading ? '上傳中...' : '上傳') +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="admin-item-row">' +
+            '<textarea placeholder="商品簡介（選填）" onchange="updateItem(' + index + ', \'description\', this.value)">' + item.description + '</textarea>' +
+          '</div>' +
+        '</div>';
+      }
+      return '<div class="container">' +
+          '<div class="card">' +
+            
+            // ★ 新增：頂部切換選單區塊 ★
+            '<div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px dashed #ddd;">' +
+              '<label style="color:#666;font-size:13px;margin-bottom:6px;">📂 管理現有團購</label>' +
+              '<select onchange="switchAdminSheet(this.value)" style="width:100%; font-weight:bold; font-size:16px; padding:12px; border:2px solid #ddd; border-radius:12px; background:#f9f9f9;">' +
+                 sheetOptions +
+              '</select>' +
+            '</div>' +
+            // ★ End ★
+            '<h1>🛒 建立新團購</h1>' +
+            '<p class="subtitle">設定品項，一鍵產生表單</p>' +
+            '<div class="form-group">' +
+              '<label>團購標題</label>' +
+              '<input type="text" placeholder="例如：2/4 草莓蛋糕團" value="' + state.formTitle + '" onchange="state.formTitle=this.value">' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label>品項設定</label>' +
+              itemsHTML +
+            '</div>' +
+            '<button class="btn btn-outline" onclick="addItem()">+ 新增品項</button>' +
+            (state.error ? '<div class="error-msg">' + state.error + '</div>' : '') +
+            '<button class="btn btn-primary" onclick="createForm()" ' + (state.loading ? 'disabled' : '') + '>' +
+              (state.loading ? '處理中...' : '🚀 產生表單') +
+            '</button>' +
+            
+            // 登出按鈕也補一個在這裡
+            '<div style="margin-top:20px; text-align:center;">' +
+               '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+    function renderStats() {
+      if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
       
+      if (!state.formConfig) {
+        return '<div class="container">' +
+            '<div class="empty-state">' +
+              '<div class="empty-icon">📋</div>' +
+              '<div>找不到表單資料</div>' +
+              '<div style="font-size:14px; color:#999; margin-bottom:20px;">可能該開團分頁已被刪除</div>' +
+              '<button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="newForm()">' +
+                '+ 開新團' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      }
+      const currentStatus = state.formConfig.status || 'OPEN';
+      const isClosed = currentStatus === 'CLOSED';
+      const ordersByStore = {};
+      const ordersByItem = {};
+      state.orders.forEach(function(order) {
+        if (!ordersByStore[order.store]) ordersByStore[order.store] = [];
+        ordersByStore[order.store].push(order);
+        const cleanName = order.item.replace(' (候補)', '');
+        if (!ordersByItem[order.item]) ordersByItem[order.item] = 0;
+        ordersByItem[order.item] += order.quantity;
+      });
+      const uniquePhones = new Set(state.orders.map(function(o) { return o.phone; }));
+      
+      const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
+      
+      let itemStatsHTML = '';
+      state.formConfig.items.forEach(function(item) {
+        const ordered = ordersByItem[item.name] || 0;
+        const limit = parseInt(item.limit);
+        const waitlist = parseInt(item.waitlist || 0);
+        const totalLimit = limit + waitlist;
+        let statusText = '';
+        let barColorClass = 'normal';
+        
+        if (ordered < limit) {
+          statusText = ordered + ' / ' + limit + ' (正取)';
+        } else if (ordered < totalLimit) {
+          statusText = ordered + ' / ' + totalLimit + ' (進入候補 ' + (ordered - limit) + '/' + waitlist + ')';
+          barColorClass = 'waitlist';
+        } else {
+          statusText = '已額滿 (' + ordered + '/' + totalLimit + ')';
+          barColorClass = 'full';
+        }
+        const percentage = Math.min((ordered / totalLimit) * 100, 100);
+        itemStatsHTML += 
+          '<div style="margin-bottom:16px; border-bottom:1px dashed #eee; padding-bottom:12px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+              '<span style="font-weight:500;color:#333">' + item.name + '</span>' +
+              '<button onclick="editItemLimit(\'' + item.name + '\', ' + limit + ', ' + waitlist + ')" style="padding:4px 8px; font-size:12px; border:1px solid #ddd; background:#fff; border-radius:6px; cursor:pointer;">✏️ 修改</button>' +
+            '</div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">' +
+              '<span style="color:#666">進度：</span>' +
+              '<span style="font-weight:bold; color:' + (barColorClass === 'full' ? '#ef4444' : (barColorClass === 'waitlist' ? '#f59e0b' : '#10b981')) + '">' + statusText + '</span>' +
+            '</div>' +
+            '<div class="progress-bar">' +
+              '<div class="progress-fill ' + barColorClass + '" style="width:' + percentage + '%"></div>' +
+            '</div>' +
+          '</div>';
+      });
+      let storeOrdersHTML = '';
+      Object.keys(ordersByStore).forEach(function(store) {
+        const orders = ordersByStore[store];
+        const ordersByPhone = {};
+        orders.forEach(function(order) {
+          if (!ordersByPhone[order.phone]) ordersByPhone[order.phone] = { phone: order.phone, items: {} };
+          if (!ordersByPhone[order.phone].items[order.item]) ordersByPhone[order.phone].items[order.item] = 0;
+          ordersByPhone[order.phone].items[order.item] += order.quantity;
+        });
+        let orderRows = '';
+        Object.values(ordersByPhone).forEach(function(o) {
+          const itemsArr = [];
+          Object.keys(o.items).forEach(function(name) {
+            itemsArr.push(name + '×' + o.items[name]);
+          });
+          const itemsText = itemsArr.join(', ');
+          orderRows += '<div class="order-row"><span class="order-phone">...' + o.phone + '</span><span class="order-items">' + itemsText + '</span></div>';
+        });
+        storeOrdersHTML += 
+          '<div class="order-group">' +
+            '<div class="order-group-header">' +
+              '<span class="order-group-title">📍 ' + store + '</span>' +
+              '<span class="order-group-badge">' + Object.keys(ordersByPhone).length + ' 人</span>' +
+            '</div>' +
+            orderRows +
+          '</div>';
+      });
+      const customerLink = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
+      const displayLink = state.shortUrl || customerLink;
+      const isShortUrl = !!state.shortUrl;
+      // 製作下拉選單的 HTML
+      let sheetOptions = '';
+      if (state.sheetList && state.sheetList.length > 0) {
+        state.sheetList.forEach(function(name) {
+          sheetOptions += '<option value="' + name + '"' + (state.currentSheet === name ? ' selected' : '') + '>' + name + '</option>';
+        });
+      } else {
+        sheetOptions = '<option>' + state.currentSheet + '</option>';
+      }
+      return '<div class="container">' +
+          '<div class="card">' +
+            '<div style="margin-bottom:20px">' +
+              '<label style="color:#666;font-size:12px;margin-bottom:4px;">📂 切換團購活動</label>' +
+              '<div style="display:flex; gap:10px;">' +
+                '<select onchange="switchAdminSheet(this.value)" style="flex:1; font-weight:bold; font-size:18px; padding:10px;">' +
+                  sheetOptions +
+                '</select>' +
+                '<button class="btn btn-primary" style="width:auto;padding:10px 16px;font-size:14px;margin:0;white-space:nowrap;" onclick="newForm()">+ 開新團</button>' +
+              '</div>' +
+              '<div style="display:flex;justify-content:flex-end;margin-top:10px;">' +
+                '<button class="btn" style="width:auto;padding:6px 12px;font-size:14px;margin:0;background:' + (isClosed ? '#10b981' : '#ef4444') + ';color:#fff" onclick="toggleFormStatus(\'' + (isClosed ? 'OPEN' : 'CLOSED') + '\')">' + 
+                  (isClosed ? '🟢 開啟接單' : '🔴 停止接單') + 
+                '</button>' +
+              '</div>' +
+            '</div>' +
+            (isClosed ? '<div style="background:#fee2e2;color:#b91c1c;padding:10px;border-radius:8px;text-align:center;margin-bottom:16px;font-weight:bold;">⛔ 此表單目前已停止接單</div>' : '') +
+            '<div style="margin-bottom:24px">' +
+              '<label style="margin-bottom:12px;color:#666">品項統計 (點擊✏️可修改數量)</label>' +
+              itemStatsHTML +
+            '</div>' +
+            '<div class="stat-card">' +
+              '<div class="stat-label">訂購人數</div>' +
+              '<div class="stat-value">' + uniquePhones.size + '</div>' +
+            '</div>' +
+            
+            '<div class="link-box">' +
+              '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）' + 
+                (isShortUrl ? ' <span style="background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:6px;">已轉為短網址</span>' : '') + 
+              '</div>' +
+              '<div class="link-row">' +
+                '<input type="text" class="link-input" value="' + displayLink + '" readonly id="customerLink">' +
+                '<button class="copy-btn" onclick="copyLink()">複製連結</button>' +
+              '</div>' +
+              (!isShortUrl ? 
+                '<button class="btn-generate-short" onclick="generateShortUrl()">' +
+                  '🚀 點此產生短網址給客人填寫 (推薦)' + 
+                '</button>' : ''
+              ) +
+            '</div>' +
+            '<div class="card" style="margin-top: 20px;">' +
+              '<h2 style="font-size:16px; margin-bottom:12px;">📊 後台報表作業</h2>' +
+              '<button class="btn btn-outline" onclick="triggerPivotTable()">' +
+                '⚡ 更新分店統計表 (寫入 Google Sheet)' +
+              '</button>' +
+            '</div>' +
+          '</div>' +
+          (storeOrdersHTML ? '<div class="card"><h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>' + storeOrdersHTML + '</div>' : '<div class="empty-state"><div class="empty-icon">📭</div><div>還沒有訂單</div></div>') +
+          
+          '<div style="margin-top:20px; text-align:center;">' +
+             '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
+          '</div>' +
+        '</div>';
+    }
+    
+    function renderCustomer() {
+      if (!state.currentSheet) return '<div class="container"><div class="empty-state"><div class="empty-icon">📋</div><div>尚未開團</div><div style="margin-top:8px;font-size:14px">請等待團主分享連結</div></div></div>';
+      if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
+      if (!state.formConfig) return '<div class="container"><div class="empty-state"><div class="empty-icon">❌</div><div>找不到此團購表單</div></div></div>';
+      if (state.formConfig.status === 'CLOSED') {
+        return '<div class="container">' +
+          '<div class="card" style="text-align:center;padding:40px 20px;">' +
+            '<div style="font-size:48px;margin-bottom:20px;">⛔</div>' +
+            '<h2 style="margin-bottom:10px;color:#333;">表單已截止</h2>' +
+            '<p style="color:#666;">謝謝您的支持，本次團購已停止接單。</p>' +
+          '</div>' +
+        '</div>';
+      }
+      let storeOptions = '';
+      STORES.forEach(function(s) {
+        storeOptions += '<option value="' + s + '"' + (state.selectedStore === s ? ' selected' : '') + '>' + s + '</option>';
+      });
+      let itemsHTML = '';
+      state.formConfig.items.forEach(function(item) {
+        const limit = parseInt(item.limit);
+        const waitlist = parseInt(item.waitlist || 0);
+        const ordered = item.ordered || 0;
+        const regularRemaining = Math.max(0, limit - ordered);
+        const waitlistUsed = Math.max(0, ordered - limit);
+        const waitlistRemaining = Math.max(0, waitlist - waitlistUsed);
+        const isFullySoldOut = (regularRemaining === 0 && waitlistRemaining === 0);
+        const selectedQty = state.selectedItems[item.name] || 0;
+        
+        let statusBadge = '';
+        let cardStyle = '';
+        let btnStyle = '';
+        if (isFullySoldOut) {
+          statusBadge = '<div class="item-stock sold-out">❌ 已額滿 (售完)</div>';
+          cardStyle = 'border-color:#ffcccc; background:#fff0f0;';
+        } else if (regularRemaining > 0) {
+          statusBadge = `
+            <div class="item-stock available">
+              🔥 正取剩 <span style="font-weight:800;font-size:15px;">${regularRemaining}</span> 份
+              ${waitlist > 0 ? `<span style="color:#f59e0b; font-size:12px; margin-left:4px;">(候補尚有 ${waitlistRemaining})</span>` : ''}
+            </div>`;
+        } else {
+          statusBadge = `
+            <div class="item-stock" style="color:#d97706; font-weight:bold;">
+              ⚠️ 正取已滿，候補剩 ${waitlistRemaining} 份
+            </div>`;
+          cardStyle = 'border-color:#fcd34d; background:#fffbeb;'; 
+          btnStyle = 'background:#f59e0b; border-color:#f59e0b;';
+        }
+        const totalRemaining = regularRemaining + waitlistRemaining;
+        itemsHTML += 
+          '<div class="item-card" style="' + cardStyle + '">' +
+            '<div class="item-header">' +
+              (item.image ? '<img src="' + item.image + '" class="item-image" onerror="this.style.display=\'none\'">' : '<div class="item-image-placeholder">🛍️</div>') +
+              '<div class="item-info">' +
+                '<div class="item-name">' + item.name + '</div>' +
+                (item.description ? '<div class="item-desc">' + item.description + '</div>' : '') +
+                statusBadge +
+              '</div>' +
+            '</div>' +
+            (!isFullySoldOut ? 
+              '<div class="item-controls">' +
+                '<button class="qty-btn" onclick="changeQty(\'' + item.name + '\', -1)" ' + (selectedQty <= 0 ? 'disabled' : '') + '>−</button>' +
+                '<span class="qty-display">' + selectedQty + '</span>' +
+                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name + '\', 1)" ' + (selectedQty >= totalRemaining ? 'disabled' : '') + ' style="' + btnStyle + '">+</button>' +
+              '</div>' : '') +
+          '</div>';
+      });
+      const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
+      return '<div class="container">' +
+          '<div class="brand-header">' +
+            '<div class="brand-logo">' +
+              '<img src="https://i.ibb.co/RTfWybqw/image.png" alt="Logo">' +
+            '</div>' +
+            '<div class="brand-name">包子媽生鮮小舖</div>' +
+            '<div class="group-title">' + displayTitle + '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<p class="subtitle">請填寫以下資料完成登記</p>' +
+            '<div class="form-group">' +
+              '<label>📍 取貨分店</label>' +
+              '<select onchange="state.selectedStore=this.value;state.error=\'\';render()">' +
+                '<option value="">請選擇分店</option>' +
+                storeOptions +
+              '</select>' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label>📱 電話後六碼</label>' +
+              '<input type="tel" placeholder="例如：123456" maxlength="6" value="' + state.phone + '" oninput="state.phone=this.value.slice(0,6);state.error=\'\'" style="letter-spacing:4px;text-align:center">' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label>🛒 選擇品項</label>' +
+              itemsHTML +
+            '</div>' +
+            (state.error ? '<div class="error-msg">' + state.error + '</div>' : '') +
+            '<button class="btn btn-primary" onclick="submitOrder()" ' + (state.loading ? 'disabled' : '') + '>' +
+              (state.loading ? '送出中...' : '✓ 確認登記') +
+            '</button>' +
+          '</div>' +
+        '</div>';
+    }
+    function renderSuccess() {
+      const info = state.successInfo || {};
+      let itemsHTML = '';
+      if (info.items) {
+        Object.keys(info.items).forEach(function(name) {
+          const qty = info.items[name];
+          if (qty > 0) {
+            itemsHTML += '<div class="success-item">' + name + ' × ' + qty + '</div>';
+          }
+        });
+      }
+      return '<div class="container">' +
+          '<div class="success-screen">' +
+            '<div class="success-content">' +
+              '<div class="success-icon-container">' +
+                '<svg class="success-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' +
+                  '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>' +
+                '</svg>' +
+              '</div>' +
+              '<h2 class="success-title">登記成功！</h2>' +
+              '<div class="success-info">取貨分店：' + info.store + '<br>電話末六碼：' + info.phone + '</div>' +
+              '<div class="success-items">' + itemsHTML + '</div>' +
+              '<button class="btn btn-primary" style="margin-top:24px;" onclick="resetCustomerForm()">繼續登記其他品項</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
+    function renderBottomNav() {
+      return '<div class="bottom-nav">' +
+          '<button class="nav-btn ' + (state.view === 'admin' ? 'active' : '') + '" onclick="switchView(\'admin\')">👤 管理</button>' +
+          '<button class="nav-btn ' + (state.view === 'customer' || state.view === 'success' ? 'active' : '') + '" onclick="switchView(\'customer\')">🛒 客人</button>' +
+        '</div>';
+    }
+    // ====== Actions ======
+    function switchView(view) {
+      state.view = view;
+      state.error = '';
+      if (view === 'customer' && state.currentSheet) loadFormData();
+      else if (view === 'admin' && state.currentSheet && state.adminMode === 'stats') loadOrders();
+      render();
+    }
+    function addItem() {
+      state.items.push({ name: '', limit: 30, waitlist: 0, image: '', description: '' });
+      render();
+    }
+    function removeItem(index) {
+      if (state.items.length > 1) {
+        state.items.splice(index, 1);
+        render();
+      }
+    }
+    function updateItem(index, field, value) {
+      state.items[index][field] = (field === 'limit' || field === 'waitlist') ? (parseInt(value) || 0) : value;
+      if (field === 'image') render();
+    }
+    async function createForm() {
+      const validItems = state.items.filter(function(item) { return item.name.trim(); });
+      if (validItems.length === 0) {
+        state.error = '請至少填寫一個品項名稱';
+        render();
+        return;
+      }
       state.loading = true;
-      const btn = document.querySelector('.btn-primary');
-      if(btn) btn.innerText = '驗證中...';
-
+      state.error = '';
+      render();
+      const formTitle = state.formTitle || new Date().toLocaleDateString('zh-TW') + ' 開團';
       try {
         const response = await fetch(SCRIPT_URL, {
           method: 'POST',
-          body: JSON.stringify({ action: 'login', password: pwd })
+          body: JSON.stringify({ action: 'createForm', formTitle: formTitle, items: validItems, stores: STORES })
         });
         const result = await response.json();
-        
         if (result.success) {
-          state.isLoggedIn = true;
-          state.view = 'admin';
-          localStorage.setItem('isAdminLoggedIn', 'true');
-          
-          render();
-          
-          await loadSheetList();
-          if (state.currentSheet) {
-            await loadOrders();
-          }
-          
+          state.currentSheet = result.sheetName;
+          state.formConfig = result.formConfig;
+          state.adminMode = 'stats';
+          state.orders = [];
+          localStorage.setItem('currentSheet', state.currentSheet);
+          showToast('✅ 開團成功！');
         } else {
-          showToast('❌ 密碼錯誤');
-          if(btn) btn.innerText = '登入';
-        }
-      } catch (e) {
-        showToast('❌ 連線錯誤');
-        if(btn) btn.innerText = '登入';
-        console.error(e);
-      }
-      
-      state.loading = false;
-    }
-
-    async function loadSheetList() {
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=getSheetList');
-        const result = await response.json();
-        if (result.success) {
-          state.sheetList = result.sheetNames;
-        } else {
-          console.error('載入分頁清單失敗:', result.error);
-          state.sheetList = [];
+          state.error = result.error || '建立失敗，請重試';
         }
       } catch (error) {
-        console.error('無法取得分頁清單', error);
-        state.sheetList = [];
+        state.currentSheet = formTitle;
+        state.formConfig = { title: formTitle, items: validItems.map(function(item) { return Object.assign({}, item, { ordered: 0, remaining: item.limit }); }), stores: STORES };
+        state.adminMode = 'stats';
+        state.orders = [];
+        localStorage.setItem('currentSheet', state.currentSheet);
+        showToast('✅ 開團成功！');
+      }
+      state.loading = false;
+      render();
+    }
+    function newForm() {
+      state.adminMode = 'create';
+      state.formTitle = '';
+      state.items = [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }];
+      state.error = '';
+      state.shortUrl = '';
+      localStorage.removeItem('shortUrl');
+      render();
+    }
+    async function loadOrders() {
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getOrders&sheetName=' + encodeURIComponent(state.currentSheet));
+        const result = await response.json();
+        if (result.success) {
+          state.orders = result.orders || [];
+          state.formConfig = result.formConfig;
+        } else {
+          state.formConfig = null;
+        }
+      } catch (error) {
+        console.error('Load orders error:', error);
+        state.formConfig = null;
+      }
+      state.loading = false;
+      render();
+    }
+    function copyLink() {
+      const input = document.getElementById('customerLink');
+      input.select();
+      input.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      showToast('✅ 連結已複製！');
+    }
+    async function generateShortUrl() {
+      const longUrl = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
+      showToast('🔗 正在產製專屬短連結...');
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'generateShortUrl', longUrl: longUrl })
+        });
+        const result = await response.json();
+        if (result.success && result.shortURL) {
+          state.shortUrl = result.shortURL;
+          localStorage.setItem('shortUrl', state.shortUrl);
+          showToast('✅ 專屬短網址已產生！');
+          render();
+        } else {
+          throw new Error(result.error || '後台產製失敗');
+        }
+      } catch (error) {
+        console.error('Short.io error:', error);
+        showToast('❌ 產生失敗：' + error.message);
+      }
+    }
+    
+    // 手動觸發統計表
+    async function triggerPivotTable() {
+      if (!confirm('確定要重新計算並覆蓋 Google Sheet 上的統計表嗎？')) return;
+      showToast('⏳ 正在計算統計報表...');
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'generatePivot', sheetName: state.currentSheet })
+        });
+        const result = await response.json();
+        if (result.success) {
+          showToast('✅ ' + result.message);
+        } else {
+          showToast('❌ 失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+        console.error(error);
+      }
+    }
+    // 狀態開關
+    async function toggleFormStatus(newStatus) {
+      if (!confirm('確定要' + (newStatus === 'CLOSED' ? '停止' : '開啟') + '接單嗎？')) return;
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'updateSettings', sheetName: state.currentSheet, newStatus: newStatus })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.formConfig = result.formConfig;
+          showToast('✅ 狀態已更新');
+        } else {
+          showToast('❌ 更新失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+      }
+      state.loading = false;
+      render();
+    }
+    // 修改數量
+    async function editItemLimit(itemName, currentLimit, currentWaitlist) {
+      const newLimit = prompt('修改 [' + itemName + '] 的 "正取" 數量：', currentLimit);
+      if (newLimit === null) return;
+      const newWaitlist = prompt('修改 [' + itemName + '] 的 "候補" 數量：', currentWaitlist);
+      if (newWaitlist === null) return;
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ 
+            action: 'updateSettings', 
+            sheetName: state.currentSheet, 
+            updateItem: { name: itemName, limit: newLimit, waitlist: newWaitlist }
+          })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.formConfig = result.formConfig;
+          showToast('✅ 數量已更新');
+        } else {
+          showToast('❌ 更新失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+      }
+      state.loading = false;
+      render();
+    }
+    // ★ 取得所有分頁清單
+    async function loadSheetList() {
+  try {
+    const response = await fetch(SCRIPT_URL + '?action=getSheetList');
+    const result = await response.json();
+    if (result.success) {
+      state.sheetList = result.sheetNames;
+    } else {
+      console.error('載入分頁清單失敗:', result.error);
+      state.sheetList = [];
+    }
+  } catch (error) {
+    console.error('無法取得分頁清單', error);
+    state.sheetList = [];
+  }
+  // ✅ 無論成功或失敗都要渲染
+  render();
+}
+    async function loadFormData() {
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getFormData&sheetName=' + encodeURIComponent(state.currentSheet));
+        const result = await response.json();
+        if (result.success) state.formConfig = result.formConfig;
+        else state.formConfig = null;
+      } catch (error) {
+        console.error('Load form error:', error);
+      }
+      state.loading = false;
+      render();
+    }
+    function changeQty(itemName, delta) {
+      const currentQty = state.selectedItems[itemName] || 0;
+      const newQty = Math.max(0, currentQty + delta);
+      const item = state.formConfig.items.find(function(i) { return i.name === itemName; });
+      if (item) {
+        const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
+        if (newQty <= remaining) state.selectedItems[itemName] = newQty;
       }
       render();
     }
-
+    async function submitOrder() {
+      if (!state.selectedStore) {
+        state.error = '請選擇取貨分店';
+        render();
+        return;
+      }
+      if (!state.phone || state.phone.length !== 6 || !/^\d+$/.test(state.phone)) {
+        state.error = '請輸入正確的電話後六碼';
+        render();
+        return;
+      }
+      const orderItems = {};
+      let hasItem = false;
+      Object.keys(state.selectedItems).forEach(function(name) {
+        const qty = state.selectedItems[name];
+        if (qty > 0) {
+          orderItems[name] = qty;
+          hasItem = true;
+        }
+      });
+      if (!hasItem) {
+        state.error = '請至少選擇一個品項';
+        render();
+        return;
+      }
+      state.loading = true;
+      state.error = '';
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'submitOrder', sheetName: state.currentSheet, store: state.selectedStore, phone: state.phone, items: orderItems })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.successInfo = { store: state.selectedStore, phone: state.phone, items: orderItems };
+          state.view = 'success';
+        } else {
+          state.error = result.error || '送出失敗，請重試';
+        }
+      } catch (error) {
+        state.successInfo = { store: state.selectedStore, phone: state.phone, items: orderItems };
+        state.view = 'success';
+      }
+      state.loading = false;
+      render();
+    }
+    function resetCustomerForm() {
+      state.view = 'customer';
+      state.selectedStore = '';
+      state.phone = '';
+      state.selectedItems = {};
+      state.error = '';
+      loadFormData();
+    }
     async function init() {
       console.log('✅ init() 開始執行');
-      const urlParams = new URLSearchParams(window.location.search);
-      const sheetParam = urlParams.get('sheet');
+  const urlParams = new URLSearchParams(window.location.search);
+  const sheetParam = urlParams.get('sheet');
+  
+  if (sheetParam) {
+    // === 客人模式 ===
+    state.currentSheet = sheetParam;
+    state.view = 'customer';
+    localStorage.setItem('currentSheet', sheetParam);
+    render();  // ✅ 先顯示載入中
+    loadFormData();
+  } else {
+    // === 管理員模式 ===
+    const storedLogin = localStorage.getItem('isAdminLoggedIn');
+    
+    if (storedLogin === 'true') {
+      state.isLoggedIn = true;
+      state.view = 'admin'; 
+      state.adminMode = 'stats';
       
-      if (sheetParam) {
-        state.currentSheet = sheetParam;
-        state.view = 'customer';
-        localStorage.setItem('currentSheet', sheetParam);
-        render();
-        loadFormData();
-      } else {
-        const storedLogin = localStorage.getItem('isAdminLoggedIn');
-        
-        if (storedLogin === 'true') {
-          state.isLoggedIn = true;
-          state.view = 'admin'; 
-          state.adminMode = 'stats';
-          
-          render();
-          
-          await loadSheetList();
-          if (state.currentSheet) {
-            await loadOrders();
-          }
-        } else {
-          state.view = 'login';
-          render();
-        }
+      // ✅ 先渲染畫面
+      render();
+      
+      // ✅ 然後背景載入資料
+      await loadSheetList();
+      if (state.currentSheet) {
+        await loadOrders();
       }
+    } else {
+      state.view = 'login';
+      render();  // ✅ 顯示登入頁
     }
-
-    // ... (保留你所有其他的函數) ...
-
-    init();
-  </script>
-
+  }
+}
     async function doLogin() {
   const pwd = document.getElementById('admin-password').value;
   if (!pwd) return;
@@ -727,7 +1304,6 @@
   state.loading = true;
   const btn = document.querySelector('.btn-primary');
   if(btn) btn.innerText = '驗證中...';
-
   try {
     const response = await fetch(SCRIPT_URL, {
       method: 'POST',
@@ -760,13 +1336,7 @@
   }
   state.loading = false;
 }
-      } catch (e) {
-        showToast('❌ 連線錯誤');
-        if(btn) btn.innerText = '登入';
-      }
-      state.loading = false;
-    }
-
+      
     // 登出功能
     function logout() {
       localStorage.removeItem('isAdminLoggedIn');
@@ -779,7 +1349,6 @@
       render();
       showToast('🔒 已安全登出');
     }
-
     function switchAdminSheet(sheetName) {
       state.currentSheet = sheetName;
       localStorage.setItem('currentSheet', sheetName);
@@ -787,7 +1356,6 @@
       localStorage.removeItem('shortUrl');
       loadOrders(); 
     }
-
     init();
   </script>
 </body>
