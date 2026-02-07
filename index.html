@@ -771,15 +771,31 @@ function renderLogin() {
       const displayLink = state.shortUrl || customerLink;
       const isShortUrl = !!state.shortUrl;
 
+      // 製作下拉選單的 HTML (如果你有加上上一段教學的 sheetList 功能)
+      let sheetOptions = '';
+      if (state.sheetList && state.sheetList.length > 0) {
+        state.sheetList.forEach(function(name) {
+          sheetOptions += '<option value="' + name + '"' + (state.currentSheet === name ? ' selected' : '') + '>' + name + '</option>';
+        });
+      } else {
+        sheetOptions = '<option>' + state.currentSheet + '</option>';
+      }
+
       return '<div class="container">' +
           '<div class="card">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">' +
-              '<h1 style="text-align:left;margin:0;font-size:20px">📊 ' + displayTitle + '</h1>' +
-              '<div style="display:flex;gap:8px">' +
-                '<button class="btn" style="width:auto;padding:8px 16px;font-size:14px;margin:0;background:' + (isClosed ? '#10b981' : '#ef4444') + ';color:#fff" onclick="toggleFormStatus(\'' + (isClosed ? 'OPEN' : 'CLOSED') + '\')">' + 
+            '<div style="margin-bottom:20px">' +
+              '<label style="color:#666;font-size:12px;margin-bottom:4px;">📂 切換團購活動</label>' +
+              '<div style="display:flex; gap:10px;">' +
+                 // 下拉選單 (如果你還沒加 loadSheetList 功能，這個選單只會顯示當前一個)
+                '<select onchange="switchAdminSheet(this.value)" style="flex:1; font-weight:bold; font-size:18px; padding:10px;">' +
+                  sheetOptions +
+                '</select>' +
+                '<button class="btn btn-primary" style="width:auto;padding:10px 16px;font-size:14px;margin:0;white-space:nowrap;" onclick="newForm()">+ 開新團</button>' +
+              '</div>' +
+              '<div style="display:flex;justify-content:flex-end;margin-top:10px;">' +
+                '<button class="btn" style="width:auto;padding:6px 12px;font-size:14px;margin:0;background:' + (isClosed ? '#10b981' : '#ef4444') + ';color:#fff" onclick="toggleFormStatus(\'' + (isClosed ? 'OPEN' : 'CLOSED') + '\')">' + 
                   (isClosed ? '🟢 開啟接單' : '🔴 停止接單') + 
                 '</button>' +
-                '<button class="btn btn-primary" style="width:auto;padding:10px 20px;font-size:14px;margin:0" onclick="newForm()">+ 開新團</button>' +
               '</div>' +
             '</div>' +
 
@@ -818,6 +834,13 @@ function renderLogin() {
 
           '</div>' +
           (storeOrdersHTML ? '<div class="card"><h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>' + storeOrdersHTML + '</div>' : '<div class="empty-state"><div class="empty-icon">📭</div><div>還沒有訂單</div></div>') +
+          
+          // ★★★★★ 登出按鈕放在這裡 (最下方) ★★★★★
+          '<div style="margin-top:20px; text-align:center;">' +
+             '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
+          '</div>' +
+          // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+
         '</div>';
     }
     
@@ -1329,6 +1352,31 @@ function renderLogin() {
         if(btn) btn.innerText = '登入';
       }
       state.loading = false;
+    }
+    // 登出功能
+    function logout() {
+      // 1. 清除登入紀錄
+      localStorage.removeItem('isAdminLoggedIn');
+      // 2. 修改狀態為未登入
+      state.isLoggedIn = false;
+      // 3. 切換畫面到登入頁
+      state.view = 'login';
+      // 4. 清除目前的表單資料，避免登出後還看得到殘影
+      state.currentSheet = '';
+      state.orders = [];
+      state.formConfig = null;
+      
+      render();
+      showToast('🔒 已安全登出');
+    }
+
+    // ★ 如果你還沒加 switchAdminSheet (切換分頁功能)，請一併補上，不然下拉選單會報錯
+    function switchAdminSheet(sheetName) {
+      state.currentSheet = sheetName;
+      localStorage.setItem('currentSheet', sheetName);
+      state.shortUrl = ''; 
+      localStorage.removeItem('shortUrl');
+      loadOrders(); 
     }
   </script>
 </body>
