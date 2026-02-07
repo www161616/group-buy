@@ -393,7 +393,8 @@
 
     // ====== 狀態管理 ======
     let state = {
-      view: 'admin',
+      view: 'login', // 預設改為 login
+      isLoggedIn: false, // ★ 新增：登入狀態
       adminMode: 'create',
       currentSheet: localStorage.getItem('currentSheet') || '',
       formConfig: null,
@@ -410,6 +411,7 @@
       showUploadModal: false,
       uploadTargetIndex: -1,
       shortUrl: localStorage.getItem('shortUrl') || ''
+      sheetList: [],
     };
 
     // ====== 圖片上傳 (ImgBB) ======
@@ -572,12 +574,14 @@
     function render() {
       const app = document.getElementById('app');
       let content = '';
-      if (state.view === 'admin') content = renderAdmin();
+      if (state.view === 'login') content = renderLogin();
+      else if (state.view === 'admin') content = renderAdmin();
       else if (state.view === 'customer') content = renderCustomer();
       else if (state.view === 'success') content = renderSuccess();
       
       const urlParams = new URLSearchParams(window.location.search);
-      if (!urlParams.has('sheet')) {
+      // 只有在登入後，或者是客人模式才顯示下方導航
+      if (!urlParams.has('sheet') && state.isLoggedIn) {
         content += renderBottomNav();
       }
       
@@ -591,7 +595,19 @@
         return renderStats();
       }
     }
-
+function renderLogin() {
+      return '<div class="container" style="display:flex;align-items:center;justify-content:center;min-height:80vh;">' +
+          '<div class="card" style="width:100%;text-align:center;">' +
+            '<div style="font-size:60px;margin-bottom:20px;">🔒</div>' +
+            '<h1>管理員登入</h1>' +
+            '<p class="subtitle">請輸入密碼以進入後台</p>' +
+            '<div class="form-group">' +
+              '<input type="password" id="admin-password" placeholder="請輸入密碼" style="text-align:center;letter-spacing:4px;">' +
+            '</div>' +
+            '<button class="btn btn-primary" onclick="doLogin()">登入</button>' +
+          '</div>' +
+        '</div>';
+    }
     function renderCreateForm() {
       let itemsHTML = '';
       for (let index = 0; index < state.items.length; index++) {
@@ -1251,18 +1267,69 @@
       const urlParams = new URLSearchParams(window.location.search);
       const sheetParam = urlParams.get('sheet');
       if (sheetParam) {
+        // === 客人模式 (不用登入) ===
         state.currentSheet = sheetParam;
         state.view = 'customer';
         localStorage.setItem('currentSheet', sheetParam);
         loadFormData();
-      } else if (state.currentSheet) {
-        state.adminMode = 'stats';
-        loadOrders();
+      } else {
+        // === 管理員模式 ===
+        // 檢查 localStorage 是否已經登入過
+        const storedLogin = localStorage.getItem('isAdminLoggedIn');
+        
+        if (storedLogin === 'true') {
+          // 已經登入過，直接進後台
+          state.isLoggedIn = true;
+          state.view = 'admin'; // 或 stats
+          state.adminMode = 'stats';
+          loadSheetList();
+          if (state.currentSheet) loadOrders();
+        } else {
+          // 還沒登入，顯示登入頁
+          state.view = 'login';
+        }
       }
       render();
     }
 
     init();
+    async function doLogin() {
+      const pwd = document.getElementById('admin-password').value;
+      if (!pwd) return;
+      
+      state.loading = true;
+      // 簡單的 loading 效果，把按鈕文字改掉
+      const btn = document.querySelector('.btn-primary');
+      if(btn) btn.innerText = '驗證中...';
+
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'login', password: pwd })
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+          state.isLoggedIn = true;
+          state.view = 'admin';
+          // 登入成功後，把狀態存到 localStorage，這樣重新整理不用重打密碼
+          localStorage.setItem('isAdminLoggedIn', 'true');
+          
+          // 登入成功後順便載入分頁清單
+          loadSheetList();
+          if (state.currentSheet) loadOrders();
+          
+          render();
+        } else {
+          showToast('❌ 密碼錯誤');
+          if(btn) btn.innerText = '登入';
+        }
+      } catch (e) {
+        showToast('❌ 連線錯誤');
+        if(btn) btn.innerText = '登入';
+      }
+      state.loading = false;
+    }
   </script>
 </body>
 </html>
