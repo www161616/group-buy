@@ -810,6 +810,7 @@
       if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
       if (!state.formConfig) return '<div class="container"><div class="empty-state"><div class="empty-icon">❌</div><div>找不到此團購表單</div></div></div>';
 
+      // 檢查是否關閉
       if (state.formConfig.status === 'CLOSED') {
         return '<div class="container">' +
           '<div class="card" style="text-align:center;padding:40px 20px;">' +
@@ -827,22 +828,52 @@
 
       let itemsHTML = '';
       state.formConfig.items.forEach(function(item) {
-        const remaining = item.remaining;
-        const isSoldOut = remaining <= 0;
-        const isWaitlist = item.isWaitlistMode && !isSoldOut;
+        // === 核心修改計算邏輯 ===
+        const limit = parseInt(item.limit);
+        const waitlist = parseInt(item.waitlist || 0);
+        const ordered = item.ordered || 0;
+
+        // 計算正取剩餘
+        const regularRemaining = Math.max(0, limit - ordered);
+        
+        // 計算候補剩餘 (總候補量 - (已訂購量 - 正取量))
+        // 如果已訂購還沒超過正取，那候補就是全滿
+        const waitlistUsed = Math.max(0, ordered - limit);
+        const waitlistRemaining = Math.max(0, waitlist - waitlistUsed);
+
+        const isFullySoldOut = (regularRemaining === 0 && waitlistRemaining === 0);
         const selectedQty = state.selectedItems[item.name] || 0;
         
+        // 設定顯示文字與樣式
         let statusBadge = '';
-        if (isSoldOut) {
-          statusBadge = '<div class="item-stock sold-out">已額滿</div>';
-        } else if (isWaitlist) {
-          statusBadge = '<div class="item-stock" style="color:#f59e0b; font-weight:bold;">⚠️ 候補中 (剩 ' + remaining + ' 份)</div>';
+        let cardStyle = '';
+        let btnStyle = '';
+
+        if (isFullySoldOut) {
+          statusBadge = '<div class="item-stock sold-out">❌ 已額滿 (售完)</div>';
+          cardStyle = 'border-color:#ffcccc; background:#fff0f0;';
+        } else if (regularRemaining > 0) {
+          // 還有正取 (同時顯示候補量，讓客人知道買超過會變候補)
+          statusBadge = `
+            <div class="item-stock available">
+              🔥 正取剩 <span style="font-weight:800;font-size:15px;">${regularRemaining}</span> 份
+              ${waitlist > 0 ? `<span style="color:#f59e0b; font-size:12px; margin-left:4px;">(候補尚有 ${waitlistRemaining})</span>` : ''}
+            </div>`;
         } else {
-          statusBadge = '<div class="item-stock available">剩餘 ' + remaining + ' 份</div>';
+          // 正取沒了，只剩候補
+          statusBadge = `
+            <div class="item-stock" style="color:#d97706; font-weight:bold;">
+              ⚠️ 正取已滿，候補剩 ${waitlistRemaining} 份
+            </div>`;
+          cardStyle = 'border-color:#fcd34d; background:#fffbeb;'; // 變成黃色卡片
+          btnStyle = 'background:#f59e0b; border-color:#f59e0b;'; // 按鈕變黃色
         }
 
+        // 總剩餘量 (用來控制按鈕能不能按)
+        const totalRemaining = regularRemaining + waitlistRemaining;
+
         itemsHTML += 
-          '<div class="item-card ' + (isSoldOut ? 'sold-out' : '') + '" style="' + (isWaitlist ? 'border-color:#fcd34d;background:#fffbeb;' : '') + '">' +
+          '<div class="item-card" style="' + cardStyle + '">' +
             '<div class="item-header">' +
               (item.image ? '<img src="' + item.image + '" class="item-image" onerror="this.style.display=\'none\'">' : '<div class="item-image-placeholder">🛍️</div>') +
               '<div class="item-info">' +
@@ -851,11 +882,11 @@
                 statusBadge +
               '</div>' +
             '</div>' +
-            (!isSoldOut ? 
+            (!isFullySoldOut ? 
               '<div class="item-controls">' +
                 '<button class="qty-btn" onclick="changeQty(\'' + item.name + '\', -1)" ' + (selectedQty <= 0 ? 'disabled' : '') + '>−</button>' +
                 '<span class="qty-display">' + selectedQty + '</span>' +
-                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name + '\', 1)" ' + (selectedQty >= remaining ? 'disabled' : '') + ' style="' + (isWaitlist ? 'background:#f59e0b;border-color:#f59e0b' : '') + '">+</button>' +
+                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name + '\', 1)" ' + (selectedQty >= totalRemaining ? 'disabled' : '') + ' style="' + btnStyle + '">+</button>' +
               '</div>' : '') +
           '</div>';
       });
