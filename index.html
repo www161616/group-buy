@@ -619,7 +619,6 @@
         sheetOptions += '<option disabled>載入中或無資料...</option>';
       }
 
-      // 2. 準備品項的 HTML (維持原樣)
       let itemsHTML = '';
       for (let index = 0; index < state.items.length; index++) {
         const item = state.items[index];
@@ -658,7 +657,6 @@
         '</div>';
       }
 
-      // 3. 回傳 HTML (加上頂部選單區塊)
       return '<div class="container">' +
           '<div class="card">' +
             
