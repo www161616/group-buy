@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>包子媽開團系統</title>
+  <title>包子媽開團系統 - 進階版</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <style>
     /* === 基礎設定 === */
@@ -88,6 +88,7 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
     .item-card.sold-out { background: #fff0f0; border-color: #ffcccc; }
+    .item-card.waitlist { background: #fffbeb; border-color: #fcd34d; }
     
     .item-header { display: flex; gap: 14px; margin-bottom: 12px; }
     .item-image {
@@ -109,6 +110,7 @@
     .item-stock { font-size: 13px; margin-top: 6px; font-weight: 500; }
     .item-stock.available { color: #d81b60; }
     .item-stock.sold-out { color: #d32f2f; }
+    .item-stock.waitlist { color: #d97706; }
     
     .item-controls { display: flex; align-items: center; justify-content: flex-end; gap: 14px; }
     .qty-btn {
@@ -165,6 +167,7 @@
     .progress-bar { height: 8px; background: rgba(0,0,0,0.05); border-radius: 4px; overflow: hidden; margin-top: 8px; }
     .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
     .progress-fill.normal { background: linear-gradient(90deg, #4ade80, #10b981); }
+    .progress-fill.waitlist { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
     .progress-fill.full { background: #ef4444; }
     
     .stat-card {
@@ -280,77 +283,72 @@
       flex: 1; background: #fff; border: 1px solid #d1fae5; color: #333;
       font-size: 14px; padding: 10px; border-radius: 8px;
     }
-    /* === 弱化複製按鈕 === */
-.copy-btn {
-  padding: 12px 20px;
-  border-radius: 10px;
-  border: 1px solid #ddd;
-  background: #f8f9fa; /* 改為淺灰色，不搶眼 */
-  color: #666; /* 字體顏色也調淡 */
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s;
-}
-.copy-btn:hover {
-  background: #edf2f7;
-}
-
-/* === 強化產生短網址按址 (醒目綠底白字) === */
-.btn-generate-short {
-  margin-top: 12px;
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  background: #10b981; /* 綠色底 */
-  color: #ffffff; /* 白色字 */
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.2s;
-}
-.btn-generate-short:hover {
-  background: #059669;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
-}
-    /* === 終極醒目版 Toast (開團成功提示) === */
-.toast {
-  position: fixed; 
-  top: 60px; /* 往下移一點，在視角中央上方 */
-  left: 50%; 
-  transform: translateX(-50%);
-  background: #10b981; /* 極其鮮艷的成功綠 */
-  color: #ffffff; 
-  padding: 20px 50px; /* 加大內距，讓框框變大 */
-  border-radius: 20px;
-  font-size: 26px; /* 超大字體，保證醒目 */
-  font-weight: 900; /* 極粗體 */
-  z-index: 9999; /* 確保在所有東西的最前面 */
-  animation: toastIn 3s ease forwards;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.3); /* 強力陰影，產生立體感 */
-  border: 4px solid #ffffff; /* 粗白邊框，這在粉紅背景下會非常跳脫 */
-  white-space: nowrap;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2); /* 字體陰影，增加可讀性 */
-}
-
-/* 讓提示出現時有個「彈跳」的動感，更吸引注意 */
-@keyframes toastIn {
-  0% { opacity: 0; transform: translateX(-50%) translateY(-50px) scale(0.8); }
-  15% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.1); }
-  20% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-  85% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateX(-50%) translateY(-50px); }
-}
     
+    .copy-btn {
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background: #f8f9fa;
+      color: #666;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: #edf2f7; }
 
+    .btn-generate-short {
+      margin-top: 12px;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-generate-short:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+    }
+    
+    .toast {
+      position: fixed; 
+      top: 60px;
+      left: 50%; 
+      transform: translateX(-50%);
+      background: #10b981; 
+      color: #ffffff; 
+      padding: 20px 50px;
+      border-radius: 20px;
+      font-size: 26px; 
+      font-weight: 900; 
+      z-index: 9999;
+      animation: toastIn 3s ease forwards;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      border: 4px solid #ffffff;
+      white-space: nowrap;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    @keyframes toastIn {
+      0% { opacity: 0; transform: translateX(-50%) translateY(-50px) scale(0.8); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.1); }
+      20% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-50px); }
+    }
+    
     /* === Upload Modal === */
     .upload-modal {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -387,8 +385,7 @@
     // ====== 設定 ======
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ-AcwAJQcfq8npulJ07SDRuKN7_JSjP-C6Dze6PXRYHUeswZbUwefn2HVvYEsFmWFzw/exec';
     const IMGBB_API_KEY = '3d55c47c2d5b269a2864bd751cdb031e';
-    const PICSEE_API_TOKEN = '9511196d3aa732a2a9ff78adbdac9531c7e516e0';
-  
+    
     const STORES = [
       '中和', '文山', '永和', '林口', '平鎮', '古華', '南平', '萬華', '三峽',
       '環球', '忠順', '泰山', '四號公園', '板橋', '湖口', '淡水', '松山', '經國'
@@ -404,7 +401,7 @@
       loading: false,
       error: '',
       formTitle: '',
-      items: [{ name: '', limit: 30, image: '', description: '' }],
+      items: [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }], // 加入 waitlist
       selectedStore: '',
       phone: '',
       selectedItems: {},
@@ -485,15 +482,11 @@
       const file = event.target.files[0];
       if (!file) return;
       const index = state.uploadTargetIndex;
-      if (index < 0) {
-        console.error('No upload target index');
-        return;
-      }
+      if (index < 0) return;
       
       state.uploadingIndex = index;
       render();
       
-      // 顯示全螢幕上傳提示（含進度條）
       showUploadingOverlay(0);
       
       try {
@@ -607,9 +600,15 @@
         itemsHTML += 
         '<div class="admin-item">' +
           '<div class="admin-item-row">' +
-            '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:1">' +
-            '<input type="number" placeholder="限量" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)">' +
-            '<span style="color:#666;padding:12px 4px;font-size:14px">份</span>' +
+            '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:2">' +
+            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
+              '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center">' +
+              '<span style="font-size:12px;color:#666">正</span>' +
+            '</div>' +
+            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
+              '<input type="number" placeholder="候補" value="' + item.waitlist + '" onchange="updateItem(' + index + ', \'waitlist\', this.value)" style="text-align:center; color:#f59e0b; border-color:#fcd34d;">' +
+              '<span style="font-size:12px;color:#f59e0b">補</span>' +
+            '</div>' +
             (state.items.length > 1 ? '<button class="remove-btn" onclick="removeItem(' + index + ')">×</button>' : '') +
           '</div>' +
           '<div class="admin-item-row">' +
@@ -669,6 +668,10 @@
           '</div>';
       }
 
+      // 取得狀態
+      const currentStatus = state.formConfig.status || 'OPEN';
+      const isClosed = currentStatus === 'CLOSED';
+
       const ordersByStore = {};
       const ordersByItem = {};
       state.orders.forEach(function(order) {
@@ -684,18 +687,37 @@
       let itemStatsHTML = '';
       state.formConfig.items.forEach(function(item) {
         const ordered = ordersByItem[item.name] || 0;
-        const percentage = Math.min((ordered / item.limit) * 100, 100);
-        const isFull = ordered >= item.limit;
+        const limit = parseInt(item.limit);
+        const waitlist = parseInt(item.waitlist || 0);
+        const totalLimit = limit + waitlist;
+
+        let statusText = '';
+        let barColorClass = 'normal';
+        
+        if (ordered < limit) {
+          statusText = ordered + ' / ' + limit + ' (正取)';
+        } else if (ordered < totalLimit) {
+          statusText = ordered + ' / ' + totalLimit + ' (進入候補 ' + (ordered - limit) + '/' + waitlist + ')';
+          barColorClass = 'waitlist';
+        } else {
+          statusText = '已額滿 (' + ordered + '/' + totalLimit + ')';
+          barColorClass = 'full';
+        }
+
+        const percentage = Math.min((ordered / totalLimit) * 100, 100);
+
         itemStatsHTML += 
-          '<div style="margin-bottom:16px">' +
-            '<div style="display:flex;justify-content:space-between;margin-bottom:6px;font-weight:500;">' +
-              '<span style="color:#333">' + item.name + '</span>' +
-              '<span style="color:' + (isFull ? '#ef4444' : '#10b981') + '">' +
-                ordered + ' / ' + item.limit + (isFull ? ' (已額滿)' : '') +
-              '</span>' +
+          '<div style="margin-bottom:16px; border-bottom:1px dashed #eee; padding-bottom:12px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+              '<span style="font-weight:500;color:#333">' + item.name + '</span>' +
+              '<button onclick="editItemLimit(\'' + item.name + '\', ' + limit + ', ' + waitlist + ')" style="padding:4px 8px; font-size:12px; border:1px solid #ddd; background:#fff; border-radius:6px; cursor:pointer;">✏️ 修改</button>' +
+            '</div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">' +
+              '<span style="color:#666">進度：</span>' +
+              '<span style="font-weight:bold; color:' + (barColorClass === 'full' ? '#ef4444' : (barColorClass === 'waitlist' ? '#f59e0b' : '#10b981')) + '">' + statusText + '</span>' +
             '</div>' +
             '<div class="progress-bar">' +
-              '<div class="progress-fill ' + (isFull ? 'full' : 'normal') + '" style="width:' + percentage + '%"></div>' +
+              '<div class="progress-fill ' + barColorClass + '" style="width:' + percentage + '%"></div>' +
             '</div>' +
           '</div>';
       });
@@ -728,8 +750,6 @@
           '</div>';
       });
 
-      // === 這是更新後的 renderStats 內容，請直接覆蓋原本 return 的那一大串 ===
-
       const customerLink = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
       const displayLink = state.shortUrl || customerLink;
       const isShortUrl = !!state.shortUrl;
@@ -738,10 +758,18 @@
           '<div class="card">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">' +
               '<h1 style="text-align:left;margin:0;font-size:20px">📊 ' + displayTitle + '</h1>' +
-              '<button class="btn btn-primary" style="width:auto;padding:10px 20px;font-size:14px;margin:0" onclick="newForm()">+ 開新團</button>' +
+              '<div style="display:flex;gap:8px">' +
+                '<button class="btn" style="width:auto;padding:8px 16px;font-size:14px;margin:0;background:' + (isClosed ? '#10b981' : '#ef4444') + ';color:#fff" onclick="toggleFormStatus(\'' + (isClosed ? 'OPEN' : 'CLOSED') + '\')">' + 
+                  (isClosed ? '🟢 開啟接單' : '🔴 停止接單') + 
+                '</button>' +
+                '<button class="btn btn-primary" style="width:auto;padding:10px 20px;font-size:14px;margin:0" onclick="newForm()">+ 開新團</button>' +
+              '</div>' +
             '</div>' +
+
+            (isClosed ? '<div style="background:#fee2e2;color:#b91c1c;padding:10px;border-radius:8px;text-align:center;margin-bottom:16px;font-weight:bold;">⛔ 此表單目前已停止接單</div>' : '') +
+
             '<div style="margin-bottom:24px">' +
-              '<label style="margin-bottom:12px;color:#666">品項統計</label>' +
+              '<label style="margin-bottom:12px;color:#666">品項統計 (點擊✏️可修改數量)</label>' +
               itemStatsHTML +
             '</div>' +
             '<div class="stat-card">' +
@@ -749,33 +777,47 @@
               '<div class="stat-value">' + uniquePhones.size + '</div>' +
             '</div>' +
             
-            // --- 這是我們要改的重點區塊 ---
             '<div class="link-box">' +
               '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）' + 
                 (isShortUrl ? ' <span style="background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:6px;">已轉為短網址</span>' : '') + 
               '</div>' +
               '<div class="link-row">' +
                 '<input type="text" class="link-input" value="' + displayLink + '" readonly id="customerLink">' +
-                // 這裡套用了你寫的 .copy-btn (變灰色)
                 '<button class="copy-btn" onclick="copyLink()">複製連結</button>' +
               '</div>' +
-              
-              // 這裡套用了你寫的 .btn-generate-short (變醒目綠底白字)
               (!isShortUrl ? 
                 '<button class="btn-generate-short" onclick="generateShortUrl()">' +
                   '🚀 點此產生短網址給客人填寫 (推薦)' + 
                 '</button>' : ''
               ) +
             '</div>' +
-            // ---------------------------
+
+            '<div class="card" style="margin-top: 20px;">' +
+              '<h2 style="font-size:16px; margin-bottom:12px;">📊 後台報表作業</h2>' +
+              '<button class="btn btn-outline" onclick="triggerPivotTable()">' +
+                '⚡ 更新分店統計表 (寫入 Google Sheet)' +
+              '</button>' +
+            '</div>' +
+
           '</div>' +
           (storeOrdersHTML ? '<div class="card"><h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>' + storeOrdersHTML + '</div>' : '<div class="empty-state"><div class="empty-icon">📭</div><div>還沒有訂單</div></div>') +
         '</div>';
     }
+    
     function renderCustomer() {
       if (!state.currentSheet) return '<div class="container"><div class="empty-state"><div class="empty-icon">📋</div><div>尚未開團</div><div style="margin-top:8px;font-size:14px">請等待團主分享連結</div></div></div>';
       if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
       if (!state.formConfig) return '<div class="container"><div class="empty-state"><div class="empty-icon">❌</div><div>找不到此團購表單</div></div></div>';
+
+      if (state.formConfig.status === 'CLOSED') {
+        return '<div class="container">' +
+          '<div class="card" style="text-align:center;padding:40px 20px;">' +
+            '<div style="font-size:48px;margin-bottom:20px;">⛔</div>' +
+            '<h2 style="margin-bottom:10px;color:#333;">表單已截止</h2>' +
+            '<p style="color:#666;">謝謝您的支持，本次團購已停止接單。</p>' +
+          '</div>' +
+        '</div>';
+      }
 
       let storeOptions = '';
       STORES.forEach(function(s) {
@@ -784,26 +826,35 @@
 
       let itemsHTML = '';
       state.formConfig.items.forEach(function(item) {
-        const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
+        const remaining = item.remaining;
         const isSoldOut = remaining <= 0;
+        const isWaitlist = item.isWaitlistMode && !isSoldOut;
         const selectedQty = state.selectedItems[item.name] || 0;
+        
+        let statusBadge = '';
+        if (isSoldOut) {
+          statusBadge = '<div class="item-stock sold-out">已額滿</div>';
+        } else if (isWaitlist) {
+          statusBadge = '<div class="item-stock" style="color:#f59e0b; font-weight:bold;">⚠️ 候補中 (剩 ' + remaining + ' 份)</div>';
+        } else {
+          statusBadge = '<div class="item-stock available">剩餘 ' + remaining + ' 份</div>';
+        }
+
         itemsHTML += 
-          '<div class="item-card ' + (isSoldOut ? 'sold-out' : '') + '">' +
+          '<div class="item-card ' + (isSoldOut ? 'sold-out' : '') + '" style="' + (isWaitlist ? 'border-color:#fcd34d;background:#fffbeb;' : '') + '">' +
             '<div class="item-header">' +
               (item.image ? '<img src="' + item.image + '" class="item-image" onerror="this.style.display=\'none\'">' : '<div class="item-image-placeholder">🛍️</div>') +
               '<div class="item-info">' +
                 '<div class="item-name">' + item.name + '</div>' +
                 (item.description ? '<div class="item-desc">' + item.description + '</div>' : '') +
-                '<div class="item-stock ' + (isSoldOut ? 'sold-out' : 'available') + '">' +
-                  (isSoldOut ? '已額滿' : '剩餘 ' + remaining + ' 份') +
-                '</div>' +
+                statusBadge +
               '</div>' +
             '</div>' +
             (!isSoldOut ? 
               '<div class="item-controls">' +
                 '<button class="qty-btn" onclick="changeQty(\'' + item.name + '\', -1)" ' + (selectedQty <= 0 ? 'disabled' : '') + '>−</button>' +
                 '<span class="qty-display">' + selectedQty + '</span>' +
-                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name + '\', 1)" ' + (selectedQty >= remaining ? 'disabled' : '') + '>+</button>' +
+                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name + '\', 1)" ' + (selectedQty >= remaining ? 'disabled' : '') + ' style="' + (isWaitlist ? 'background:#f59e0b;border-color:#f59e0b' : '') + '">+</button>' +
               '</div>' : '') +
           '</div>';
       });
@@ -888,7 +939,7 @@
     }
 
     function addItem() {
-      state.items.push({ name: '', limit: 30, image: '', description: '' });
+      state.items.push({ name: '', limit: 30, waitlist: 0, image: '', description: '' });
       render();
     }
 
@@ -900,7 +951,7 @@
     }
 
     function updateItem(index, field, value) {
-      state.items[index][field] = field === 'limit' ? (parseInt(value) || 0) : value;
+      state.items[index][field] = (field === 'limit' || field === 'waitlist') ? (parseInt(value) || 0) : value;
       if (field === 'image') render();
     }
 
@@ -946,7 +997,7 @@
     function newForm() {
       state.adminMode = 'create';
       state.formTitle = '';
-      state.items = [{ name: '', limit: 30, image: '', description: '' }];
+      state.items = [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }];
       state.error = '';
       state.shortUrl = '';
       localStorage.removeItem('shortUrl');
@@ -982,35 +1033,104 @@
     }
 
     async function generateShortUrl() {
-  // 自動抓取目前的新網域長網址
-  const longUrl = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
-  
-  showToast('🔗 正在產製專屬短連結...');
-
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ 
-        action: 'generateShortUrl', 
-        longUrl: longUrl 
-      })
-    });
-
-    const result = await response.json();
-
-    if (result.success && result.shortURL) {
-      state.shortUrl = result.shortURL;
-      localStorage.setItem('shortUrl', state.shortUrl);
-      showToast('✅ 專屬短網址已產生！');
-      render();
-    } else {
-      throw new Error(result.error || '後台產製失敗');
+      const longUrl = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
+      showToast('🔗 正在產製專屬短連結...');
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'generateShortUrl', longUrl: longUrl })
+        });
+        const result = await response.json();
+        if (result.success && result.shortURL) {
+          state.shortUrl = result.shortURL;
+          localStorage.setItem('shortUrl', state.shortUrl);
+          showToast('✅ 專屬短網址已產生！');
+          render();
+        } else {
+          throw new Error(result.error || '後台產製失敗');
+        }
+      } catch (error) {
+        console.error('Short.io error:', error);
+        showToast('❌ 產生失敗：' + error.message);
+      }
     }
-  } catch (error) {
-    console.error('Short.io via GAS error:', error);
-    showToast('❌ 產生失敗：' + error.message);
-  }
-}
+    
+    // 手動觸發統計表
+    async function triggerPivotTable() {
+      if (!confirm('確定要重新計算並覆蓋 Google Sheet 上的統計表嗎？')) return;
+      showToast('⏳ 正在計算統計報表...');
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'generatePivot', sheetName: state.currentSheet })
+        });
+        const result = await response.json();
+        if (result.success) {
+          showToast('✅ ' + result.message);
+        } else {
+          showToast('❌ 失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+        console.error(error);
+      }
+    }
+
+    // 狀態開關
+    async function toggleFormStatus(newStatus) {
+      if (!confirm('確定要' + (newStatus === 'CLOSED' ? '停止' : '開啟') + '接單嗎？')) return;
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'updateSettings', sheetName: state.currentSheet, newStatus: newStatus })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.formConfig = result.formConfig;
+          showToast('✅ 狀態已更新');
+        } else {
+          showToast('❌ 更新失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+      }
+      state.loading = false;
+      render();
+    }
+
+    // 修改數量
+    async function editItemLimit(itemName, currentLimit, currentWaitlist) {
+      const newLimit = prompt('修改 [' + itemName + '] 的 "正取" 數量：', currentLimit);
+      if (newLimit === null) return;
+      const newWaitlist = prompt('修改 [' + itemName + '] 的 "候補" 數量：', currentWaitlist);
+      if (newWaitlist === null) return;
+
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ 
+            action: 'updateSettings', 
+            sheetName: state.currentSheet, 
+            updateItem: { name: itemName, limit: newLimit, waitlist: newWaitlist }
+          })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.formConfig = result.formConfig;
+          showToast('✅ 數量已更新');
+        } else {
+          showToast('❌ 更新失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+      }
+      state.loading = false;
+      render();
+    }
 
     async function loadFormData() {
       state.loading = true;
