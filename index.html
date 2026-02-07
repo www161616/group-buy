@@ -382,6 +382,13 @@
   <input type="file" id="file-input-camera" accept="image/*" capture="environment" class="hidden-file-input">
   <input type="file" id="file-input-gallery" accept="image/*" class="hidden-file-input">
   <script>
+    // ====== 除錯用 - 完成後可刪除 ======
+window.addEventListener('error', function(e) {
+  alert('JavaScript 錯誤：' + e.message);
+  console.error('錯誤詳情：', e);
+});
+
+console.log('✅ Script 開始載入');
     // ====== 設定 ======
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ-AcwAJQcfq8npulJ07SDRuKN7_JSjP-C6Dze6PXRYHUeswZbUwefn2HVvYEsFmWFzw/exec';
     const IMGBB_API_KEY = '3d55c47c2d5b269a2864bd751cdb031e';
@@ -1318,6 +1325,7 @@
     }
 
     async function init() {
+      console.log('✅ init() 開始執行');
   const urlParams = new URLSearchParams(window.location.search);
   const sheetParam = urlParams.get('sheet');
   
