@@ -677,6 +677,7 @@
       state.orders.forEach(function(order) {
         if (!ordersByStore[order.store]) ordersByStore[order.store] = [];
         ordersByStore[order.store].push(order);
+        const cleanName = order.item.replace(' (候補)', '');
         if (!ordersByItem[order.item]) ordersByItem[order.item] = 0;
         ordersByItem[order.item] += order.quantity;
       });
