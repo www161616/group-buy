@@ -1312,67 +1312,81 @@
       loadFormData();
     }
 
-    function init() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const sheetParam = urlParams.get('sheet');
+    async function init() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const sheetParam = urlParams.get('sheet');
+  
+  if (sheetParam) {
+    // === 客人模式 ===
+    state.currentSheet = sheetParam;
+    state.view = 'customer';
+    localStorage.setItem('currentSheet', sheetParam);
+    render();  // ✅ 先顯示載入中
+    loadFormData();
+  } else {
+    // === 管理員模式 ===
+    const storedLogin = localStorage.getItem('isAdminLoggedIn');
+    
+    if (storedLogin === 'true') {
+      state.isLoggedIn = true;
+      state.view = 'admin'; 
+      state.adminMode = 'stats';
       
-      if (sheetParam) {
-        // === 客人模式 (不用登入) ===
-        state.currentSheet = sheetParam;
-        state.view = 'customer';
-        localStorage.setItem('currentSheet', sheetParam);
-        loadFormData();
-      } else {
-        // === 管理員模式 ===
-        // 檢查 localStorage 是否已經登入過
-        const storedLogin = localStorage.getItem('isAdminLoggedIn');
-        
-        if (storedLogin === 'true') {
-          // 已經登入過，直接進後台
-          state.isLoggedIn = true;
-          state.view = 'admin'; 
-          state.adminMode = 'stats';
-          loadSheetList(); // ★ 這裡呼叫現在有定義了
-          if (state.currentSheet) loadOrders();
-        } else {
-          // 還沒登入，顯示登入頁
-          state.view = 'login';
-        }
-      }
+      // ✅ 先渲染畫面
       render();
+      
+      // ✅ 然後背景載入資料
+      await loadSheetList();
+      if (state.currentSheet) {
+        await loadOrders();
+      }
+    } else {
+      state.view = 'login';
+      render();  // ✅ 顯示登入頁
     }
+  }
+}
 
     async function doLogin() {
-      const pwd = document.getElementById('admin-password').value;
-      if (!pwd) return;
-      
-      state.loading = true;
-      // 簡單的 loading 效果，把按鈕文字改掉
-      const btn = document.querySelector('.btn-primary');
-      if(btn) btn.innerText = '驗證中...';
+  const pwd = document.getElementById('admin-password').value;
+  if (!pwd) return;
+  
+  state.loading = true;
+  const btn = document.querySelector('.btn-primary');
+  if(btn) btn.innerText = '驗證中...';
 
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'login', password: pwd })
-        });
-        const result = await response.json();
-        
-        if (result.success) {
-          state.isLoggedIn = true;
-          state.view = 'admin';
-          // 登入成功後，把狀態存到 localStorage，這樣重新整理不用重打密碼
-          localStorage.setItem('isAdminLoggedIn', 'true');
-          
-          // 登入成功後順便載入分頁清單
-          loadSheetList();
-          if (state.currentSheet) loadOrders();
-          
-          render();
-        } else {
-          showToast('❌ 密碼錯誤');
-          if(btn) btn.innerText = '登入';
-        }
+  try {
+    const response = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action: 'login', password: pwd })
+    });
+    const result = await response.json();
+    
+    if (result.success) {
+      state.isLoggedIn = true;
+      state.view = 'admin';
+      localStorage.setItem('isAdminLoggedIn', 'true');
+      
+      // ✅ 先渲染一次（顯示載入中）
+      render();
+      
+      // ✅ 然後非同步載入資料（不要立即 render）
+      await loadSheetList();
+      if (state.currentSheet) {
+        await loadOrders();
+      }
+      // loadSheetList() 內部會自動 render()
+      
+    } else {
+      showToast('❌ 密碼錯誤');
+      if(btn) btn.innerText = '登入';
+    }
+  } catch (e) {
+    showToast('❌ 連線錯誤');
+    if(btn) btn.innerText = '登入';
+  }
+  state.loading = false;
+}
       } catch (e) {
         showToast('❌ 連線錯誤');
         if(btn) btn.innerText = '登入';
