@@ -1217,17 +1217,22 @@
 
     // ★ 取得所有分頁清單
     async function loadSheetList() {
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=getSheetList');
-        const result = await response.json();
-        if (result.success) {
-          state.sheetList = result.sheetNames;
-          render(); 
-        }
-      } catch (error) {
-        console.error('無法取得分頁清單', error);
-      }
+  try {
+    const response = await fetch(SCRIPT_URL + '?action=getSheetList');
+    const result = await response.json();
+    if (result.success) {
+      state.sheetList = result.sheetNames;
+    } else {
+      console.error('載入分頁清單失敗:', result.error);
+      state.sheetList = [];
     }
+  } catch (error) {
+    console.error('無法取得分頁清單', error);
+    state.sheetList = [];
+  }
+  // ✅ 無論成功或失敗都要渲染
+  render();
+}
 
     async function loadFormData() {
       state.loading = true;
