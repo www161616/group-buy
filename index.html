@@ -410,8 +410,8 @@
       uploadingIndex: -1,
       showUploadModal: false,
       uploadTargetIndex: -1,
-      shortUrl: localStorage.getItem('shortUrl') || ''
-      sheetList: [],
+      shortUrl: localStorage.getItem('shortUrl') || '',
+      sheetList: [], // ★ 新增分頁清單
     };
 
     // ====== 圖片上傳 (ImgBB) ======
@@ -423,7 +423,6 @@
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY);
         
-        // 上傳進度
         xhr.upload.onprogress = function(e) {
           if (e.lengthComputable && onProgress) {
             const percent = Math.round((e.loaded / e.total) * 100);
@@ -580,7 +579,6 @@
       else if (state.view === 'success') content = renderSuccess();
       
       const urlParams = new URLSearchParams(window.location.search);
-      // 只有在登入後，或者是客人模式才顯示下方導航
       if (!urlParams.has('sheet') && state.isLoggedIn) {
         content += renderBottomNav();
       }
@@ -588,14 +586,7 @@
       app.innerHTML = content;
     }
 
-    function renderAdmin() {
-      if (state.adminMode === 'create' || !state.currentSheet) {
-        return renderCreateForm();
-      } else {
-        return renderStats();
-      }
-    }
-function renderLogin() {
+    function renderLogin() {
       return '<div class="container" style="display:flex;align-items:center;justify-content:center;min-height:80vh;">' +
           '<div class="card" style="width:100%;text-align:center;">' +
             '<div style="font-size:60px;margin-bottom:20px;">🔒</div>' +
@@ -608,6 +599,15 @@ function renderLogin() {
           '</div>' +
         '</div>';
     }
+
+    function renderAdmin() {
+      if (state.adminMode === 'create' || !state.currentSheet) {
+        return renderCreateForm();
+      } else {
+        return renderStats();
+      }
+    }
+
     function renderCreateForm() {
       let itemsHTML = '';
       for (let index = 0; index < state.items.length; index++) {
@@ -684,7 +684,6 @@ function renderLogin() {
           '</div>';
       }
 
-      // 取得狀態
       const currentStatus = state.formConfig.status || 'OPEN';
       const isClosed = currentStatus === 'CLOSED';
 
@@ -771,7 +770,7 @@ function renderLogin() {
       const displayLink = state.shortUrl || customerLink;
       const isShortUrl = !!state.shortUrl;
 
-      // 製作下拉選單的 HTML (如果你有加上上一段教學的 sheetList 功能)
+      // 製作下拉選單的 HTML
       let sheetOptions = '';
       if (state.sheetList && state.sheetList.length > 0) {
         state.sheetList.forEach(function(name) {
@@ -786,7 +785,6 @@ function renderLogin() {
             '<div style="margin-bottom:20px">' +
               '<label style="color:#666;font-size:12px;margin-bottom:4px;">📂 切換團購活動</label>' +
               '<div style="display:flex; gap:10px;">' +
-                 // 下拉選單 (如果你還沒加 loadSheetList 功能，這個選單只會顯示當前一個)
                 '<select onchange="switchAdminSheet(this.value)" style="flex:1; font-weight:bold; font-size:18px; padding:10px;">' +
                   sheetOptions +
                 '</select>' +
@@ -835,11 +833,9 @@ function renderLogin() {
           '</div>' +
           (storeOrdersHTML ? '<div class="card"><h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>' + storeOrdersHTML + '</div>' : '<div class="empty-state"><div class="empty-icon">📭</div><div>還沒有訂單</div></div>') +
           
-          // ★★★★★ 登出按鈕放在這裡 (最下方) ★★★★★
           '<div style="margin-top:20px; text-align:center;">' +
              '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
           '</div>' +
-          // ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
         '</div>';
     }
@@ -849,7 +845,6 @@ function renderLogin() {
       if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
       if (!state.formConfig) return '<div class="container"><div class="empty-state"><div class="empty-icon">❌</div><div>找不到此團購表單</div></div></div>';
 
-      // 檢查是否關閉
       if (state.formConfig.status === 'CLOSED') {
         return '<div class="container">' +
           '<div class="card" style="text-align:center;padding:40px 20px;">' +
@@ -867,23 +862,17 @@ function renderLogin() {
 
       let itemsHTML = '';
       state.formConfig.items.forEach(function(item) {
-        // === 核心修改計算邏輯 ===
         const limit = parseInt(item.limit);
         const waitlist = parseInt(item.waitlist || 0);
         const ordered = item.ordered || 0;
 
-        // 計算正取剩餘
         const regularRemaining = Math.max(0, limit - ordered);
-        
-        // 計算候補剩餘 (總候補量 - (已訂購量 - 正取量))
-        // 如果已訂購還沒超過正取，那候補就是全滿
         const waitlistUsed = Math.max(0, ordered - limit);
         const waitlistRemaining = Math.max(0, waitlist - waitlistUsed);
 
         const isFullySoldOut = (regularRemaining === 0 && waitlistRemaining === 0);
         const selectedQty = state.selectedItems[item.name] || 0;
         
-        // 設定顯示文字與樣式
         let statusBadge = '';
         let cardStyle = '';
         let btnStyle = '';
@@ -892,23 +881,20 @@ function renderLogin() {
           statusBadge = '<div class="item-stock sold-out">❌ 已額滿 (售完)</div>';
           cardStyle = 'border-color:#ffcccc; background:#fff0f0;';
         } else if (regularRemaining > 0) {
-          // 還有正取 (同時顯示候補量，讓客人知道買超過會變候補)
           statusBadge = `
             <div class="item-stock available">
               🔥 正取剩 <span style="font-weight:800;font-size:15px;">${regularRemaining}</span> 份
               ${waitlist > 0 ? `<span style="color:#f59e0b; font-size:12px; margin-left:4px;">(候補尚有 ${waitlistRemaining})</span>` : ''}
             </div>`;
         } else {
-          // 正取沒了，只剩候補
           statusBadge = `
             <div class="item-stock" style="color:#d97706; font-weight:bold;">
               ⚠️ 正取已滿，候補剩 ${waitlistRemaining} 份
             </div>`;
-          cardStyle = 'border-color:#fcd34d; background:#fffbeb;'; // 變成黃色卡片
-          btnStyle = 'background:#f59e0b; border-color:#f59e0b;'; // 按鈕變黃色
+          cardStyle = 'border-color:#fcd34d; background:#fffbeb;'; 
+          btnStyle = 'background:#f59e0b; border-color:#f59e0b;';
         }
 
-        // 總剩餘量 (用來控制按鈕能不能按)
         const totalRemaining = regularRemaining + waitlistRemaining;
 
         itemsHTML += 
@@ -1203,6 +1189,20 @@ function renderLogin() {
       render();
     }
 
+    // ★ 取得所有分頁清單
+    async function loadSheetList() {
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getSheetList');
+        const result = await response.json();
+        if (result.success) {
+          state.sheetList = result.sheetNames;
+          render(); 
+        }
+      } catch (error) {
+        console.error('無法取得分頁清單', error);
+      }
+    }
+
     async function loadFormData() {
       state.loading = true;
       render();
@@ -1289,6 +1289,7 @@ function renderLogin() {
     function init() {
       const urlParams = new URLSearchParams(window.location.search);
       const sheetParam = urlParams.get('sheet');
+      
       if (sheetParam) {
         // === 客人模式 (不用登入) ===
         state.currentSheet = sheetParam;
@@ -1303,9 +1304,9 @@ function renderLogin() {
         if (storedLogin === 'true') {
           // 已經登入過，直接進後台
           state.isLoggedIn = true;
-          state.view = 'admin'; // 或 stats
+          state.view = 'admin'; 
           state.adminMode = 'stats';
-          loadSheetList();
+          loadSheetList(); // ★ 這裡呼叫現在有定義了
           if (state.currentSheet) loadOrders();
         } else {
           // 還沒登入，顯示登入頁
@@ -1315,7 +1316,6 @@ function renderLogin() {
       render();
     }
 
-    init();
     async function doLogin() {
       const pwd = document.getElementById('admin-password').value;
       if (!pwd) return;
@@ -1353,15 +1353,12 @@ function renderLogin() {
       }
       state.loading = false;
     }
+
     // 登出功能
     function logout() {
-      // 1. 清除登入紀錄
       localStorage.removeItem('isAdminLoggedIn');
-      // 2. 修改狀態為未登入
       state.isLoggedIn = false;
-      // 3. 切換畫面到登入頁
       state.view = 'login';
-      // 4. 清除目前的表單資料，避免登出後還看得到殘影
       state.currentSheet = '';
       state.orders = [];
       state.formConfig = null;
@@ -1370,7 +1367,6 @@ function renderLogin() {
       showToast('🔒 已安全登出');
     }
 
-    // ★ 如果你還沒加 switchAdminSheet (切換分頁功能)，請一併補上，不然下拉選單會報錯
     function switchAdminSheet(sheetName) {
       state.currentSheet = sheetName;
       localStorage.setItem('currentSheet', sheetName);
@@ -1378,6 +1374,8 @@ function renderLogin() {
       localStorage.removeItem('shortUrl');
       loadOrders(); 
     }
+
+    init();
   </script>
 </body>
 </html>
