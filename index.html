@@ -1,1370 +1,1355 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>包子媽開團系統</title>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-  <style>
-    /* === 基礎設定 === */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-      font-family: 'Noto Sans TC', sans-serif;
-      background: linear-gradient(135deg, #fff5f5 0%, #fce4ec 50%, #f8bbd9 100%);
-      min-height: 100vh;
-      color: #2c2c2c; 
-    }
-    .container { max-width: 540px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
-    
-    /* === 卡片與容器 === */
-    .card {
-      background: rgba(255,255,255,0.9);
-      border-radius: 20px;
-      padding: 24px;
-      border: 1px solid rgba(236,64,122,0.15);
-      margin-bottom: 20px;
-      box-shadow: 0 8px 32px rgba(236,64,122,0.1);
-    }
-    
-    /* === 文字排版 === */
-    h1 { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #1a1a1a; }
-    .subtitle { color: #884455; text-align: center; font-size: 15px; margin-bottom: 28px; font-weight: 500; }
-    label { display: block; color: #442222; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
-    
-    /* === 輸入元件 === */
-    input, select, textarea {
-      width: 100%; padding: 14px 16px; border-radius: 12px;
-      border: 1px solid rgba(236,64,122,0.3); background: #fff;
-      color: #000; font-size: 16px; font-family: inherit; outline: none;
-      transition: border-color 0.2s; font-weight: 500;
-    }
-    input:focus, select:focus, textarea:focus { border-color: #ec407a; background: #fffafa; }
-    input::placeholder, textarea::placeholder { color: #997b80; }
-    
-    select {
-      cursor: pointer; appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ec407a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat; background-position: right 16px center;
-    }
-    select option { background: #fff; color: #000; }
-    
-    /* === 按鈕 === */
-    .btn {
-      width: 100%; 
-      padding: 18px 24px; 
-      border-radius: 14px; 
-      border: none;
-      font-size: 18px; 
-      font-weight: 700; 
-      cursor: pointer;
-      transition: all 0.2s; 
-      font-family: inherit;
-      display: block; 
-      text-align: center;
-      margin-top: 12px;
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
-      color: #fff; 
-      box-shadow: 0 8px 32px rgba(236,64,122,0.35);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
-    }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(236,64,122,0.45); }
-    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-    
-    .btn-outline { 
-      background: #fff; 
-      border: 2px dashed #ec407a; 
-      color: #d81b60;
-    }
-    .btn-outline:hover { border-color: #d81b60; background: rgba(236,64,122,0.05); }
-    
-    .form-group { margin-bottom: 20px; }
-    
-    /* === 品項卡片 === */
-    .item-card {
-      background: #fff; border-radius: 16px; padding: 16px;
-      margin-bottom: 12px; border: 1px solid rgba(236,64,122,0.2);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-    }
-    .item-card.sold-out { background: #fff0f0; border-color: #ffcccc; }
-    .item-card.waitlist { background: #fffbeb; border-color: #fcd34d; }
-    
-    .item-header { display: flex; gap: 14px; margin-bottom: 12px; }
-    .item-image {
-      width: 72px; height: 72px; border-radius: 12px; object-fit: cover;
-      background: #f5f5f5; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.05);
-    }
-    .item-image-placeholder {
-      width: 72px; height: 72px; border-radius: 12px;
-      background: rgba(236,64,122,0.08); display: flex;
-      align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;
-    }
-    .item-info { flex: 1; min-width: 0; }
-    .item-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: #222; }
-    .item-desc {
-      font-size: 14px; color: #555; line-height: 1.4;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-      overflow: hidden; margin-bottom: 4px;
-    }
-    .item-stock { font-size: 13px; margin-top: 6px; font-weight: 500; }
-    .item-stock.available { color: #d81b60; }
-    .item-stock.sold-out { color: #d32f2f; }
-    .item-stock.waitlist { color: #d97706; }
-    
-    .item-controls { display: flex; align-items: center; justify-content: flex-end; gap: 14px; }
-    .qty-btn {
-      width: 38px; height: 38px; border-radius: 10px;
-      border: 1px solid rgba(236,64,122,0.2); background: #fff;
-      color: #d81b60; font-size: 20px; cursor: pointer; transition: all 0.2s;
-    }
-    .qty-btn:hover { background: #fff0f5; border-color: #ec407a; }
-    .qty-btn.plus { background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%); color: #fff; border: none; }
-    .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #ddd; color: #999; }
-    .qty-display { font-size: 20px; font-weight: 700; min-width: 28px; text-align: center; color: #333; }
-    
-    /* === 管理員介面 === */
-    .admin-item {
-      background: rgba(255,255,255,0.5); border-radius: 16px;
-      padding: 16px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.1);
-    }
-    .admin-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
-    .admin-item-row:last-child { margin-bottom: 0; }
-    .admin-item input, .admin-item textarea { font-size: 14px; padding: 12px 14px; background: #fff; }
-    .admin-item input[type="number"] { width: 80px; text-align: center; }
-    .admin-item textarea { resize: none; height: 60px; }
-    .remove-btn {
-      width: 40px; height: 40px; border-radius: 10px; border: none;
-      background: rgba(255,100,100,0.15); color: #d32f2f; font-size: 20px;
-      cursor: pointer; flex-shrink: 0;
-    }
-    
-    /* === 圖片上傳 === */
-    .image-upload-area { display: flex; gap: 10px; align-items: center; }
-    .image-preview {
-      width: 60px; height: 60px; border-radius: 10px; object-fit: cover;
-      background: #fff; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1);
-    }
-    .image-preview-placeholder {
-      width: 60px; height: 60px; border-radius: 10px;
-      background: rgba(255,255,255,0.5); border: 2px dashed rgba(236,64,122,0.3);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 24px; flex-shrink: 0; cursor: pointer; transition: all 0.2s;
-    }
-    .image-input-wrapper { flex: 1; display: flex; gap: 8px; }
-    .upload-btn {
-      padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(102, 126, 234, 0.3);
-      background: #fff; color: #5c6ac4; font-size: 14px; font-weight: 600;
-      cursor: pointer; white-space: nowrap; transition: all 0.2s;
-    }
-    .upload-btn.uploading { background: #fff8e1; color: #f57f17; border-color: #ffe0b2; }
-    .hidden-file-input {
-      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-      overflow: hidden; clip: rect(0,0,0,0); border: 0; opacity: 0; z-index: -1;
-    }
-    
-    /* === 統計與圖表 === */
-    .progress-bar { height: 8px; background: rgba(0,0,0,0.05); border-radius: 4px; overflow: hidden; margin-top: 8px; }
-    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
-    .progress-fill.normal { background: linear-gradient(90deg, #4ade80, #10b981); }
-    .progress-fill.waitlist { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
-    .progress-fill.full { background: #ef4444; }
-    
-    .stat-card {
-      background: rgba(102, 126, 234, 0.05); border-radius: 16px; padding: 20px;
-      text-align: center; border: 1px solid rgba(102, 126, 234, 0.2);
-    }
-    .stat-label { color: #666; font-size: 15px; margin-bottom: 4px; font-weight: 500; }
-    .stat-value { font-size: 48px; font-weight: 700; color: #333; }
-    
-    /* === 訂單列表 === */
-    .order-group {
-      background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px;
-      border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-    }
-    .order-group-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;
-    }
-    .order-group-title { font-weight: 700; color: #333; font-size: 16px; }
-    .order-group-badge {
-      background: #eef2ff; color: #4f46e5; padding: 4px 12px;
-      border-radius: 20px; font-size: 13px; font-weight: 600;
-    }
-    .order-row {
-      display: flex; justify-content: space-between; padding: 10px 0;
-      border-top: 1px solid #f5f5f5; font-size: 15px;
-    }
-    .order-row:first-of-type { border-top: none; }
-    .order-phone { color: #666; font-family: monospace; }
-    .order-items { color: #111; font-weight: 500; }
-    
-    /* === 底部導航 === */
-    .bottom-nav {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-      background: rgba(216, 27, 96, 0.95); border-radius: 50px; padding: 6px;
-      display: flex; gap: 4px; backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2); z-index: 100;
-      box-shadow: 0 4px 20px rgba(180, 20, 80, 0.4);
-    }
-    .nav-btn {
-      padding: 12px 22px; border-radius: 50px; border: none; background: transparent;
-      color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 500;
-      cursor: pointer; transition: all 0.2s; font-family: inherit;
-    }
-    .nav-btn.active {
-      background: #fff; color: #d81b60; font-weight: 700;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-    }
-    
-    /* === 店家 Header === */
-    .brand-header {
-      text-align: center; margin-bottom: 24px; position: relative;
-      background: rgba(255,255,255,0.8); padding: 24px 20px;
-      border-radius: 20px; box-shadow: 0 4px 15px rgba(236,64,122,0.1);
-      border: 1px solid rgba(255,255,255,0.5);
-    }
-    .brand-logo {
-      width: 120px; height: 120px; background: #fff; border-radius: 50%;
-      margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden;
-    }
-    .brand-logo img { width: 100%; height: 100%; object-fit: cover; }
-    .brand-name { font-size: 15px; font-weight: 500; color: #666; margin-bottom: 4px; letter-spacing: 1px; }
-    .group-title { font-size: 28px; font-weight: 800; color: #c2185b; margin-top: 4px; line-height: 1.3; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>包子媽開團系統</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* === 基礎設定 === */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Noto Sans TC', sans-serif;
+      background: linear-gradient(135deg, #fff5f5 0%, #fce4ec 50%, #f8bbd9 100%);
+      min-height: 100vh;
+      color: #2c2c2c; 
+    }
+    .container { max-width: 540px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+    
+    /* === 卡片與容器 === */
+    .card {
+      background: rgba(255,255,255,0.9);
+      border-radius: 20px;
+      padding: 24px;
+      border: 1px solid rgba(236,64,122,0.15);
+      margin-bottom: 20px;
+      box-shadow: 0 8px 32px rgba(236,64,122,0.1);
+    }
+    
+    /* === 文字排版 === */
+    h1 { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #1a1a1a; }
+    .subtitle { color: #884455; text-align: center; font-size: 15px; margin-bottom: 28px; font-weight: 500; }
+    label { display: block; color: #442222; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+    
+    /* === 輸入元件 === */
+    input, select, textarea {
+      width: 100%; padding: 14px 16px; border-radius: 12px;
+      border: 1px solid rgba(236,64,122,0.3); background: #fff;
+      color: #000; font-size: 16px; font-family: inherit; outline: none;
+      transition: border-color 0.2s; font-weight: 500;
+    }
+    input:focus, select:focus, textarea:focus { border-color: #ec407a; background: #fffafa; }
+    input::placeholder, textarea::placeholder { color: #997b80; }
+    
+    select {
+      cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23ec407a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 16px center;
+    }
+    select option { background: #fff; color: #000; }
+    
+    /* === 按鈕 === */
+    .btn {
+      width: 100%; 
+      padding: 18px 24px; 
+      border-radius: 14px; 
+      border: none;
+      font-size: 18px; 
+      font-weight: 700; 
+      cursor: pointer;
+      transition: all 0.2s; 
+      font-family: inherit;
+      display: block; 
+      text-align: center;
+      margin-top: 12px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
+      color: #fff; 
+      box-shadow: 0 8px 32px rgba(236,64,122,0.35);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(236,64,122,0.45); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    
+    .btn-outline { 
+      background: #fff; 
+      border: 2px dashed #ec407a; 
+      color: #d81b60;
+    }
+    .btn-outline:hover { border-color: #d81b60; background: rgba(236,64,122,0.05); }
+    
+    .form-group { margin-bottom: 20px; }
+    
+    /* === 品項卡片 === */
+    .item-card {
+      background: #fff; border-radius: 16px; padding: 16px;
+      margin-bottom: 12px; border: 1px solid rgba(236,64,122,0.2);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    .item-card.sold-out { background: #fff0f0; border-color: #ffcccc; }
+    .item-card.waitlist { background: #fffbeb; border-color: #fcd34d; }
+    
+    .item-header { display: flex; gap: 14px; margin-bottom: 12px; }
+    .item-image {
+      width: 72px; height: 72px; border-radius: 12px; object-fit: cover;
+      background: #f5f5f5; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.05);
+    }
+    .item-image-placeholder {
+      width: 72px; height: 72px; border-radius: 12px;
+      background: rgba(236,64,122,0.08); display: flex;
+      align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0;
+    }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name { font-size: 18px; font-weight: 700; margin-bottom: 4px; color: #222; }
+    .item-desc {
+      font-size: 14px; color: #555; line-height: 1.4;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+      overflow: hidden; margin-bottom: 4px;
+    }
+    .item-stock { font-size: 13px; margin-top: 6px; font-weight: 500; }
+    .item-stock.available { color: #d81b60; }
+    .item-stock.sold-out { color: #d32f2f; }
+    .item-stock.waitlist { color: #d97706; }
+    
+    .item-controls { display: flex; align-items: center; justify-content: flex-end; gap: 14px; }
+    .qty-btn {
+      width: 38px; height: 38px; border-radius: 10px;
+      border: 1px solid rgba(236,64,122,0.2); background: #fff;
+      color: #d81b60; font-size: 20px; cursor: pointer; transition: all 0.2s;
+    }
+    .qty-btn:hover { background: #fff0f5; border-color: #ec407a; }
+    .qty-btn.plus { background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%); color: #fff; border: none; }
+    .qty-btn:disabled { opacity: 0.3; cursor: not-allowed; border-color: #ddd; color: #999; }
+    .qty-display { font-size: 20px; font-weight: 700; min-width: 28px; text-align: center; color: #333; }
+    
+    /* === 管理員介面 === */
+    .admin-item {
+      background: rgba(255,255,255,0.5); border-radius: 16px;
+      padding: 16px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.1);
+    }
+    .admin-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+    .admin-item-row:last-child { margin-bottom: 0; }
+    .admin-item input, .admin-item textarea { font-size: 14px; padding: 12px 14px; background: #fff; }
+    .admin-item input[type="number"] { width: 80px; text-align: center; }
+    .admin-item textarea { resize: none; height: 60px; }
+    .remove-btn {
+      width: 40px; height: 40px; border-radius: 10px; border: none;
+      background: rgba(255,100,100,0.15); color: #d32f2f; font-size: 20px;
+      cursor: pointer; flex-shrink: 0;
+    }
+    
+    /* === 圖片上傳 === */
+    .image-upload-area { display: flex; gap: 10px; align-items: center; }
+    .image-preview {
+      width: 60px; height: 60px; border-radius: 10px; object-fit: cover;
+      background: #fff; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.1);
+    }
+    .image-preview-placeholder {
+      width: 60px; height: 60px; border-radius: 10px;
+      background: rgba(255,255,255,0.5); border: 2px dashed rgba(236,64,122,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; flex-shrink: 0; cursor: pointer; transition: all 0.2s;
+    }
+    .image-input-wrapper { flex: 1; display: flex; gap: 8px; }
+    .upload-btn {
+      padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(102, 126, 234, 0.3);
+      background: #fff; color: #5c6ac4; font-size: 14px; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: all 0.2s;
+    }
+    .upload-btn.uploading { background: #fff8e1; color: #f57f17; border-color: #ffe0b2; }
+    .hidden-file-input {
+      position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip: rect(0,0,0,0); border: 0; opacity: 0; z-index: -1;
+    }
+    
+    /* === 統計與圖表 === */
+    .progress-bar { height: 8px; background: rgba(0,0,0,0.05); border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+    .progress-fill.normal { background: linear-gradient(90deg, #4ade80, #10b981); }
+    .progress-fill.waitlist { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .progress-fill.full { background: #ef4444; }
+    
+    .stat-card {
+      background: rgba(102, 126, 234, 0.05); border-radius: 16px; padding: 20px;
+      text-align: center; border: 1px solid rgba(102, 126, 234, 0.2);
+    }
+    .stat-label { color: #666; font-size: 15px; margin-bottom: 4px; font-weight: 500; }
+    .stat-value { font-size: 48px; font-weight: 700; color: #333; }
+    
+    /* === 訂單列表 === */
+    .order-group {
+      background: #fff; border-radius: 14px; padding: 16px; margin-bottom: 12px;
+      border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+    .order-group-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; border-bottom: 1px solid #eee; padding-bottom: 8px;
+    }
+    .order-group-title { font-weight: 700; color: #333; font-size: 16px; }
+    .order-group-badge {
+      background: #eef2ff; color: #4f46e5; padding: 4px 12px;
+      border-radius: 20px; font-size: 13px; font-weight: 600;
+    }
+    .order-row {
+      display: flex; justify-content: space-between; padding: 10px 0;
+      border-top: 1px solid #f5f5f5; font-size: 15px;
+    }
+    .order-row:first-of-type { border-top: none; }
+    .order-phone { color: #666; font-family: monospace; }
+    .order-items { color: #111; font-weight: 500; }
+    
+    /* === 底部導航 === */
+    .bottom-nav {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(216, 27, 96, 0.95); border-radius: 50px; padding: 6px;
+      display: flex; gap: 4px; backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2); z-index: 100;
+      box-shadow: 0 4px 20px rgba(180, 20, 80, 0.4);
+    }
+    .nav-btn {
+      padding: 12px 22px; border-radius: 50px; border: none; background: transparent;
+      color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 500;
+      cursor: pointer; transition: all 0.2s; font-family: inherit;
+    }
+    .nav-btn.active {
+      background: #fff; color: #d81b60; font-weight: 700;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    /* === 店家 Header === */
+    .brand-header {
+      text-align: center; margin-bottom: 24px; position: relative;
+      background: rgba(255,255,255,0.8); padding: 24px 20px;
+      border-radius: 20px; box-shadow: 0 4px 15px rgba(236,64,122,0.1);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .brand-logo {
+      width: 120px; height: 120px; background: #fff; border-radius: 50%;
+      margin: 0 auto 12px; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08); overflow: hidden;
+    }
+    .brand-logo img { width: 100%; height: 100%; object-fit: cover; }
+    .brand-name { font-size: 15px; font-weight: 500; color: #666; margin-bottom: 4px; letter-spacing: 1px; }
+    .group-title { font-size: 28px; font-weight: 800; color: #c2185b; margin-top: 4px; line-height: 1.3; }
 
-    /* === 成功畫面 === */
-    .success-screen { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
-    .success-content {
-      text-align: center; background: rgba(255,255,255,0.95); padding: 40px 30px;
-      border-radius: 24px; box-shadow: 0 10px 40px rgba(180, 20, 80, 0.15);
-      border: 1px solid rgba(255,255,255,1); width: 100%;
-    }
-    .success-svg {
-      width: 80px; height: 80px; fill: #10b981;
-      filter: drop-shadow(0 4px 10px rgba(16, 185, 129, 0.2)); margin-bottom: 20px;
-    }
-    .success-title { font-size: 30px; font-weight: 800; margin-bottom: 20px; color: #1a1a1a; }
-    .success-info {
-      color: #333; margin-bottom: 24px; line-height: 1.8; font-size: 18px;
-      font-weight: 500; background: #f9f9f9; padding: 15px; border-radius: 12px;
-    }
-    .success-items {
-      background: transparent; border-radius: 14px; padding: 10px 0; text-align: center;
-      margin-bottom: 24px; border-top: 2px dashed #ddd; border-bottom: 2px dashed #ddd;
-    }
-    .success-item { color: #000; padding: 8px 0; font-size: 20px; font-weight: 700; }
-    
-    /* === 錯誤與載入 === */
-    .error-msg {
-      background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px;
-      padding: 14px 18px; color: #dc2626; font-size: 15px; font-weight: 500;
-      text-align: center; margin-bottom: 16px;
-    }
-    .loading { text-align: center; padding: 60px 20px; color: #666; }
-    .spinner {
-      width: 40px; height: 40px; border: 4px solid rgba(0,0,0,0.1);
-      border-top-color: #d81b60; border-radius: 50%;
-      animation: spin 0.8s linear infinite; margin: 0 auto 16px;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    
-    .empty-state { text-align: center; padding: 60px 20px; color: #888; }
-    .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.5; }
-    
-    /* === 複製連結 === */
-    .link-box {
-      background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 12px;
-      padding: 16px; margin-top: 20px;
-    }
-    .link-label { color: #059669; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-    .link-row { display: flex; gap: 10px; }
-    .link-input {
-      flex: 1; background: #fff; border: 1px solid #d1fae5; color: #333;
-      font-size: 14px; padding: 10px; border-radius: 8px;
-    }
-    
-    .copy-btn {
-      padding: 12px 20px;
-      border-radius: 10px;
-      border: 1px solid #ddd;
-      background: #f8f9fa;
-      color: #666;
-      font-weight: 600;
-      font-size: 14px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .copy-btn:hover { background: #edf2f7; }
+    /* === 成功畫面 === */
+    .success-screen { min-height: 80vh; display: flex; align-items: center; justify-content: center; }
+    .success-content {
+      text-align: center; background: rgba(255,255,255,0.95); padding: 40px 30px;
+      border-radius: 24px; box-shadow: 0 10px 40px rgba(180, 20, 80, 0.15);
+      border: 1px solid rgba(255,255,255,1); width: 100%;
+    }
+    .success-svg {
+      width: 80px; height: 80px; fill: #10b981;
+      filter: drop-shadow(0 4px 10px rgba(16, 185, 129, 0.2)); margin-bottom: 20px;
+    }
+    .success-title { font-size: 30px; font-weight: 800; margin-bottom: 20px; color: #1a1a1a; }
+    .success-info {
+      color: #333; margin-bottom: 24px; line-height: 1.8; font-size: 18px;
+      font-weight: 500; background: #f9f9f9; padding: 15px; border-radius: 12px;
+    }
+    .success-items {
+      background: transparent; border-radius: 14px; padding: 10px 0; text-align: center;
+      margin-bottom: 24px; border-top: 2px dashed #ddd; border-bottom: 2px dashed #ddd;
+    }
+    .success-item { color: #000; padding: 8px 0; font-size: 20px; font-weight: 700; }
+    
+    /* === 錯誤與載入 === */
+    .error-msg {
+      background: #fef2f2; border: 1px solid #fecaca; border-radius: 12px;
+      padding: 14px 18px; color: #dc2626; font-size: 15px; font-weight: 500;
+      text-align: center; margin-bottom: 16px;
+    }
+    .loading { text-align: center; padding: 60px 20px; color: #666; }
+    .spinner {
+      width: 40px; height: 40px; border: 4px solid rgba(0,0,0,0.1);
+      border-top-color: #d81b60; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+    .empty-icon { font-size: 56px; margin-bottom: 16px; opacity: 0.5; }
+    
+    /* === 複製連結 === */
+    .link-box {
+      background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 12px;
+      padding: 16px; margin-top: 20px;
+    }
+    .link-label { color: #059669; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .link-row { display: flex; gap: 10px; }
+    .link-input {
+      flex: 1; background: #fff; border: 1px solid #d1fae5; color: #333;
+      font-size: 14px; padding: 10px; border-radius: 8px;
+    }
+    
+    .copy-btn {
+      padding: 12px 20px;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      background: #f8f9fa;
+      color: #666;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .copy-btn:hover { background: #edf2f7; }
 
-    .btn-generate-short {
-      margin-top: 12px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      background: #10b981;
-      color: #ffffff;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-generate-short:hover {
-      background: #059669;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
-    }
-    
-    .toast {
-      position: fixed; 
-      top: 60px;
-      left: 50%; 
-      transform: translateX(-50%);
-      background: #10b981; 
-      color: #ffffff; 
-      padding: 20px 50px;
-      border-radius: 20px;
-      font-size: 26px; 
-      font-weight: 900; 
-      z-index: 9999;
-      animation: toastIn 3s ease forwards;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-      border: 4px solid #ffffff;
-      white-space: nowrap;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
+    .btn-generate-short {
+      margin-top: 12px;
+      width: 100%;
+      padding: 14px;
+      border-radius: 12px;
+      border: none;
+      background: #10b981;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-generate-short:hover {
+      background: #059669;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
+    }
+    
+    .toast {
+      position: fixed; 
+      top: 60px;
+      left: 50%; 
+      transform: translateX(-50%);
+      background: #10b981; 
+      color: #ffffff; 
+      padding: 20px 50px;
+      border-radius: 20px;
+      font-size: 26px; 
+      font-weight: 900; 
+      z-index: 9999;
+      animation: toastIn 3s ease forwards;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      border: 4px solid #ffffff;
+      white-space: nowrap;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
 
-    @keyframes toastIn {
-      0% { opacity: 0; transform: translateX(-50%) translateY(-50px) scale(0.8); }
-      15% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.1); }
-      20% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-      85% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
-      100% { opacity: 0; transform: translateX(-50%) translateY(-50px); }
-    }
-    
-    /* === Upload Modal === */
-    .upload-modal {
-      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.8); display: flex; align-items: center;
-      justify-content: center; z-index: 150; padding: 20px;
-    }
-    .upload-modal-content {
-      background: #fff; border-radius: 20px; padding: 24px;
-      width: 100%; max-width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-    }
-    .upload-modal-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #333; }
-    .upload-option {
-      display: flex; align-items: center; gap: 14px; padding: 16px;
-      background: #f9fafb; border-radius: 12px; margin-bottom: 10px;
-      cursor: pointer; transition: all 0.2s; border: 1px solid #eee;
-    }
-    .upload-option:hover { background: #f3f4f6; border-color: #ddd; }
-    .upload-option-icon { font-size: 28px; }
-    .upload-option-text { font-size: 16px; color: #333; font-weight: 500; }
-    .upload-modal-cancel {
-      width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ddd;
-      background: transparent; color: #666; font-size: 15px; cursor: pointer;
-      margin-top: 10px; font-weight: 500;
-    }
-  </style>
+    @keyframes toastIn {
+      0% { opacity: 0; transform: translateX(-50%) translateY(-50px) scale(0.8); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.1); }
+      20% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-50px); }
+    }
+    
+    /* === Upload Modal === */
+    .upload-modal {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.8); display: flex; align-items: center;
+      justify-content: center; z-index: 150; padding: 20px;
+    }
+    .upload-modal-content {
+      background: #fff; border-radius: 20px; padding: 24px;
+      width: 100%; max-width: 320px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .upload-modal-title { font-size: 18px; font-weight: 700; text-align: center; margin-bottom: 20px; color: #333; }
+    .upload-option {
+      display: flex; align-items: center; gap: 14px; padding: 16px;
+      background: #f9fafb; border-radius: 12px; margin-bottom: 10px;
+      cursor: pointer; transition: all 0.2s; border: 1px solid #eee;
+    }
+    .upload-option:hover { background: #f3f4f6; border-color: #ddd; }
+    .upload-option-icon { font-size: 28px; }
+    .upload-option-text { font-size: 16px; color: #333; font-weight: 500; }
+    .upload-modal-cancel {
+      width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #ddd;
+      background: transparent; color: #666; font-size: 15px; cursor: pointer;
+      margin-top: 10px; font-weight: 500;
+    }
+  </style>
 </head>
 <body>
-  <div id="app"></div>
-  <div id="toast-container"></div>
-  <div id="modal-container"></div>
-  <input type="file" id="file-input-camera" accept="image/*" capture="environment" class="hidden-file-input">
-  <input type="file" id="file-input-gallery" accept="image/*" class="hidden-file-input">
-  <script>
-    // ====== 除錯用 - 完成後可刪除 ======
-window.addEventListener('error', function(e) {
-  alert('JavaScript 錯誤：' + e.message);
-  console.error('錯誤詳情：', e);
-});
+  <div id="app"></div>
+  <div id="toast-container"></div>
+  <div id="modal-container"></div>
+  <input type="file" id="file-input-camera" accept="image/*" capture="environment" class="hidden-file-input">
+  <input type="file" id="file-input-gallery" accept="image/*" class="hidden-file-input">
+  <script>
+    // ====== 設定 ======
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ-AcwAJQcfq8npulJ07SDRuKN7_JSjP-C6Dze6PXRYHUeswZbUwefn2HVvYEsFmWFzw/exec';
+    const IMGBB_API_KEY = '3d55c47c2d5b269a2864bd751cdb031e';
+    
+    const STORES = [
+      '中和', '文山', '永和', '林口', '平鎮', '古華', '南平', '萬華', '三峽',
+      '環球', '忠順', '泰山', '四號公園', '板橋', '湖口', '淡水', '松山', '經國'
+    ];
 
-console.log('✅ Script 開始載入');
-    // ====== 設定 ======
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzZ-AcwAJQcfq8npulJ07SDRuKN7_JSjP-C6Dze6PXRYHUeswZbUwefn2HVvYEsFmWFzw/exec';
-    const IMGBB_API_KEY = '3d55c47c2d5b269a2864bd751cdb031e';
-    
-    const STORES = [
-      '中和', '文山', '永和', '林口', '平鎮', '古華', '南平', '萬華', '三峽',
-      '環球', '忠順', '泰山', '四號公園', '板橋', '湖口', '淡水', '松山', '經國'
-    ];
+    // ====== 狀態管理 ======
+    let state = {
+      view: 'login', // 預設改為 login
+      isLoggedIn: false, // ★ 新增：登入狀態
+      adminMode: 'create',
+      currentSheet: localStorage.getItem('currentSheet') || '',
+      formConfig: null,
+      orders: [],
+      loading: false,
+      error: '',
+      formTitle: '',
+      items: [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }], // 加入 waitlist
+      selectedStore: '',
+      phone: '',
+      selectedItems: {},
+      successInfo: null,
+      uploadingIndex: -1,
+      showUploadModal: false,
+      uploadTargetIndex: -1,
+      shortUrl: localStorage.getItem('shortUrl') || '',
+      sheetList: [], // ★ 新增分頁清單
+    };
 
-    // ====== 狀態管理 ======
-    let state = {
-      view: 'login', // 預設改為 login
-      isLoggedIn: false, // ★ 新增：登入狀態
-      adminMode: 'create',
-      currentSheet: localStorage.getItem('currentSheet') || '',
-      formConfig: null,
-      orders: [],
-      loading: false,
-      error: '',
-      formTitle: '',
-      items: [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }], // 加入 waitlist
-      selectedStore: '',
-      phone: '',
-      selectedItems: {},
-      successInfo: null,
-      uploadingIndex: -1,
-      showUploadModal: false,
-      uploadTargetIndex: -1,
-      shortUrl: localStorage.getItem('shortUrl') || '',
-      sheetList: [], // ★ 新增分頁清單
-    };
+    // ====== 圖片上傳 (ImgBB) ======
+    async function uploadToImgur(file, onProgress) {
+      return new Promise(function(resolve, reject) {
+        const formData = new FormData();
+        formData.append('image', file);
+        
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY);
+        
+        xhr.upload.onprogress = function(e) {
+          if (e.lengthComputable && onProgress) {
+            const percent = Math.round((e.loaded / e.total) * 100);
+            onProgress(percent);
+          }
+        };
+        
+        xhr.onload = function() {
+          if (xhr.status === 200) {
+            try {
+              const data = JSON.parse(xhr.responseText);
+              if (data.success) {
+                resolve(data.data.url);
+              } else {
+                reject(new Error(data.error?.message || '上傳失敗'));
+              }
+            } catch (e) {
+              reject(new Error('解析回應失敗'));
+            }
+          } else {
+            reject(new Error('上傳失敗：' + xhr.status));
+          }
+        };
+        
+        xhr.onerror = function() {
+          reject(new Error('網路錯誤'));
+        };
+        
+        xhr.send(formData);
+      });
+    }
 
-    // ====== 圖片上傳 (ImgBB) ======
-    async function uploadToImgur(file, onProgress) {
-      return new Promise(function(resolve, reject) {
-        const formData = new FormData();
-        formData.append('image', file);
-        
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'https://api.imgbb.com/1/upload?key=' + IMGBB_API_KEY);
-        
-        xhr.upload.onprogress = function(e) {
-          if (e.lengthComputable && onProgress) {
-            const percent = Math.round((e.loaded / e.total) * 100);
-            onProgress(percent);
-          }
-        };
-        
-        xhr.onload = function() {
-          if (xhr.status === 200) {
-            try {
-              const data = JSON.parse(xhr.responseText);
-              if (data.success) {
-                resolve(data.data.url);
-              } else {
-                reject(new Error(data.error?.message || '上傳失敗'));
-              }
-            } catch (e) {
-              reject(new Error('解析回應失敗'));
-            }
-          } else {
-            reject(new Error('上傳失敗：' + xhr.status));
-          }
-        };
-        
-        xhr.onerror = function() {
-          reject(new Error('網路錯誤'));
-        };
-        
-        xhr.send(formData);
-      });
-    }
+    function showUploadOptions(index) {
+      state.showUploadModal = true;
+      state.uploadTargetIndex = index;
+      renderModal();
+    }
+    function hideUploadModal() {
+      state.showUploadModal = false;
+      state.uploadTargetIndex = -1;
+      renderModal();
+    }
+    function triggerCameraUpload() {
+      state.showUploadModal = false;
+      renderModal();
+      setTimeout(function() {
+        document.getElementById('file-input-camera').click();
+      }, 100);
+    }
+    function triggerGalleryUpload() {
+      state.showUploadModal = false;
+      renderModal();
+      setTimeout(function() {
+        document.getElementById('file-input-gallery').click();
+      }, 100);
+    }
+    async function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const index = state.uploadTargetIndex;
+      if (index < 0) return;
+      
+      state.uploadingIndex = index;
+      render();
+      
+      showUploadingOverlay(0);
+      
+      try {
+        const imageUrl = await uploadToImgur(file, function(percent) {
+          updateUploadProgress(percent);
+        });
+        state.items[index].image = imageUrl;
+        hideUploadingOverlay();
+        showToast('✅ 上傳成功！');
+      } catch (error) {
+        hideUploadingOverlay();
+        showToast('❌ 上傳失敗：' + (error.message || '請重試'));
+        console.error(error);
+      }
+      state.uploadingIndex = -1;
+      state.uploadTargetIndex = -1;
+      event.target.value = '';
+      render();
+    }
+    
+    function showUploadingOverlay(initialPercent) {
+      const overlay = document.createElement('div');
+      overlay.id = 'uploading-overlay';
+      overlay.innerHTML = 
+        '<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:300;">' +
+          '<div style="background:#fff;border-radius:20px;padding:40px 50px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.3);min-width:280px;">' +
+            '<div style="font-size:48px;margin-bottom:16px;">📤</div>' +
+            '<div style="font-size:18px;font-weight:600;color:#333;margin-bottom:20px;">圖片上傳中...</div>' +
+            '<div style="background:#eee;border-radius:10px;height:20px;overflow:hidden;margin-bottom:12px;">' +
+              '<div id="upload-progress-bar" style="background:linear-gradient(90deg,#f48fb1,#ec407a);height:100%;width:' + initialPercent + '%;transition:width 0.3s;border-radius:10px;"></div>' +
+            '</div>' +
+            '<div id="upload-progress-text" style="font-size:16px;font-weight:700;color:#ec407a;">' + initialPercent + '%</div>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(overlay);
+    }
+    
+    function updateUploadProgress(percent) {
+      const bar = document.getElementById('upload-progress-bar');
+      const text = document.getElementById('upload-progress-text');
+      if (bar) bar.style.width = percent + '%';
+      if (text) text.textContent = percent + '%';
+    }
+    
+    function hideUploadingOverlay() {
+      const overlay = document.getElementById('uploading-overlay');
+      if (overlay) overlay.remove();
+    }
+    document.getElementById('file-input-camera').addEventListener('change', handleFileSelect);
+    document.getElementById('file-input-gallery').addEventListener('change', handleFileSelect);
 
-    function showUploadOptions(index) {
-      state.showUploadModal = true;
-      state.uploadTargetIndex = index;
-      renderModal();
-    }
-    function hideUploadModal() {
-      state.showUploadModal = false;
-      state.uploadTargetIndex = -1;
-      renderModal();
-    }
-    function triggerCameraUpload() {
-      state.showUploadModal = false;
-      renderModal();
-      setTimeout(function() {
-        document.getElementById('file-input-camera').click();
-      }, 100);
-    }
-    function triggerGalleryUpload() {
-      state.showUploadModal = false;
-      renderModal();
-      setTimeout(function() {
-        document.getElementById('file-input-gallery').click();
-      }, 100);
-    }
-    async function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const index = state.uploadTargetIndex;
-      if (index < 0) return;
-      
-      state.uploadingIndex = index;
-      render();
-      
-      showUploadingOverlay(0);
-      
-      try {
-        const imageUrl = await uploadToImgur(file, function(percent) {
-          updateUploadProgress(percent);
-        });
-        state.items[index].image = imageUrl;
-        hideUploadingOverlay();
-        showToast('✅ 上傳成功！');
-      } catch (error) {
-        hideUploadingOverlay();
-        showToast('❌ 上傳失敗：' + (error.message || '請重試'));
-        console.error(error);
-      }
-      state.uploadingIndex = -1;
-      state.uploadTargetIndex = -1;
-      event.target.value = '';
-      render();
-    }
-    
-    function showUploadingOverlay(initialPercent) {
-      const overlay = document.createElement('div');
-      overlay.id = 'uploading-overlay';
-      overlay.innerHTML = 
-        '<div style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:300;">' +
-          '<div style="background:#fff;border-radius:20px;padding:40px 50px;text-align:center;box-shadow:0 10px 40px rgba(0,0,0,0.3);min-width:280px;">' +
-            '<div style="font-size:48px;margin-bottom:16px;">📤</div>' +
-            '<div style="font-size:18px;font-weight:600;color:#333;margin-bottom:20px;">圖片上傳中...</div>' +
-            '<div style="background:#eee;border-radius:10px;height:20px;overflow:hidden;margin-bottom:12px;">' +
-              '<div id="upload-progress-bar" style="background:linear-gradient(90deg,#f48fb1,#ec407a);height:100%;width:' + initialPercent + '%;transition:width 0.3s;border-radius:10px;"></div>' +
-            '</div>' +
-            '<div id="upload-progress-text" style="font-size:16px;font-weight:700;color:#ec407a;">' + initialPercent + '%</div>' +
-          '</div>' +
-        '</div>';
-      document.body.appendChild(overlay);
-    }
-    
-    function updateUploadProgress(percent) {
-      const bar = document.getElementById('upload-progress-bar');
-      const text = document.getElementById('upload-progress-text');
-      if (bar) bar.style.width = percent + '%';
-      if (text) text.textContent = percent + '%';
-    }
-    
-    function hideUploadingOverlay() {
-      const overlay = document.getElementById('uploading-overlay');
-      if (overlay) overlay.remove();
-    }
-    document.getElementById('file-input-camera').addEventListener('change', handleFileSelect);
-    document.getElementById('file-input-gallery').addEventListener('change', handleFileSelect);
+    // ====== Helper Functions ======
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      container.innerHTML = '<div class="toast">' + message + '</div>';
+      setTimeout(function() { container.innerHTML = ''; }, 2500);
+    }
 
-    // ====== Helper Functions ======
-    function showToast(message) {
-      const container = document.getElementById('toast-container');
-      container.innerHTML = '<div class="toast">' + message + '</div>';
-      setTimeout(function() { container.innerHTML = ''; }, 2500);
-    }
+    // ====== Renders ======
+    function renderModal() {
+      const container = document.getElementById('modal-container');
+      if (state.showUploadModal) {
+        container.innerHTML = 
+          '<div class="upload-modal" onclick="hideUploadModal()">' +
+            '<div class="upload-modal-content" onclick="event.stopPropagation()">' +
+              '<div class="upload-modal-title">📷 選擇圖片來源</div>' +
+              '<div class="upload-option" onclick="triggerCameraUpload()">' +
+                '<span class="upload-option-icon">📸</span>' +
+                '<span class="upload-option-text">拍照</span>' +
+              '</div>' +
+              '<div class="upload-option" onclick="triggerGalleryUpload()">' +
+                '<span class="upload-option-icon">🖼️</span>' +
+                '<span class="upload-option-text">從相簿選擇</span>' +
+              '</div>' +
+              '<button class="upload-modal-cancel" onclick="hideUploadModal()">取消</button>' +
+            '</div>' +
+          '</div>';
+      } else {
+        container.innerHTML = '';
+      }
+    }
 
-    // ====== Renders ======
-    function renderModal() {
-      const container = document.getElementById('modal-container');
-      if (state.showUploadModal) {
-        container.innerHTML = 
-          '<div class="upload-modal" onclick="hideUploadModal()">' +
-            '<div class="upload-modal-content" onclick="event.stopPropagation()">' +
-              '<div class="upload-modal-title">📷 選擇圖片來源</div>' +
-              '<div class="upload-option" onclick="triggerCameraUpload()">' +
-                '<span class="upload-option-icon">📸</span>' +
-                '<span class="upload-option-text">拍照</span>' +
-              '</div>' +
-              '<div class="upload-option" onclick="triggerGalleryUpload()">' +
-                '<span class="upload-option-icon">🖼️</span>' +
-                '<span class="upload-option-text">從相簿選擇</span>' +
-              '</div>' +
-              '<button class="upload-modal-cancel" onclick="hideUploadModal()">取消</button>' +
-            '</div>' +
-          '</div>';
-      } else {
-        container.innerHTML = '';
-      }
-    }
+    function render() {
+      const app = document.getElementById('app');
+      let content = '';
+      if (state.view === 'login') content = renderLogin();
+      else if (state.view === 'admin') content = renderAdmin();
+      else if (state.view === 'customer') content = renderCustomer();
+      else if (state.view === 'success') content = renderSuccess();
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      if (!urlParams.has('sheet') && state.isLoggedIn) {
+        content += renderBottomNav();
+      }
+      
+      app.innerHTML = content;
+    }
 
-    function render() {
-      const app = document.getElementById('app');
-      let content = '';
-      if (state.view === 'login') content = renderLogin();
-      else if (state.view === 'admin') content = renderAdmin();
-      else if (state.view === 'customer') content = renderCustomer();
-      else if (state.view === 'success') content = renderSuccess();
-      
-      const urlParams = new URLSearchParams(window.location.search);
-      if (!urlParams.has('sheet') && state.isLoggedIn) {
-        content += renderBottomNav();
-      }
-      
-      app.innerHTML = content;
-    }
+    function renderLogin() {
+      return '<div class="container" style="display:flex;align-items:center;justify-content:center;min-height:80vh;">' +
+          '<div class="card" style="width:100%;text-align:center;">' +
+            '<div style="font-size:60px;margin-bottom:20px;">🔒</div>' +
+            '<h1>管理員登入</h1>' +
+            '<p class="subtitle">請輸入密碼以進入後台</p>' +
+            '<div class="form-group">' +
+              '<input type="password" id="admin-password" placeholder="請輸入密碼" style="text-align:center;letter-spacing:4px;">' +
+            '</div>' +
+            '<button class="btn btn-primary" onclick="doLogin()">登入</button>' +
+          '</div>' +
+        '</div>';
+    }
 
-    function renderLogin() {
-      return '<div class="container" style="display:flex;align-items:center;justify-content:center;min-height:80vh;">' +
-          '<div class="card" style="width:100%;text-align:center;">' +
-            '<div style="font-size:60px;margin-bottom:20px;">🔒</div>' +
-            '<h1>管理員登入</h1>' +
-            '<p class="subtitle">請輸入密碼以進入後台</p>' +
-            '<div class="form-group">' +
-              '<input type="password" id="admin-password" placeholder="請輸入密碼" style="text-align:center;letter-spacing:4px;">' +
-            '</div>' +
-            '<button class="btn btn-primary" onclick="doLogin()">登入</button>' +
-          '</div>' +
-        '</div>';
-    }
+    function renderAdmin() {
+      if (state.adminMode === 'create' || !state.currentSheet) {
+        return renderCreateForm();
+      } else {
+        return renderStats();
+      }
+    }
 
-    function renderAdmin() {
-      if (state.adminMode === 'create' || !state.currentSheet) {
-        return renderCreateForm();
-      } else {
-        return renderStats();
-      }
-    }
+    function renderCreateForm() {
+      // 1. 準備下拉選單的選項
+      let sheetOptions = '<option value="">📂 切換至已建立的團購...</option>';
+      if (state.sheetList && state.sheetList.length > 0) {
+        state.sheetList.forEach(function(name) {
+          sheetOptions += '<option value="' + name + '">' + name + '</option>';
+        });
+      } else {
+        sheetOptions += '<option disabled>載入中或無資料...</option>';
+      }
 
-    function renderCreateForm() {
-      // 1. 準備下拉選單的選項
-      let sheetOptions = '<option value="">📂 切換至已建立的團購...</option>';
-      if (state.sheetList && state.sheetList.length > 0) {
-        state.sheetList.forEach(function(name) {
-          sheetOptions += '<option value="' + name + '">' + name + '</option>';
-        });
-      } else {
-        sheetOptions += '<option disabled>載入中或無資料...</option>';
-      }
+      // 2. 準備品項的 HTML (維持原樣)
+      let itemsHTML = '';
+      for (let index = 0; index < state.items.length; index++) {
+        const item = state.items[index];
+        const isUploading = state.uploadingIndex === index;
+        itemsHTML += 
+        '<div class="admin-item">' +
+          '<div class="admin-item-row">' +
+            '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:2">' +
+            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
+              '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center">' +
+              '<span style="font-size:12px;color:#666">正</span>' +
+            '</div>' +
+            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
+              '<input type="number" placeholder="候補" value="' + item.waitlist + '" onchange="updateItem(' + index + ', \'waitlist\', this.value)" style="text-align:center; color:#f59e0b; border-color:#fcd34d;">' +
+              '<span style="font-size:12px;color:#f59e0b">補</span>' +
+            '</div>' +
+            (state.items.length > 1 ? '<button class="remove-btn" onclick="removeItem(' + index + ')">×</button>' : '') +
+          '</div>' +
+          '<div class="admin-item-row">' +
+            '<div class="image-upload-area" style="flex:1">' +
+              (item.image ? 
+                '<img src="' + item.image + '" class="image-preview" onclick="showUploadOptions(' + index + ')">' :
+                '<div class="image-preview-placeholder" onclick="showUploadOptions(' + index + ')">📷</div>'
+              ) +
+              '<div class="image-input-wrapper">' +
+                '<input type="text" placeholder="或貼上圖片網址" value="' + item.image + '" onchange="updateItem(' + index + ', \'image\', this.value)" style="flex:1">' +
+                '<button class="upload-btn ' + (isUploading ? 'uploading' : '') + '" onclick="showUploadOptions(' + index + ')" ' + (isUploading ? 'disabled' : '') + '>' +
+                  (isUploading ? '上傳中...' : '上傳') +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          '<div class="admin-item-row">' +
+            '<textarea placeholder="商品簡介（選填）" onchange="updateItem(' + index + ', \'description\', this.value)">' + item.description + '</textarea>' +
+          '</div>' +
+        '</div>';
+      }
 
-      let itemsHTML = '';
-      for (let index = 0; index < state.items.length; index++) {
-        const item = state.items[index];
-        const isUploading = state.uploadingIndex === index;
-        itemsHTML += 
-        '<div class="admin-item">' +
-          '<div class="admin-item-row">' +
-            '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:2">' +
-            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
-              '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center">' +
-              '<span style="font-size:12px;color:#666">正</span>' +
-            '</div>' +
-            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
-              '<input type="number" placeholder="候補" value="' + item.waitlist + '" onchange="updateItem(' + index + ', \'waitlist\', this.value)" style="text-align:center; color:#f59e0b; border-color:#fcd34d;">' +
-              '<span style="font-size:12px;color:#f59e0b">補</span>' +
-            '</div>' +
-            (state.items.length > 1 ? '<button class="remove-btn" onclick="removeItem(' + index + ')">×</button>' : '') +
-          '</div>' +
-          '<div class="admin-item-row">' +
-            '<div class="image-upload-area" style="flex:1">' +
-              (item.image ? 
-                '<img src="' + item.image + '" class="image-preview" onclick="showUploadOptions(' + index + ')">' :
-                '<div class="image-preview-placeholder" onclick="showUploadOptions(' + index + ')">📷</div>'
-              ) +
-              '<div class="image-input-wrapper">' +
-                '<input type="text" placeholder="或貼上圖片網址" value="' + item.image + '" onchange="updateItem(' + index + ', \'image\', this.value)" style="flex:1">' +
-                '<button class="upload-btn ' + (isUploading ? 'uploading' : '') + '" onclick="showUploadOptions(' + index + ')" ' + (isUploading ? 'disabled' : '') + '>' +
-                  (isUploading ? '上傳中...' : '上傳') +
-                '</button>' +
-              '</div>' +
-            '</div>' +
-          '</div>' +
-          '<div class="admin-item-row">' +
-            '<textarea placeholder="商品簡介（選填）" onchange="updateItem(' + index + ', \'description\', this.value)">' + item.description + '</textarea>' +
-          '</div>' +
-        '</div>';
-      }
+      // 3. 回傳 HTML (加上頂部選單區塊)
+      return '<div class="container">' +
+          '<div class="card">' +
+            
+            // ★ 新增：頂部切換選單區塊 ★
+            '<div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px dashed #ddd;">' +
+              '<label style="color:#666;font-size:13px;margin-bottom:6px;">📂 管理現有團購</label>' +
+              '<select onchange="switchAdminSheet(this.value)" style="width:100%; font-weight:bold; font-size:16px; padding:12px; border:2px solid #ddd; border-radius:12px; background:#f9f9f9;">' +
+                 sheetOptions +
+              '</select>' +
+            '</div>' +
+            // ★ End ★
 
-      return '<div class="container">' +
-          '<div class="card">' +
-            
-            // ★ 新增：頂部切換選單區塊 ★
-            '<div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px dashed #ddd;">' +
-              '<label style="color:#666;font-size:13px;margin-bottom:6px;">📂 管理現有團購</label>' +
-              '<select onchange="switchAdminSheet(this.value)" style="width:100%; font-weight:bold; font-size:16px; padding:12px; border:2px solid #ddd; border-radius:12px; background:#f9f9f9;">' +
-                 sheetOptions +
-              '</select>' +
-            '</div>' +
-            // ★ End ★
+            '<h1>🛒 建立新團購</h1>' +
+            '<p class="subtitle">設定品項，一鍵產生表單</p>' +
+            '<div class="form-group">' +
+              '<label>團購標題</label>' +
+              '<input type="text" placeholder="例如：2/4 草莓蛋糕團" value="' + state.formTitle + '" onchange="state.formTitle=this.value">' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label>品項設定</label>' +
+              itemsHTML +
+            '</div>' +
+            '<button class="btn btn-outline" onclick="addItem()">+ 新增品項</button>' +
+            (state.error ? '<div class="error-msg">' + state.error + '</div>' : '') +
+            '<button class="btn btn-primary" onclick="createForm()" ' + (state.loading ? 'disabled' : '') + '>' +
+              (state.loading ? '處理中...' : '🚀 產生表單') +
+            '</button>' +
+            
+            // 登出按鈕也補一個在這裡
+            '<div style="margin-top:20px; text-align:center;">' +
+               '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
+            '</div>' +
 
-            '<h1>🛒 建立新團購</h1>' +
-            '<p class="subtitle">設定品項，一鍵產生表單</p>' +
-            '<div class="form-group">' +
-              '<label>團購標題</label>' +
-              '<input type="text" placeholder="例如：2/4 草莓蛋糕團" value="' + state.formTitle + '" onchange="state.formTitle=this.value">' +
-            '</div>' +
-            '<div class="form-group">' +
-              '<label>品項設定</label>' +
-              itemsHTML +
-            '</div>' +
-            '<button class="btn btn-outline" onclick="addItem()">+ 新增品項</button>' +
-            (state.error ? '<div class="error-msg">' + state.error + '</div>' : '') +
-            '<button class="btn btn-primary" onclick="createForm()" ' + (state.loading ? 'disabled' : '') + '>' +
-              (state.loading ? '處理中...' : '🚀 產生表單') +
-            '</button>' +
-            
-            // 登出按鈕也補一個在這裡
-            '<div style="margin-top:20px; text-align:center;">' +
-               '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
-            '</div>' +
+          '</div>' +
+        '</div>';
+    }
 
-          '</div>' +
-        '</div>';
-    }
+    function renderStats() {
+      if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
+      
+      if (!state.formConfig) {
+        return '<div class="container">' +
+            '<div class="empty-state">' +
+              '<div class="empty-icon">📋</div>' +
+              '<div>找不到表單資料</div>' +
+              '<div style="font-size:14px; color:#999; margin-bottom:20px;">可能該開團分頁已被刪除</div>' +
+              '<button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="newForm()">' +
+                '+ 開新團' +
+              '</button>' +
+            '</div>' +
+          '</div>';
+      }
 
-    function renderStats() {
-      if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
-      
-      if (!state.formConfig) {
-        return '<div class="container">' +
-            '<div class="empty-state">' +
-              '<div class="empty-icon">📋</div>' +
-              '<div>找不到表單資料</div>' +
-              '<div style="font-size:14px; color:#999; margin-bottom:20px;">可能該開團分頁已被刪除</div>' +
-              '<button class="btn btn-primary" style="width: auto; padding: 10px 24px;" onclick="newForm()">' +
-                '+ 開新團' +
-              '</button>' +
-            '</div>' +
-          '</div>';
-      }
+      const currentStatus = state.formConfig.status || 'OPEN';
+      const isClosed = currentStatus === 'CLOSED';
 
-      const currentStatus = state.formConfig.status || 'OPEN';
-      const isClosed = currentStatus === 'CLOSED';
+      const ordersByStore = {};
+      const ordersByItem = {};
+      state.orders.forEach(function(order) {
+        if (!ordersByStore[order.store]) ordersByStore[order.store] = [];
+        ordersByStore[order.store].push(order);
+        const cleanName = order.item.replace(' (候補)', '');
+        if (!ordersByItem[order.item]) ordersByItem[order.item] = 0;
+        ordersByItem[order.item] += order.quantity;
+      });
+      const uniquePhones = new Set(state.orders.map(function(o) { return o.phone; }));
+      
+      const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
+      
+      let itemStatsHTML = '';
+      state.formConfig.items.forEach(function(item) {
+        const ordered = ordersByItem[item.name] || 0;
+        const limit = parseInt(item.limit);
+        const waitlist = parseInt(item.waitlist || 0);
+        const totalLimit = limit + waitlist;
 
-      const ordersByStore = {};
-      const ordersByItem = {};
-      state.orders.forEach(function(order) {
-        if (!ordersByStore[order.store]) ordersByStore[order.store] = [];
-        ordersByStore[order.store].push(order);
-        const cleanName = order.item.replace(' (候補)', '');
-        if (!ordersByItem[order.item]) ordersByItem[order.item] = 0;
-        ordersByItem[order.item] += order.quantity;
-      });
-      const uniquePhones = new Set(state.orders.map(function(o) { return o.phone; }));
-      
-      const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
-      
-      let itemStatsHTML = '';
-      state.formConfig.items.forEach(function(item) {
-        const ordered = ordersByItem[item.name] || 0;
-        const limit = parseInt(item.limit);
-        const waitlist = parseInt(item.waitlist || 0);
-        const totalLimit = limit + waitlist;
+        let statusText = '';
+        let barColorClass = 'normal';
+        
+        if (ordered < limit) {
+          statusText = ordered + ' / ' + limit + ' (正取)';
+        } else if (ordered < totalLimit) {
+          statusText = ordered + ' / ' + totalLimit + ' (進入候補 ' + (ordered - limit) + '/' + waitlist + ')';
+          barColorClass = 'waitlist';
+        } else {
+          statusText = '已額滿 (' + ordered + '/' + totalLimit + ')';
+          barColorClass = 'full';
+        }
 
-        let statusText = '';
-        let barColorClass = 'normal';
-        
-        if (ordered < limit) {
-          statusText = ordered + ' / ' + limit + ' (正取)';
-        } else if (ordered < totalLimit) {
-          statusText = ordered + ' / ' + totalLimit + ' (進入候補 ' + (ordered - limit) + '/' + waitlist + ')';
-          barColorClass = 'waitlist';
-        } else {
-          statusText = '已額滿 (' + ordered + '/' + totalLimit + ')';
-          barColorClass = 'full';
-        }
+        const percentage = Math.min((ordered / totalLimit) * 100, 100);
 
-        const percentage = Math.min((ordered / totalLimit) * 100, 100);
+        itemStatsHTML += 
+          '<div style="margin-bottom:16px; border-bottom:1px dashed #eee; padding-bottom:12px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
+              '<span style="font-weight:500;color:#333">' + item.name + '</span>' +
+              '<button onclick="editItemLimit(\'' + item.name + '\', ' + limit + ', ' + waitlist + ')" style="padding:4px 8px; font-size:12px; border:1px solid #ddd; background:#fff; border-radius:6px; cursor:pointer;">✏️ 修改</button>' +
+            '</div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">' +
+              '<span style="color:#666">進度：</span>' +
+              '<span style="font-weight:bold; color:' + (barColorClass === 'full' ? '#ef4444' : (barColorClass === 'waitlist' ? '#f59e0b' : '#10b981')) + '">' + statusText + '</span>' +
+            '</div>' +
+            '<div class="progress-bar">' +
+              '<div class="progress-fill ' + barColorClass + '" style="width:' + percentage + '%"></div>' +
+            '</div>' +
+          '</div>';
+      });
 
-        itemStatsHTML += 
-          '<div style="margin-bottom:16px; border-bottom:1px dashed #eee; padding-bottom:12px;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
-              '<span style="font-weight:500;color:#333">' + item.name + '</span>' +
-              '<button onclick="editItemLimit(\'' + item.name + '\', ' + limit + ', ' + waitlist + ')" style="padding:4px 8px; font-size:12px; border:1px solid #ddd; background:#fff; border-radius:6px; cursor:pointer;">✏️ 修改</button>' +
-            '</div>' +
-            '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">' +
-              '<span style="color:#666">進度：</span>' +
-              '<span style="font-weight:bold; color:' + (barColorClass === 'full' ? '#ef4444' : (barColorClass === 'waitlist' ? '#f59e0b' : '#10b981')) + '">' + statusText + '</span>' +
-            '</div>' +
-            '<div class="progress-bar">' +
-              '<div class="progress-fill ' + barColorClass + '" style="width:' + percentage + '%"></div>' +
-            '</div>' +
-          '</div>';
-      });
+      let storeOrdersHTML = '';
+      Object.keys(ordersByStore).forEach(function(store) {
+        const orders = ordersByStore[store];
+        const ordersByPhone = {};
+        orders.forEach(function(order) {
+          if (!ordersByPhone[order.phone]) ordersByPhone[order.phone] = { phone: order.phone, items: {} };
+          if (!ordersByPhone[order.phone].items[order.item]) ordersByPhone[order.phone].items[order.item] = 0;
+          ordersByPhone[order.phone].items[order.item] += order.quantity;
+        });
+        let orderRows = '';
+        Object.values(ordersByPhone).forEach(function(o) {
+          const itemsArr = [];
+          Object.keys(o.items).forEach(function(name) {
+            itemsArr.push(name + '×' + o.items[name]);
+          });
+          const itemsText = itemsArr.join(', ');
+          orderRows += '<div class="order-row"><span class="order-phone">...' + o.phone + '</span><span class="order-items">' + itemsText + '</span></div>';
+        });
+        storeOrdersHTML += 
+          '<div class="order-group">' +
+            '<div class="order-group-header">' +
+              '<span class="order-group-title">📍 ' + store + '</span>' +
+              '<span class="order-group-badge">' + Object.keys(ordersByPhone).length + ' 人</span>' +
+            '</div>' +
+            orderRows +
+          '</div>';
+      });
 
-      let storeOrdersHTML = '';
-      Object.keys(ordersByStore).forEach(function(store) {
-        const orders = ordersByStore[store];
-        const ordersByPhone = {};
-        orders.forEach(function(order) {
-          if (!ordersByPhone[order.phone]) ordersByPhone[order.phone] = { phone: order.phone, items: {} };
-          if (!ordersByPhone[order.phone].items[order.item]) ordersByPhone[order.phone].items[order.item] = 0;
-          ordersByPhone[order.phone].items[order.item] += order.quantity;
-        });
-        let orderRows = '';
-        Object.values(ordersByPhone).forEach(function(o) {
-          const itemsArr = [];
-          Object.keys(o.items).forEach(function(name) {
-            itemsArr.push(name + '×' + o.items[name]);
-          });
-          const itemsText = itemsArr.join(', ');
-          orderRows += '<div class="order-row"><span class="order-phone">...' + o.phone + '</span><span class="order-items">' + itemsText + '</span></div>';
-        });
-        storeOrdersHTML += 
-          '<div class="order-group">' +
-            '<div class="order-group-header">' +
-              '<span class="order-group-title">📍 ' + store + '</span>' +
-              '<span class="order-group-badge">' + Object.keys(ordersByPhone).length + ' 人</span>' +
-            '</div>' +
-            orderRows +
-          '</div>';
-      });
+      const customerLink = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
+      const displayLink = state.shortUrl || customerLink;
+      const isShortUrl = !!state.shortUrl;
 
-      const customerLink = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
-      const displayLink = state.shortUrl || customerLink;
-      const isShortUrl = !!state.shortUrl;
+      // 製作下拉選單的 HTML
+      let sheetOptions = '';
+      if (state.sheetList && state.sheetList.length > 0) {
+        state.sheetList.forEach(function(name) {
+          sheetOptions += '<option value="' + name + '"' + (state.currentSheet === name ? ' selected' : '') + '>' + name + '</option>';
+        });
+      } else {
+        sheetOptions = '<option>' + state.currentSheet + '</option>';
+      }
 
-      // 製作下拉選單的 HTML
-      let sheetOptions = '';
-      if (state.sheetList && state.sheetList.length > 0) {
-        state.sheetList.forEach(function(name) {
-          sheetOptions += '<option value="' + name + '"' + (state.currentSheet === name ? ' selected' : '') + '>' + name + '</option>';
-        });
-      } else {
-        sheetOptions = '<option>' + state.currentSheet + '</option>';
-      }
+      return '<div class="container">' +
+          '<div class="card">' +
+            '<div style="margin-bottom:20px">' +
+              '<label style="color:#666;font-size:12px;margin-bottom:4px;">📂 切換團購活動</label>' +
+              '<div style="display:flex; gap:10px;">' +
+                '<select onchange="switchAdminSheet(this.value)" style="flex:1; font-weight:bold; font-size:18px; padding:10px;">' +
+                  sheetOptions +
+                '</select>' +
+                '<button class="btn btn-primary" style="width:auto;padding:10px 16px;font-size:14px;margin:0;white-space:nowrap;" onclick="newForm()">+ 開新團</button>' +
+              '</div>' +
+              '<div style="display:flex;justify-content:flex-end;margin-top:10px;">' +
+                '<button class="btn" style="width:auto;padding:6px 12px;font-size:14px;margin:0;background:' + (isClosed ? '#10b981' : '#ef4444') + ';color:#fff" onclick="toggleFormStatus(\'' + (isClosed ? 'OPEN' : 'CLOSED') + '\')">' + 
+                  (isClosed ? '🟢 開啟接單' : '🔴 停止接單') + 
+                '</button>' +
+              '</div>' +
+            '</div>' +
 
-      return '<div class="container">' +
-          '<div class="card">' +
-            '<div style="margin-bottom:20px">' +
-              '<label style="color:#666;font-size:12px;margin-bottom:4px;">📂 切換團購活動</label>' +
-              '<div style="display:flex; gap:10px;">' +
-                '<select onchange="switchAdminSheet(this.value)" style="flex:1; font-weight:bold; font-size:18px; padding:10px;">' +
-                  sheetOptions +
-                '</select>' +
-                '<button class="btn btn-primary" style="width:auto;padding:10px 16px;font-size:14px;margin:0;white-space:nowrap;" onclick="newForm()">+ 開新團</button>' +
-              '</div>' +
-              '<div style="display:flex;justify-content:flex-end;margin-top:10px;">' +
-                '<button class="btn" style="width:auto;padding:6px 12px;font-size:14px;margin:0;background:' + (isClosed ? '#10b981' : '#ef4444') + ';color:#fff" onclick="toggleFormStatus(\'' + (isClosed ? 'OPEN' : 'CLOSED') + '\')">' + 
-                  (isClosed ? '🟢 開啟接單' : '🔴 停止接單') + 
-                '</button>' +
-              '</div>' +
-            '</div>' +
+            (isClosed ? '<div style="background:#fee2e2;color:#b91c1c;padding:10px;border-radius:8px;text-align:center;margin-bottom:16px;font-weight:bold;">⛔ 此表單目前已停止接單</div>' : '') +
 
-            (isClosed ? '<div style="background:#fee2e2;color:#b91c1c;padding:10px;border-radius:8px;text-align:center;margin-bottom:16px;font-weight:bold;">⛔ 此表單目前已停止接單</div>' : '') +
+            '<div style="margin-bottom:24px">' +
+              '<label style="margin-bottom:12px;color:#666">品項統計 (點擊✏️可修改數量)</label>' +
+              itemStatsHTML +
+            '</div>' +
+            '<div class="stat-card">' +
+              '<div class="stat-label">訂購人數</div>' +
+              '<div class="stat-value">' + uniquePhones.size + '</div>' +
+            '</div>' +
+            
+            '<div class="link-box">' +
+              '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）' + 
+                (isShortUrl ? ' <span style="background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:6px;">已轉為短網址</span>' : '') + 
+              '</div>' +
+              '<div class="link-row">' +
+                '<input type="text" class="link-input" value="' + displayLink + '" readonly id="customerLink">' +
+                '<button class="copy-btn" onclick="copyLink()">複製連結</button>' +
+              '</div>' +
+              (!isShortUrl ? 
+                '<button class="btn-generate-short" onclick="generateShortUrl()">' +
+                  '🚀 點此產生短網址給客人填寫 (推薦)' + 
+                '</button>' : ''
+              ) +
+            '</div>' +
 
-            '<div style="margin-bottom:24px">' +
-              '<label style="margin-bottom:12px;color:#666">品項統計 (點擊✏️可修改數量)</label>' +
-              itemStatsHTML +
-            '</div>' +
-            '<div class="stat-card">' +
-              '<div class="stat-label">訂購人數</div>' +
-              '<div class="stat-value">' + uniquePhones.size + '</div>' +
-            '</div>' +
-            
-            '<div class="link-box">' +
-              '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）' + 
-                (isShortUrl ? ' <span style="background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:6px;">已轉為短網址</span>' : '') + 
-              '</div>' +
-              '<div class="link-row">' +
-                '<input type="text" class="link-input" value="' + displayLink + '" readonly id="customerLink">' +
-                '<button class="copy-btn" onclick="copyLink()">複製連結</button>' +
-              '</div>' +
-              (!isShortUrl ? 
-                '<button class="btn-generate-short" onclick="generateShortUrl()">' +
-                  '🚀 點此產生短網址給客人填寫 (推薦)' + 
-                '</button>' : ''
-              ) +
-            '</div>' +
+            '<div class="card" style="margin-top: 20px;">' +
+              '<h2 style="font-size:16px; margin-bottom:12px;">📊 後台報表作業</h2>' +
+              '<button class="btn btn-outline" onclick="triggerPivotTable()">' +
+                '⚡ 更新分店統計表 (寫入 Google Sheet)' +
+              '</button>' +
+            '</div>' +
 
-            '<div class="card" style="margin-top: 20px;">' +
-              '<h2 style="font-size:16px; margin-bottom:12px;">📊 後台報表作業</h2>' +
-              '<button class="btn btn-outline" onclick="triggerPivotTable()">' +
-                '⚡ 更新分店統計表 (寫入 Google Sheet)' +
-              '</button>' +
-            '</div>' +
+          '</div>' +
+          (storeOrdersHTML ? '<div class="card"><h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>' + storeOrdersHTML + '</div>' : '<div class="empty-state"><div class="empty-icon">📭</div><div>還沒有訂單</div></div>') +
+          
+          '<div style="margin-top:20px; text-align:center;">' +
+             '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
+          '</div>' +
 
-          '</div>' +
-          (storeOrdersHTML ? '<div class="card"><h2 style="font-size:18px;margin-bottom:16px;color:#333;font-weight:700">📋 訂單明細</h2>' + storeOrdersHTML + '</div>' : '<div class="empty-state"><div class="empty-icon">📭</div><div>還沒有訂單</div></div>') +
-          
-          '<div style="margin-top:20px; text-align:center;">' +
-             '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
-          '</div>' +
+        '</div>';
+    }
+    
+    function renderCustomer() {
+      if (!state.currentSheet) return '<div class="container"><div class="empty-state"><div class="empty-icon">📋</div><div>尚未開團</div><div style="margin-top:8px;font-size:14px">請等待團主分享連結</div></div></div>';
+      if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
+      if (!state.formConfig) return '<div class="container"><div class="empty-state"><div class="empty-icon">❌</div><div>找不到此團購表單</div></div></div>';
 
-        '</div>';
-    }
-    
-    function renderCustomer() {
-      if (!state.currentSheet) return '<div class="container"><div class="empty-state"><div class="empty-icon">📋</div><div>尚未開團</div><div style="margin-top:8px;font-size:14px">請等待團主分享連結</div></div></div>';
-      if (state.loading) return '<div class="container"><div class="loading"><div class="spinner"></div><div>載入中...</div></div></div>';
-      if (!state.formConfig) return '<div class="container"><div class="empty-state"><div class="empty-icon">❌</div><div>找不到此團購表單</div></div></div>';
+      if (state.formConfig.status === 'CLOSED') {
+        return '<div class="container">' +
+          '<div class="card" style="text-align:center;padding:40px 20px;">' +
+            '<div style="font-size:48px;margin-bottom:20px;">⛔</div>' +
+            '<h2 style="margin-bottom:10px;color:#333;">表單已截止</h2>' +
+            '<p style="color:#666;">謝謝您的支持，本次團購已停止接單。</p>' +
+          '</div>' +
+        '</div>';
+      }
 
-      if (state.formConfig.status === 'CLOSED') {
-        return '<div class="container">' +
-          '<div class="card" style="text-align:center;padding:40px 20px;">' +
-            '<div style="font-size:48px;margin-bottom:20px;">⛔</div>' +
-            '<h2 style="margin-bottom:10px;color:#333;">表單已截止</h2>' +
-            '<p style="color:#666;">謝謝您的支持，本次團購已停止接單。</p>' +
-          '</div>' +
-        '</div>';
-      }
+      let storeOptions = '';
+      STORES.forEach(function(s) {
+        storeOptions += '<option value="' + s + '"' + (state.selectedStore === s ? ' selected' : '') + '>' + s + '</option>';
+      });
 
-      let storeOptions = '';
-      STORES.forEach(function(s) {
-        storeOptions += '<option value="' + s + '"' + (state.selectedStore === s ? ' selected' : '') + '>' + s + '</option>';
-      });
+      let itemsHTML = '';
+      state.formConfig.items.forEach(function(item) {
+        const limit = parseInt(item.limit);
+        const waitlist = parseInt(item.waitlist || 0);
+        const ordered = item.ordered || 0;
 
-      let itemsHTML = '';
-      state.formConfig.items.forEach(function(item) {
-        const limit = parseInt(item.limit);
-        const waitlist = parseInt(item.waitlist || 0);
-        const ordered = item.ordered || 0;
+        const regularRemaining = Math.max(0, limit - ordered);
+        const waitlistUsed = Math.max(0, ordered - limit);
+        const waitlistRemaining = Math.max(0, waitlist - waitlistUsed);
 
-        const regularRemaining = Math.max(0, limit - ordered);
-        const waitlistUsed = Math.max(0, ordered - limit);
-        const waitlistRemaining = Math.max(0, waitlist - waitlistUsed);
+        const isFullySoldOut = (regularRemaining === 0 && waitlistRemaining === 0);
+        const selectedQty = state.selectedItems[item.name] || 0;
+        
+        let statusBadge = '';
+        let cardStyle = '';
+        let btnStyle = '';
 
-        const isFullySoldOut = (regularRemaining === 0 && waitlistRemaining === 0);
-        const selectedQty = state.selectedItems[item.name] || 0;
-        
-        let statusBadge = '';
-        let cardStyle = '';
-        let btnStyle = '';
+        if (isFullySoldOut) {
+          statusBadge = '<div class="item-stock sold-out">❌ 已額滿 (售完)</div>';
+          cardStyle = 'border-color:#ffcccc; background:#fff0f0;';
+        } else if (regularRemaining > 0) {
+          statusBadge = `
+            <div class="item-stock available">
+              🔥 正取剩 <span style="font-weight:800;font-size:15px;">${regularRemaining}</span> 份
+              ${waitlist > 0 ? `<span style="color:#f59e0b; font-size:12px; margin-left:4px;">(候補尚有 ${waitlistRemaining})</span>` : ''}
+            </div>`;
+        } else {
+          statusBadge = `
+            <div class="item-stock" style="color:#d97706; font-weight:bold;">
+              ⚠️ 正取已滿，候補剩 ${waitlistRemaining} 份
+            </div>`;
+          cardStyle = 'border-color:#fcd34d; background:#fffbeb;'; 
+          btnStyle = 'background:#f59e0b; border-color:#f59e0b;';
+        }
 
-        if (isFullySoldOut) {
-          statusBadge = '<div class="item-stock sold-out">❌ 已額滿 (售完)</div>';
-          cardStyle = 'border-color:#ffcccc; background:#fff0f0;';
-        } else if (regularRemaining > 0) {
-          statusBadge = `
-            <div class="item-stock available">
-              🔥 正取剩 <span style="font-weight:800;font-size:15px;">${regularRemaining}</span> 份
-              ${waitlist > 0 ? `<span style="color:#f59e0b; font-size:12px; margin-left:4px;">(候補尚有 ${waitlistRemaining})</span>` : ''}
-            </div>`;
-        } else {
-          statusBadge = `
-            <div class="item-stock" style="color:#d97706; font-weight:bold;">
-              ⚠️ 正取已滿，候補剩 ${waitlistRemaining} 份
-            </div>`;
-          cardStyle = 'border-color:#fcd34d; background:#fffbeb;'; 
-          btnStyle = 'background:#f59e0b; border-color:#f59e0b;';
-        }
+        const totalRemaining = regularRemaining + waitlistRemaining;
 
-        const totalRemaining = regularRemaining + waitlistRemaining;
+        itemsHTML += 
+          '<div class="item-card" style="' + cardStyle + '">' +
+            '<div class="item-header">' +
+              (item.image ? '<img src="' + item.image + '" class="item-image" onerror="this.style.display=\'none\'">' : '<div class="item-image-placeholder">🛍️</div>') +
+              '<div class="item-info">' +
+                '<div class="item-name">' + item.name + '</div>' +
+                (item.description ? '<div class="item-desc">' + item.description + '</div>' : '') +
+                statusBadge +
+              '</div>' +
+            '</div>' +
+            (!isFullySoldOut ? 
+              '<div class="item-controls">' +
+                '<button class="qty-btn" onclick="changeQty(\'' + item.name + '\', -1)" ' + (selectedQty <= 0 ? 'disabled' : '') + '>−</button>' +
+                '<span class="qty-display">' + selectedQty + '</span>' +
+                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name + '\', 1)" ' + (selectedQty >= totalRemaining ? 'disabled' : '') + ' style="' + btnStyle + '">+</button>' +
+              '</div>' : '') +
+          '</div>';
+      });
 
-        itemsHTML += 
-          '<div class="item-card" style="' + cardStyle + '">' +
-            '<div class="item-header">' +
-              (item.image ? '<img src="' + item.image + '" class="item-image" onerror="this.style.display=\'none\'">' : '<div class="item-image-placeholder">🛍️</div>') +
-              '<div class="item-info">' +
-                '<div class="item-name">' + item.name + '</div>' +
-                (item.description ? '<div class="item-desc">' + item.description + '</div>' : '') +
-                statusBadge +
-              '</div>' +
-            '</div>' +
-            (!isFullySoldOut ? 
-              '<div class="item-controls">' +
-                '<button class="qty-btn" onclick="changeQty(\'' + item.name + '\', -1)" ' + (selectedQty <= 0 ? 'disabled' : '') + '>−</button>' +
-                '<span class="qty-display">' + selectedQty + '</span>' +
-                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name + '\', 1)" ' + (selectedQty >= totalRemaining ? 'disabled' : '') + ' style="' + btnStyle + '">+</button>' +
-              '</div>' : '') +
-          '</div>';
-      });
+      const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
 
-      const displayTitle = state.formConfig.title.replace(/\s*\(\d+\)$/, '');
+      return '<div class="container">' +
+          '<div class="brand-header">' +
+            '<div class="brand-logo">' +
+              '<img src="https://i.ibb.co/RTfWybqw/image.png" alt="Logo">' +
+            '</div>' +
+            '<div class="brand-name">包子媽生鮮小舖</div>' +
+            '<div class="group-title">' + displayTitle + '</div>' +
+          '</div>' +
+          '<div class="card">' +
+            '<p class="subtitle">請填寫以下資料完成登記</p>' +
+            '<div class="form-group">' +
+              '<label>📍 取貨分店</label>' +
+              '<select onchange="state.selectedStore=this.value;state.error=\'\';render()">' +
+                '<option value="">請選擇分店</option>' +
+                storeOptions +
+              '</select>' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label>📱 電話後六碼</label>' +
+              '<input type="tel" placeholder="例如：123456" maxlength="6" value="' + state.phone + '" oninput="state.phone=this.value.slice(0,6);state.error=\'\'" style="letter-spacing:4px;text-align:center">' +
+            '</div>' +
+            '<div class="form-group">' +
+              '<label>🛒 選擇品項</label>' +
+              itemsHTML +
+            '</div>' +
+            (state.error ? '<div class="error-msg">' + state.error + '</div>' : '') +
+            '<button class="btn btn-primary" onclick="submitOrder()" ' + (state.loading ? 'disabled' : '') + '>' +
+              (state.loading ? '送出中...' : '✓ 確認登記') +
+            '</button>' +
+          '</div>' +
+        '</div>';
+    }
 
-      return '<div class="container">' +
-          '<div class="brand-header">' +
-            '<div class="brand-logo">' +
-              '<img src="https://i.ibb.co/RTfWybqw/image.png" alt="Logo">' +
-            '</div>' +
-            '<div class="brand-name">包子媽生鮮小舖</div>' +
-            '<div class="group-title">' + displayTitle + '</div>' +
-          '</div>' +
-          '<div class="card">' +
-            '<p class="subtitle">請填寫以下資料完成登記</p>' +
-            '<div class="form-group">' +
-              '<label>📍 取貨分店</label>' +
-              '<select onchange="state.selectedStore=this.value;state.error=\'\';render()">' +
-                '<option value="">請選擇分店</option>' +
-                storeOptions +
-              '</select>' +
-            '</div>' +
-            '<div class="form-group">' +
-              '<label>📱 電話後六碼</label>' +
-              '<input type="tel" placeholder="例如：123456" maxlength="6" value="' + state.phone + '" oninput="state.phone=this.value.slice(0,6);state.error=\'\'" style="letter-spacing:4px;text-align:center">' +
-            '</div>' +
-            '<div class="form-group">' +
-              '<label>🛒 選擇品項</label>' +
-              itemsHTML +
-            '</div>' +
-            (state.error ? '<div class="error-msg">' + state.error + '</div>' : '') +
-            '<button class="btn btn-primary" onclick="submitOrder()" ' + (state.loading ? 'disabled' : '') + '>' +
-              (state.loading ? '送出中...' : '✓ 確認登記') +
-            '</button>' +
-          '</div>' +
-        '</div>';
-    }
+    function renderSuccess() {
+      const info = state.successInfo || {};
+      let itemsHTML = '';
+      if (info.items) {
+        Object.keys(info.items).forEach(function(name) {
+          const qty = info.items[name];
+          if (qty > 0) {
+            itemsHTML += '<div class="success-item">' + name + ' × ' + qty + '</div>';
+          }
+        });
+      }
+      return '<div class="container">' +
+          '<div class="success-screen">' +
+            '<div class="success-content">' +
+              '<div class="success-icon-container">' +
+                '<svg class="success-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' +
+                  '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>' +
+                '</svg>' +
+              '</div>' +
+              '<h2 class="success-title">登記成功！</h2>' +
+              '<div class="success-info">取貨分店：' + info.store + '<br>電話末六碼：' + info.phone + '</div>' +
+              '<div class="success-items">' + itemsHTML + '</div>' +
+              '<button class="btn btn-primary" style="margin-top:24px;" onclick="resetCustomerForm()">繼續登記其他品項</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+    }
 
-    function renderSuccess() {
-      const info = state.successInfo || {};
-      let itemsHTML = '';
-      if (info.items) {
-        Object.keys(info.items).forEach(function(name) {
-          const qty = info.items[name];
-          if (qty > 0) {
-            itemsHTML += '<div class="success-item">' + name + ' × ' + qty + '</div>';
-          }
-        });
-      }
-      return '<div class="container">' +
-          '<div class="success-screen">' +
-            '<div class="success-content">' +
-              '<div class="success-icon-container">' +
-                '<svg class="success-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' +
-                  '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>' +
-                '</svg>' +
-              '</div>' +
-              '<h2 class="success-title">登記成功！</h2>' +
-              '<div class="success-info">取貨分店：' + info.store + '<br>電話末六碼：' + info.phone + '</div>' +
-              '<div class="success-items">' + itemsHTML + '</div>' +
-              '<button class="btn btn-primary" style="margin-top:24px;" onclick="resetCustomerForm()">繼續登記其他品項</button>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-    }
+    function renderBottomNav() {
+      return '<div class="bottom-nav">' +
+          '<button class="nav-btn ' + (state.view === 'admin' ? 'active' : '') + '" onclick="switchView(\'admin\')">👤 管理</button>' +
+          '<button class="nav-btn ' + (state.view === 'customer' || state.view === 'success' ? 'active' : '') + '" onclick="switchView(\'customer\')">🛒 客人</button>' +
+        '</div>';
+    }
 
-    function renderBottomNav() {
-      return '<div class="bottom-nav">' +
-          '<button class="nav-btn ' + (state.view === 'admin' ? 'active' : '') + '" onclick="switchView(\'admin\')">👤 管理</button>' +
-          '<button class="nav-btn ' + (state.view === 'customer' || state.view === 'success' ? 'active' : '') + '" onclick="switchView(\'customer\')">🛒 客人</button>' +
-        '</div>';
-    }
+    // ====== Actions ======
+    function switchView(view) {
+      state.view = view;
+      state.error = '';
+      if (view === 'customer' && state.currentSheet) loadFormData();
+      else if (view === 'admin' && state.currentSheet && state.adminMode === 'stats') loadOrders();
+      render();
+    }
 
-    // ====== Actions ======
-    function switchView(view) {
-      state.view = view;
-      state.error = '';
-      if (view === 'customer' && state.currentSheet) loadFormData();
-      else if (view === 'admin' && state.currentSheet && state.adminMode === 'stats') loadOrders();
-      render();
-    }
+    function addItem() {
+      state.items.push({ name: '', limit: 30, waitlist: 0, image: '', description: '' });
+      render();
+    }
 
-    function addItem() {
-      state.items.push({ name: '', limit: 30, waitlist: 0, image: '', description: '' });
-      render();
-    }
+    function removeItem(index) {
+      if (state.items.length > 1) {
+        state.items.splice(index, 1);
+        render();
+      }
+    }
 
-    function removeItem(index) {
-      if (state.items.length > 1) {
-        state.items.splice(index, 1);
-        render();
-      }
-    }
+    function updateItem(index, field, value) {
+      state.items[index][field] = (field === 'limit' || field === 'waitlist') ? (parseInt(value) || 0) : value;
+      if (field === 'image') render();
+    }
 
-    function updateItem(index, field, value) {
-      state.items[index][field] = (field === 'limit' || field === 'waitlist') ? (parseInt(value) || 0) : value;
-      if (field === 'image') render();
-    }
+    async function createForm() {
+      const validItems = state.items.filter(function(item) { return item.name.trim(); });
+      if (validItems.length === 0) {
+        state.error = '請至少填寫一個品項名稱';
+        render();
+        return;
+      }
+      state.loading = true;
+      state.error = '';
+      render();
+      const formTitle = state.formTitle || new Date().toLocaleDateString('zh-TW') + ' 開團';
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'createForm', formTitle: formTitle, items: validItems, stores: STORES })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.currentSheet = result.sheetName;
+          state.formConfig = result.formConfig;
+          state.adminMode = 'stats';
+          state.orders = [];
+          localStorage.setItem('currentSheet', state.currentSheet);
+          showToast('✅ 開團成功！');
+        } else {
+          state.error = result.error || '建立失敗，請重試';
+        }
+      } catch (error) {
+        state.currentSheet = formTitle;
+        state.formConfig = { title: formTitle, items: validItems.map(function(item) { return Object.assign({}, item, { ordered: 0, remaining: item.limit }); }), stores: STORES };
+        state.adminMode = 'stats';
+        state.orders = [];
+        localStorage.setItem('currentSheet', state.currentSheet);
+        showToast('✅ 開團成功！');
+      }
+      state.loading = false;
+      render();
+    }
 
-    async function createForm() {
-      const validItems = state.items.filter(function(item) { return item.name.trim(); });
-      if (validItems.length === 0) {
-        state.error = '請至少填寫一個品項名稱';
-        render();
-        return;
-      }
-      state.loading = true;
-      state.error = '';
-      render();
-      const formTitle = state.formTitle || new Date().toLocaleDateString('zh-TW') + ' 開團';
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'createForm', formTitle: formTitle, items: validItems, stores: STORES })
-        });
-        const result = await response.json();
-        if (result.success) {
-          state.currentSheet = result.sheetName;
-          state.formConfig = result.formConfig;
-          state.adminMode = 'stats';
-          state.orders = [];
-          localStorage.setItem('currentSheet', state.currentSheet);
-          showToast('✅ 開團成功！');
-        } else {
-          state.error = result.error || '建立失敗，請重試';
-        }
-      } catch (error) {
-        state.currentSheet = formTitle;
-        state.formConfig = { title: formTitle, items: validItems.map(function(item) { return Object.assign({}, item, { ordered: 0, remaining: item.limit }); }), stores: STORES };
-        state.adminMode = 'stats';
-        state.orders = [];
-        localStorage.setItem('currentSheet', state.currentSheet);
-        showToast('✅ 開團成功！');
-      }
-      state.loading = false;
-      render();
-    }
+    function newForm() {
+      state.adminMode = 'create';
+      state.formTitle = '';
+      state.items = [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }];
+      state.error = '';
+      state.shortUrl = '';
+      localStorage.removeItem('shortUrl');
+      render();
+    }
 
-    function newForm() {
-      state.adminMode = 'create';
-      state.formTitle = '';
-      state.items = [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }];
-      state.error = '';
-      state.shortUrl = '';
-      localStorage.removeItem('shortUrl');
-      render();
-    }
+    async function loadOrders() {
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getOrders&sheetName=' + encodeURIComponent(state.currentSheet));
+        const result = await response.json();
+        if (result.success) {
+          state.orders = result.orders || [];
+          state.formConfig = result.formConfig;
+        } else {
+          state.formConfig = null;
+        }
+      } catch (error) {
+        console.error('Load orders error:', error);
+        state.formConfig = null;
+      }
+      state.loading = false;
+      render();
+    }
 
-    async function loadOrders() {
-      state.loading = true;
-      render();
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=getOrders&sheetName=' + encodeURIComponent(state.currentSheet));
-        const result = await response.json();
-        if (result.success) {
-          state.orders = result.orders || [];
-          state.formConfig = result.formConfig;
-        } else {
-          state.formConfig = null;
-        }
-      } catch (error) {
-        console.error('Load orders error:', error);
-        state.formConfig = null;
-      }
-      state.loading = false;
-      render();
-    }
+    function copyLink() {
+      const input = document.getElementById('customerLink');
+      input.select();
+      input.setSelectionRange(0, 99999);
+      document.execCommand('copy');
+      showToast('✅ 連結已複製！');
+    }
 
-    function copyLink() {
-      const input = document.getElementById('customerLink');
-      input.select();
-      input.setSelectionRange(0, 99999);
-      document.execCommand('copy');
-      showToast('✅ 連結已複製！');
-    }
+    async function generateShortUrl() {
+      const longUrl = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
+      showToast('🔗 正在產製專屬短連結...');
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'generateShortUrl', longUrl: longUrl })
+        });
+        const result = await response.json();
+        if (result.success && result.shortURL) {
+          state.shortUrl = result.shortURL;
+          localStorage.setItem('shortUrl', state.shortUrl);
+          showToast('✅ 專屬短網址已產生！');
+          render();
+        } else {
+          throw new Error(result.error || '後台產製失敗');
+        }
+      } catch (error) {
+        console.error('Short.io error:', error);
+        showToast('❌ 產生失敗：' + error.message);
+      }
+    }
+    
+    // 手動觸發統計表
+    async function triggerPivotTable() {
+      if (!confirm('確定要重新計算並覆蓋 Google Sheet 上的統計表嗎？')) return;
+      showToast('⏳ 正在計算統計報表...');
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'generatePivot', sheetName: state.currentSheet })
+        });
+        const result = await response.json();
+        if (result.success) {
+          showToast('✅ ' + result.message);
+        } else {
+          showToast('❌ 失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+        console.error(error);
+      }
+    }
 
-    async function generateShortUrl() {
-      const longUrl = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
-      showToast('🔗 正在產製專屬短連結...');
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'generateShortUrl', longUrl: longUrl })
-        });
-        const result = await response.json();
-        if (result.success && result.shortURL) {
-          state.shortUrl = result.shortURL;
-          localStorage.setItem('shortUrl', state.shortUrl);
-          showToast('✅ 專屬短網址已產生！');
-          render();
-        } else {
-          throw new Error(result.error || '後台產製失敗');
-        }
-      } catch (error) {
-        console.error('Short.io error:', error);
-        showToast('❌ 產生失敗：' + error.message);
-      }
-    }
-    
-    // 手動觸發統計表
-    async function triggerPivotTable() {
-      if (!confirm('確定要重新計算並覆蓋 Google Sheet 上的統計表嗎？')) return;
-      showToast('⏳ 正在計算統計報表...');
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'generatePivot', sheetName: state.currentSheet })
-        });
-        const result = await response.json();
-        if (result.success) {
-          showToast('✅ ' + result.message);
-        } else {
-          showToast('❌ 失敗：' + result.error);
-        }
-      } catch (error) {
-        showToast('❌ 連線錯誤');
-        console.error(error);
-      }
-    }
+    // 狀態開關
+    async function toggleFormStatus(newStatus) {
+      if (!confirm('確定要' + (newStatus === 'CLOSED' ? '停止' : '開啟') + '接單嗎？')) return;
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'updateSettings', sheetName: state.currentSheet, newStatus: newStatus })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.formConfig = result.formConfig;
+          showToast('✅ 狀態已更新');
+        } else {
+          showToast('❌ 更新失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+      }
+      state.loading = false;
+      render();
+    }
 
-    // 狀態開關
-    async function toggleFormStatus(newStatus) {
-      if (!confirm('確定要' + (newStatus === 'CLOSED' ? '停止' : '開啟') + '接單嗎？')) return;
-      state.loading = true;
-      render();
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'updateSettings', sheetName: state.currentSheet, newStatus: newStatus })
-        });
-        const result = await response.json();
-        if (result.success) {
-          state.formConfig = result.formConfig;
-          showToast('✅ 狀態已更新');
-        } else {
-          showToast('❌ 更新失敗：' + result.error);
-        }
-      } catch (error) {
-        showToast('❌ 連線錯誤');
-      }
-      state.loading = false;
-      render();
-    }
+    // 修改數量
+    async function editItemLimit(itemName, currentLimit, currentWaitlist) {
+      const newLimit = prompt('修改 [' + itemName + '] 的 "正取" 數量：', currentLimit);
+      if (newLimit === null) return;
+      const newWaitlist = prompt('修改 [' + itemName + '] 的 "候補" 數量：', currentWaitlist);
+      if (newWaitlist === null) return;
 
-    // 修改數量
-    async function editItemLimit(itemName, currentLimit, currentWaitlist) {
-      const newLimit = prompt('修改 [' + itemName + '] 的 "正取" 數量：', currentLimit);
-      if (newLimit === null) return;
-      const newWaitlist = prompt('修改 [' + itemName + '] 的 "候補" 數量：', currentWaitlist);
-      if (newWaitlist === null) return;
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ 
+            action: 'updateSettings', 
+            sheetName: state.currentSheet, 
+            updateItem: { name: itemName, limit: newLimit, waitlist: newWaitlist }
+          })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.formConfig = result.formConfig;
+          showToast('✅ 數量已更新');
+        } else {
+          showToast('❌ 更新失敗：' + result.error);
+        }
+      } catch (error) {
+        showToast('❌ 連線錯誤');
+      }
+      state.loading = false;
+      render();
+    }
 
-      state.loading = true;
-      render();
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ 
-            action: 'updateSettings', 
-            sheetName: state.currentSheet, 
-            updateItem: { name: itemName, limit: newLimit, waitlist: newWaitlist }
-          })
-        });
-        const result = await response.json();
-        if (result.success) {
-          state.formConfig = result.formConfig;
-          showToast('✅ 數量已更新');
-        } else {
-          showToast('❌ 更新失敗：' + result.error);
-        }
-      } catch (error) {
-        showToast('❌ 連線錯誤');
-      }
-      state.loading = false;
-      render();
-    }
+    // ★ 取得所有分頁清單
+    async function loadSheetList() {
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getSheetList');
+        const result = await response.json();
+        if (result.success) {
+          state.sheetList = result.sheetNames;
+          render(); 
+        }
+      } catch (error) {
+        console.error('無法取得分頁清單', error);
+      }
+    }
 
-    // ★ 取得所有分頁清單
-    async function loadSheetList() {
-  try {
-    const response = await fetch(SCRIPT_URL + '?action=getSheetList');
-    const result = await response.json();
-    if (result.success) {
-      state.sheetList = result.sheetNames;
-    } else {
-      console.error('載入分頁清單失敗:', result.error);
-      state.sheetList = [];
-    }
-  } catch (error) {
-    console.error('無法取得分頁清單', error);
-    state.sheetList = [];
-  }
-  // ✅ 無論成功或失敗都要渲染
-  render();
-}
+    async function loadFormData() {
+      state.loading = true;
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL + '?action=getFormData&sheetName=' + encodeURIComponent(state.currentSheet));
+        const result = await response.json();
+        if (result.success) state.formConfig = result.formConfig;
+        else state.formConfig = null;
+      } catch (error) {
+        console.error('Load form error:', error);
+      }
+      state.loading = false;
+      render();
+    }
 
-    async function loadFormData() {
-      state.loading = true;
-      render();
-      try {
-        const response = await fetch(SCRIPT_URL + '?action=getFormData&sheetName=' + encodeURIComponent(state.currentSheet));
-        const result = await response.json();
-        if (result.success) state.formConfig = result.formConfig;
-        else state.formConfig = null;
-      } catch (error) {
-        console.error('Load form error:', error);
-      }
-      state.loading = false;
-      render();
-    }
+    function changeQty(itemName, delta) {
+      const currentQty = state.selectedItems[itemName] || 0;
+      const newQty = Math.max(0, currentQty + delta);
+      const item = state.formConfig.items.find(function(i) { return i.name === itemName; });
+      if (item) {
+        const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
+        if (newQty <= remaining) state.selectedItems[itemName] = newQty;
+      }
+      render();
+    }
 
-    function changeQty(itemName, delta) {
-      const currentQty = state.selectedItems[itemName] || 0;
-      const newQty = Math.max(0, currentQty + delta);
-      const item = state.formConfig.items.find(function(i) { return i.name === itemName; });
-      if (item) {
-        const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
-        if (newQty <= remaining) state.selectedItems[itemName] = newQty;
-      }
-      render();
-    }
+    async function submitOrder() {
+      if (!state.selectedStore) {
+        state.error = '請選擇取貨分店';
+        render();
+        return;
+      }
+      if (!state.phone || state.phone.length !== 6 || !/^\d+$/.test(state.phone)) {
+        state.error = '請輸入正確的電話後六碼';
+        render();
+        return;
+      }
+      const orderItems = {};
+      let hasItem = false;
+      Object.keys(state.selectedItems).forEach(function(name) {
+        const qty = state.selectedItems[name];
+        if (qty > 0) {
+          orderItems[name] = qty;
+          hasItem = true;
+        }
+      });
+      if (!hasItem) {
+        state.error = '請至少選擇一個品項';
+        render();
+        return;
+      }
+      state.loading = true;
+      state.error = '';
+      render();
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'submitOrder', sheetName: state.currentSheet, store: state.selectedStore, phone: state.phone, items: orderItems })
+        });
+        const result = await response.json();
+        if (result.success) {
+          state.successInfo = { store: state.selectedStore, phone: state.phone, items: orderItems };
+          state.view = 'success';
+        } else {
+          state.error = result.error || '送出失敗，請重試';
+        }
+      } catch (error) {
+        state.successInfo = { store: state.selectedStore, phone: state.phone, items: orderItems };
+        state.view = 'success';
+      }
+      state.loading = false;
+      render();
+    }
 
-    async function submitOrder() {
-      if (!state.selectedStore) {
-        state.error = '請選擇取貨分店';
-        render();
-        return;
-      }
-      if (!state.phone || state.phone.length !== 6 || !/^\d+$/.test(state.phone)) {
-        state.error = '請輸入正確的電話後六碼';
-        render();
-        return;
-      }
-      const orderItems = {};
-      let hasItem = false;
-      Object.keys(state.selectedItems).forEach(function(name) {
-        const qty = state.selectedItems[name];
-        if (qty > 0) {
-          orderItems[name] = qty;
-          hasItem = true;
-        }
-      });
-      if (!hasItem) {
-        state.error = '請至少選擇一個品項';
-        render();
-        return;
-      }
-      state.loading = true;
-      state.error = '';
-      render();
-      try {
-        const response = await fetch(SCRIPT_URL, {
-          method: 'POST',
-          body: JSON.stringify({ action: 'submitOrder', sheetName: state.currentSheet, store: state.selectedStore, phone: state.phone, items: orderItems })
-        });
-        const result = await response.json();
-        if (result.success) {
-          state.successInfo = { store: state.selectedStore, phone: state.phone, items: orderItems };
-          state.view = 'success';
-        } else {
-          state.error = result.error || '送出失敗，請重試';
-        }
-      } catch (error) {
-        state.successInfo = { store: state.selectedStore, phone: state.phone, items: orderItems };
-        state.view = 'success';
-      }
-      state.loading = false;
-      render();
-    }
+    function resetCustomerForm() {
+      state.view = 'customer';
+      state.selectedStore = '';
+      state.phone = '';
+      state.selectedItems = {};
+      state.error = '';
+      loadFormData();
+    }
 
-    function resetCustomerForm() {
-      state.view = 'customer';
-      state.selectedStore = '';
-      state.phone = '';
-      state.selectedItems = {};
-      state.error = '';
-      loadFormData();
-    }
+    function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const sheetParam = urlParams.get('sheet');
+      
+      if (sheetParam) {
+        // === 客人模式 (不用登入) ===
+        state.currentSheet = sheetParam;
+        state.view = 'customer';
+        localStorage.setItem('currentSheet', sheetParam);
+        loadFormData();
+      } else {
+        // === 管理員模式 ===
+        // 檢查 localStorage 是否已經登入過
+        const storedLogin = localStorage.getItem('isAdminLoggedIn');
+        
+        if (storedLogin === 'true') {
+          // 已經登入過，直接進後台
+          state.isLoggedIn = true;
+          state.view = 'admin'; 
+          state.adminMode = 'stats';
+          loadSheetList(); // ★ 這裡呼叫現在有定義了
+          if (state.currentSheet) loadOrders();
+        } else {
+          // 還沒登入，顯示登入頁
+          state.view = 'login';
+        }
+      }
+      render();
+    }
 
-    async function init() {
-      console.log('✅ init() 開始執行');
-  const urlParams = new URLSearchParams(window.location.search);
-  const sheetParam = urlParams.get('sheet');
-  
-  if (sheetParam) {
-    // === 客人模式 ===
-    state.currentSheet = sheetParam;
-    state.view = 'customer';
-    localStorage.setItem('currentSheet', sheetParam);
-    render();  // ✅ 先顯示載入中
-    loadFormData();
-  } else {
-    // === 管理員模式 ===
-    const storedLogin = localStorage.getItem('isAdminLoggedIn');
-    
-    if (storedLogin === 'true') {
-      state.isLoggedIn = true;
-      state.view = 'admin'; 
-      state.adminMode = 'stats';
-      
-      // ✅ 先渲染畫面
-      render();
-      
-      // ✅ 然後背景載入資料
-      await loadSheetList();
-      if (state.currentSheet) {
-        await loadOrders();
-      }
-    } else {
-      state.view = 'login';
-      render();  // ✅ 顯示登入頁
-    }
-  }
-}
-
-    async function doLogin() {
+    async function doLogin() {
       const pwd = document.getElementById('admin-password').value;
       if (!pwd) return;
-       
+      
       state.loading = true;
+      // 簡單的 loading 效果，把按鈕文字改掉
       const btn = document.querySelector('.btn-primary');
       if(btn) btn.innerText = '驗證中...';
 
@@ -1378,17 +1363,14 @@ console.log('✅ Script 開始載入');
         if (result.success) {
           state.isLoggedIn = true;
           state.view = 'admin';
+          // 登入成功後，把狀態存到 localStorage，這樣重新整理不用重打密碼
           localStorage.setItem('isAdminLoggedIn', 'true');
           
-          // ✅ 先渲染一次（顯示載入中）
+          // 登入成功後順便載入分頁清單
+          loadSheetList();
+          if (state.currentSheet) loadOrders();
+          
           render();
-          
-          // ✅ 然後非同步載入資料
-          await loadSheetList();
-          if (state.currentSheet) {
-            await loadOrders();
-          }
-          
         } else {
           showToast('❌ 密碼錯誤');
           if(btn) btn.innerText = '登入';
@@ -1396,33 +1378,32 @@ console.log('✅ Script 開始載入');
       } catch (e) {
         showToast('❌ 連線錯誤');
         if(btn) btn.innerText = '登入';
-        console.error(e);
       }
       state.loading = false;
     }
 
-    // 登出功能
-    function logout() {
-      localStorage.removeItem('isAdminLoggedIn');
-      state.isLoggedIn = false;
-      state.view = 'login';
-      state.currentSheet = '';
-      state.orders = [];
-      state.formConfig = null;
-      
-      render();
-      showToast('🔒 已安全登出');
-    }
+    // 登出功能
+    function logout() {
+      localStorage.removeItem('isAdminLoggedIn');
+      state.isLoggedIn = false;
+      state.view = 'login';
+      state.currentSheet = '';
+      state.orders = [];
+      state.formConfig = null;
+      
+      render();
+      showToast('🔒 已安全登出');
+    }
 
-    function switchAdminSheet(sheetName) {
-      state.currentSheet = sheetName;
-      localStorage.setItem('currentSheet', sheetName);
-      state.shortUrl = ''; 
-      localStorage.removeItem('shortUrl');
-      loadOrders(); 
-    }
+    function switchAdminSheet(sheetName) {
+      state.currentSheet = sheetName;
+      localStorage.setItem('currentSheet', sheetName);
+      state.shortUrl = ''; 
+      localStorage.removeItem('shortUrl');
+      loadOrders(); 
+    }
 
-    init();
-  </script>
+    init();
+  </script>
 </body>
 </html>
