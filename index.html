@@ -1361,46 +1361,45 @@ console.log('✅ Script 開始載入');
 }
 
     async function doLogin() {
-  const pwd = document.getElementById('admin-password').value;
-  if (!pwd) return;
-  
-  state.loading = true;
-  const btn = document.querySelector('.btn-primary');
-  if(btn) btn.innerText = '驗證中...';
+      const pwd = document.getElementById('admin-password').value;
+      if (!pwd) return;
+       
+      state.loading = true;
+      const btn = document.querySelector('.btn-primary');
+      if(btn) btn.innerText = '驗證中...';
 
-  try {
-    const response = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'login', password: pwd })
-    });
-    const result = await response.json();
-    
-    if (result.success) {
-      state.isLoggedIn = true;
-      state.view = 'admin';
-      localStorage.setItem('isAdminLoggedIn', 'true');
-      
-      // ✅ 先渲染一次（顯示載入中）
-      render();
-      
-      // ✅ 然後非同步載入資料（不要立即 render）
-      await loadSheetList();
-      if (state.currentSheet) {
-        await loadOrders();
-      }
-      // loadSheetList() 內部會自動 render()
-      
-    } else {
-      showToast('❌ 密碼錯誤');
-      if(btn) btn.innerText = '登入';
-    }
-  } catch (e) {
-    showToast('❌ 連線錯誤');
-    if(btn) btn.innerText = '登入';
-  }
-  state.loading = false;
-}
-      
+      try {
+        const response = await fetch(SCRIPT_URL, {
+          method: 'POST',
+          body: JSON.stringify({ action: 'login', password: pwd })
+        });
+        const result = await response.json();
+        
+        if (result.success) {
+          state.isLoggedIn = true;
+          state.view = 'admin';
+          localStorage.setItem('isAdminLoggedIn', 'true');
+          
+          // ✅ 先渲染一次（顯示載入中）
+          render();
+          
+          // ✅ 然後非同步載入資料
+          await loadSheetList();
+          if (state.currentSheet) {
+            await loadOrders();
+          }
+          
+        } else {
+          showToast('❌ 密碼錯誤');
+          if(btn) btn.innerText = '登入';
+        }
+      } catch (e) {
+        showToast('❌ 連線錯誤');
+        if(btn) btn.innerText = '登入';
+        console.error(e);
+      }
+      state.loading = false;
+    }
 
     // 登出功能
     function logout() {
