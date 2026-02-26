@@ -720,9 +720,14 @@
       state.orders.forEach(function(order) {
         if (!ordersByStore[order.store]) ordersByStore[order.store] = [];
         ordersByStore[order.store].push(order);
-        const cleanName = order.item.replace(' (候補)', '');
-        if (!ordersByItem[order.item]) ordersByItem[order.item] = 0;
-        ordersByItem[order.item] += order.quantity;
+        
+        // ✅ 加上 String() 防呆，確保它絕對是字串
+        const itemStr = String(order.item || ""); 
+        const cleanName = itemStr.replace(' (候補)', ''); 
+        
+        // 建議下面也改用轉型後的 itemStr，避免後續統計出錯
+        if (!ordersByItem[itemStr]) ordersByItem[itemStr] = 0;
+        ordersByItem[itemStr] += order.quantity;
       });
       const uniquePhones = new Set(state.orders.map(function(o) { return o.phone; }));
       
