@@ -1190,11 +1190,16 @@
       render();
     }
 
-    // 修改數量
+    // 修改數量與名稱
     async function editItemLimit(itemName, currentLimit, currentWaitlist) {
-      const newLimit = prompt('修改 [' + itemName + '] 的 "正取" 數量：', currentLimit);
+      // ★ 新增：先詢問是否修改名稱
+      const newName = prompt('修改 [' + itemName + '] 的「品項名稱」：\n(若不修改請保持原樣)', itemName);
+      if (newName === null) return; // 按取消就終止
+      
+      const newLimit = prompt('修改 [' + newName + '] 的 "正取" 數量：', currentLimit);
       if (newLimit === null) return;
-      const newWaitlist = prompt('修改 [' + itemName + '] 的 "候補" 數量：', currentWaitlist);
+      
+      const newWaitlist = prompt('修改 [' + newName + '] 的 "候補" 數量：', currentWaitlist);
       if (newWaitlist === null) return;
 
       state.loading = true;
@@ -1205,13 +1210,24 @@
           body: JSON.stringify({ 
             action: 'updateSettings', 
             sheetName: state.currentSheet, 
-            updateItem: { name: itemName, limit: newLimit, waitlist: newWaitlist }
+            updateItem: { 
+              name: itemName,          // 傳送舊名字給後台找資料
+              newName: newName,        // 傳送新名字
+              limit: newLimit, 
+              waitlist: newWaitlist 
+            }
           })
         });
         const result = await response.json();
         if (result.success) {
           state.formConfig = result.formConfig;
-          showToast('✅ 數量已更新');
+          
+          // 如果有改名，需要重新載入訂單，確保前端統計資料刷新
+          if (newName !== itemName) {
+            await loadOrders(); 
+          }
+          
+          showToast('✅ 品項已更新');
         } else {
           showToast('❌ 更新失敗：' + result.error);
         }
