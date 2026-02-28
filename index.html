@@ -841,19 +841,13 @@
               '<div class="stat-value">' + uniquePhones.size + '</div>' +
             '</div>' +
             
+            // ★ 修改這裡：拿掉綠色按鈕，改成自動顯示
             '<div class="link-box">' +
-              '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）' + 
-                (isShortUrl ? ' <span style="background:#10b981;color:#fff;padding:2px 8px;border-radius:10px;font-size:12px;margin-left:6px;">已轉為短網址</span>' : '') + 
-              '</div>' +
+              '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）</div>' +
               '<div class="link-row">' +
-                '<input type="text" class="link-input" value="' + displayLink + '" readonly id="customerLink">' +
-                '<button class="copy-btn" onclick="copyLink()">複製連結</button>' +
+                '<input type="text" class="link-input" value="' + displayLink + '" readonly id="customerLink" ' + (!isShortUrl ? 'style="color:#999;"' : '') + '>' +
+                '<button class="copy-btn" onclick="copyLink()"' + (!isShortUrl ? ' disabled' : '') + '>複製連結</button>' +
               '</div>' +
-              (!isShortUrl ? 
-                '<button class="btn-generate-short" onclick="generateShortUrl()">' +
-                  '🚀 點此產生短網址給客人填寫 (推薦)' + 
-                '</button>' : ''
-              ) +
             '</div>' +
 
             '<div class="card" style="margin-top: 20px;">' +
@@ -1081,6 +1075,7 @@
           state.orders = [];
           localStorage.setItem('currentSheet', state.currentSheet);
           showToast('✅ 開團成功！');
+          generateShortUrl();
         } else {
           state.error = result.error || '建立失敗，請重試';
         }
@@ -1136,7 +1131,6 @@
 
     async function generateShortUrl() {
       const longUrl = window.location.href.split('?')[0] + '?sheet=' + encodeURIComponent(state.currentSheet);
-      showToast('🔗 正在產製專屬短連結...');
       try {
         const response = await fetch(SCRIPT_URL, {
           method: 'POST',
@@ -1146,14 +1140,10 @@
         if (result.success && result.shortURL) {
           state.shortUrl = result.shortURL;
           localStorage.setItem('shortUrl', state.shortUrl);
-          showToast('✅ 專屬短網址已產生！');
-          render();
-        } else {
-          throw new Error(result.error || '後台產製失敗');
+          render(); // 產生完畢後，自動把畫面上的「產生中...」替換成真正的短網址
         }
       } catch (error) {
         console.error('Short.io error:', error);
-        showToast('❌ 產生失敗：' + error.message);
       }
     }
     
@@ -1429,11 +1419,15 @@
     }
 
     function switchAdminSheet(sheetName) {
+      if (!sheetName) return; // 防呆：如果選到第一項「📂 切換至...」就不動作
+      
       state.currentSheet = sheetName;
+      state.adminMode = 'stats'; // ⭐️ 關鍵：告訴系統要把畫面切換成統計報表
       localStorage.setItem('currentSheet', sheetName);
       state.shortUrl = ''; 
       localStorage.removeItem('shortUrl');
       loadOrders(); 
+      generateShortUrl();
     }
 
     init();
