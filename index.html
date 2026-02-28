@@ -961,6 +961,18 @@
           '</div>' +
           '<div class="card">' +
             '<p class="subtitle">請填寫以下資料完成登記</p>' +
+            
+            // ★ 新增：固定警告標語區塊 ★
+            '<div style="background:#fff0f0; border:1px solid #ffcccc; border-radius:12px; padding:16px; margin-bottom:20px; font-size:14px; line-height:1.6; color:#d32f2f;">' +
+              '<div style="font-weight:800; margin-bottom:8px; font-size:15px;">下單請三思!!!!無特殊理由者不接受取消訂單，謝謝</div>' +
+              '<div style="font-weight:600;">🔺注意!!</div>' +
+              '<div style="font-weight:600;">🔺手機後6碼(輸入錯誤)</div>' +
+              '<div style="font-weight:600;">🔺取貨點(輸入錯誤)</div>' +
+              '<div style="font-weight:600;">🔺沒有綁定會員者，</div>' +
+              '<div style="font-weight:600;">🔺無法為您入單感謝您</div>' +
+            '</div>' +
+            // ★ 結束 ★
+
             '<div class="form-group">' +
               '<label>📍 取貨分店</label>' +
               '<select onchange="state.selectedStore=this.value;state.error=\'\';render()">' +
