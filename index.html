@@ -625,6 +625,7 @@
       }
 
       // 2. 準備品項的 HTML (維持原樣)
+      let itemsHTML = '';
       for (let index = 0; index < state.items.length; index++) {
         const item = state.items[index];
         const isUploading = state.uploadingIndex === index;
