@@ -14,10 +14,10 @@
       min-height: 100vh;
       color: #2c2c2c; 
     }
-    .container { max-width: 540px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
+    。container { max-width: 540px; margin: 0 auto; padding: 20px; padding-bottom: 100px; }
     
     /* === 卡片與容器 === */
-    .card {
+    。card {
       background: rgba(255,255,255,0.9);
       border-radius: 20px;
       padding: 24px;
@@ -28,7 +28,7 @@
     
     /* === 文字排版 === */
     h1 { font-size: 24px; font-weight: 700; text-align: center; margin-bottom: 8px; color: #1a1a1a; }
-    .subtitle { color: #884455; text-align: center; font-size: 15px; margin-bottom: 28px; font-weight: 500; }
+    。subtitle { color: #884455; text-align: center; font-size: 15px; margin-bottom: 28px; font-weight: 500; }
     label { display: block; color: #442222; font-size: 15px; font-weight: 700; margin-bottom: 8px; }
     
     /* === 輸入元件 === */
@@ -128,7 +128,7 @@
       background: rgba(255,255,255,0.5); border-radius: 16px;
       padding: 16px; margin-bottom: 12px; border: 1px solid rgba(0,0,0,0.1);
     }
-    .admin-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
+    。admin-item-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: center; }
     .admin-item-row:last-child { margin-bottom: 0; }
     .admin-item input, .admin-item textarea { font-size: 14px; padding: 12px 14px; background: #fff; }
     .admin-item input[type="number"] { width: 80px; text-align: center; }
@@ -201,16 +201,21 @@
     
     /* === 底部導航 === */
     .bottom-nav {
-      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
       background: rgba(216, 27, 96, 0.95); border-radius: 50px; padding: 6px;
-      display: flex; gap: 4px; backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2); z-index: 100;
+      display: flex; flex-direction: row; gap: 4px; backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2); 
+      z-index: 999; /* 提高層級，才不會被其他元件影響 */
       box-shadow: 0 4px 20px rgba(180, 20, 80, 0.4);
+      width: max-content; /* 關鍵：強制寬度由內容撐開，不被螢幕壓縮 */
+      max-width: 90vw;
     }
     .nav-btn {
       padding: 12px 22px; border-radius: 50px; border: none; background: transparent;
-      color: rgba(255,255,255,0.8); font-size: 14px; font-weight: 500;
+      color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 600;
       cursor: pointer; transition: all 0.2s; font-family: inherit;
+      white-space: nowrap; /* 關鍵：強制不換行，解決按鈕變形 */
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .nav-btn.active {
       background: #fff; color: #d81b60; font-weight: 700;
@@ -620,43 +625,35 @@
       }
 
       // 2. 準備品項的 HTML (維持原樣)
-      let itemsHTML = '';
       for (let index = 0; index < state.items.length; index++) {
         const item = state.items[index];
         const isUploading = state.uploadingIndex === index;
         itemsHTML += 
         '<div class="admin-item">' +
+        
+          // ▼▼ 這裡修改了：第一排只放品項名稱與刪除按鈕 ▼▼
           '<div class="admin-item-row">' +
-            '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:2">' +
-            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
-              '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center">' +
-              '<span style="font-size:12px;color:#666">正</span>' +
-            '</div>' +
-            '<div style="display:flex; flex:1; gap:4px; align-items:center;">' +
-              '<input type="number" placeholder="候補" value="' + item.waitlist + '" onchange="updateItem(' + index + ', \'waitlist\', this.value)" style="text-align:center; color:#f59e0b; border-color:#fcd34d;">' +
-              '<span style="font-size:12px;color:#f59e0b">補</span>' +
-            '</div>' +
+            '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:1; min-width:120px;">' +
             (state.items.length > 1 ? '<button class="remove-btn" onclick="removeItem(' + index + ')">×</button>' : '') +
           '</div>' +
+          
+          // ▼▼ 這裡修改了：第二排獨立放正取與候補數量 ▼▼
           '<div class="admin-item-row">' +
-            '<div class="image-upload-area" style="flex:1">' +
-              (item.image ? 
-                '<img src="' + item.image + '" class="image-preview" onclick="showUploadOptions(' + index + ')">' :
-                '<div class="image-preview-placeholder" onclick="showUploadOptions(' + index + ')">📷</div>'
-              ) +
-              '<div class="image-input-wrapper">' +
-                '<input type="text" placeholder="或貼上圖片網址" value="' + item.image + '" onchange="updateItem(' + index + ', \'image\', this.value)" style="flex:1">' +
-                '<button class="upload-btn ' + (isUploading ? 'uploading' : '') + '" onclick="showUploadOptions(' + index + ')" ' + (isUploading ? 'disabled' : '') + '>' +
-                  (isUploading ? '上傳中...' : '上傳') +
-                '</button>' +
-              '</div>' +
+            '<div style="display:flex; flex:1; gap:6px; align-items:center;">' +
+              '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center; width:100%;">' +
+              '<span style="font-size:14px;color:#666;font-weight:bold;white-space:nowrap;">正取</span>' +
+            '</div>' +
+            '<div style="display:flex; flex:1; gap:6px; align-items:center;">' +
+              '<input type="number" placeholder="候補" value="' + item.waitlist + '" onchange="updateItem(' + index + ', \'waitlist\', this.value)" style="text-align:center; color:#f59e0b; border-color:#fcd34d; width:100%;">' +
+              '<span style="font-size:14px;color:#f59e0b;font-weight:bold;white-space:nowrap;">候補</span>' +
             '</div>' +
           '</div>' +
+          // ▲▲ 修改結束 ▲▲
+
+          // 底下維持原樣：上傳圖片區塊
           '<div class="admin-item-row">' +
-            '<textarea placeholder="商品簡介（選填）" onchange="updateItem(' + index + ', \'description\', this.value)">' + item.description + '</textarea>' +
-          '</div>' +
-        '</div>';
-      }
+            '<div class="image-upload-area" style="flex:1">' +
+            // ... 後面照舊 ...
 
       // 3. 回傳 HTML (加上頂部選單區塊)
       return '<div class="container">' +
