@@ -205,16 +205,16 @@
       background: rgba(216, 27, 96, 0.95); border-radius: 50px; padding: 6px;
       display: flex; flex-direction: row; gap: 4px; backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.2); 
-      z-index: 999; /* 提高層級，才不會被其他元件影響 */
+      z-index: 999; 
       box-shadow: 0 4px 20px rgba(180, 20, 80, 0.4);
-      width: max-content; /* 關鍵：強制寬度由內容撐開，不被螢幕壓縮 */
+      width: max-content; 
       max-width: 90vw;
     }
     .nav-btn {
       padding: 12px 22px; border-radius: 50px; border: none; background: transparent;
       color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 600;
       cursor: pointer; transition: all 0.2s; font-family: inherit;
-      white-space: nowrap; /* 關鍵：強制不換行，解決按鈕變形 */
+      white-space: nowrap; 
       display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .nav-btn.active {
@@ -624,21 +624,22 @@
         sheetOptions += '<option disabled>載入中或無資料...</option>';
       }
 
-      // 2. 準備品項的 HTML (維持原樣)
+      // 2. 準備品項的 HTML
       let itemsHTML = '';
       for (let index = 0; index < state.items.length; index++) {
         const item = state.items[index];
         const isUploading = state.uploadingIndex === index;
+        
         itemsHTML += 
         '<div class="admin-item">' +
-        
-          // ▼▼ 這裡修改了：第一排只放品項名稱與刪除按鈕 ▼▼
+          
+          // 第一排：只放品項名稱與刪除按鈕
           '<div class="admin-item-row">' +
             '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:1; min-width:120px;">' +
             (state.items.length > 1 ? '<button class="remove-btn" onclick="removeItem(' + index + ')">×</button>' : '') +
           '</div>' +
           
-          // ▼▼ 這裡修改了：第二排獨立放正取與候補數量 ▼▼
+          // 第二排：獨立放正取與候補數量
           '<div class="admin-item-row">' +
             '<div style="display:flex; flex:1; gap:6px; align-items:center;">' +
               '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center; width:100%;">' +
@@ -649,12 +650,29 @@
               '<span style="font-size:14px;color:#f59e0b;font-weight:bold;white-space:nowrap;">候補</span>' +
             '</div>' +
           '</div>' +
-          // ▲▲ 修改結束 ▲▲
-
-          // 底下維持原樣：上傳圖片區塊
+          
+          // 第三排：圖片上傳區塊
           '<div class="admin-item-row">' +
             '<div class="image-upload-area" style="flex:1">' +
-            // ... 後面照舊 ...
+              (item.image ? 
+                '<img src="' + item.image + '" class="image-preview" onclick="showUploadOptions(' + index + ')">' : 
+                '<div class="image-preview-placeholder" onclick="showUploadOptions(' + index + ')">📷</div>'
+              ) +
+              '<div class="image-input-wrapper">' +
+                '<input type="text" placeholder="或貼上圖片網址" value="' + item.image + '" onchange="updateItem(' + index + ', \'image\', this.value)" style="flex:1">' +
+                '<button class="upload-btn ' + (isUploading ? 'uploading' : '') + '" onclick="showUploadOptions(' + index + ')" ' + (isUploading ? 'disabled' : '') + '>' +
+                  (isUploading ? '上傳中...' : '上傳') +
+                '</button>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+          
+          // 第四排：商品簡介
+          '<div class="admin-item-row">' +
+            '<textarea placeholder="商品簡介（選填）" onchange="updateItem(' + index + ', \'description\', this.value)">' + item.description + '</textarea>' +
+          '</div>' +
+        '</div>';
+      }
 
       // 3. 回傳 HTML (加上頂部選單區塊)
       return '<div class="container">' +
@@ -667,7 +685,6 @@
                  sheetOptions +
               '</select>' +
             '</div>' +
-            // ★ End ★
 
             '<h1>🛒 建立新團購</h1>' +
             '<p class="subtitle">設定品項，一鍵產生表單</p>' +
@@ -685,11 +702,10 @@
               (state.loading ? '處理中...' : '🚀 產生表單') +
             '</button>' +
             
-            // 登出按鈕也補一個在這裡
+            // 登出按鈕
             '<div style="margin-top:20px; text-align:center;">' +
                '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
             '</div>' +
-
           '</div>' +
         '</div>';
     }
@@ -719,11 +735,9 @@
         if (!ordersByStore[order.store]) ordersByStore[order.store] = [];
         ordersByStore[order.store].push(order);
         
-        // ✅ 加上 String() 防呆，確保它絕對是字串
         const itemStr = String(order.item || ""); 
         const cleanName = itemStr.replace(' (候補)', ''); 
         
-        // 建議下面也改用轉型後的 itemStr，避免後續統計出錯
         if (!ordersByItem[itemStr]) ordersByItem[itemStr] = 0;
         ordersByItem[itemStr] += order.quantity;
       });
@@ -801,7 +815,6 @@
       const displayLink = state.shortUrl || customerLink;
       const isShortUrl = !!state.shortUrl;
 
-      // 製作下拉選單的 HTML
       let sheetOptions = '';
       if (state.sheetList && state.sheetList.length > 0) {
         state.sheetList.forEach(function(name) {
@@ -839,7 +852,6 @@
               '<div class="stat-value">' + uniquePhones.size + '</div>' +
             '</div>' +
             
-            // ★ 修改這裡：拿掉綠色按鈕，改成自動顯示
             '<div class="link-box">' +
               '<div class="link-label">📎 客人填寫連結（分享到 LINE 社群）</div>' +
               '<div class="link-row">' +
@@ -1138,14 +1150,13 @@
         if (result.success && result.shortURL) {
           state.shortUrl = result.shortURL;
           localStorage.setItem('shortUrl', state.shortUrl);
-          render(); // 產生完畢後，自動把畫面上的「產生中...」替換成真正的短網址
+          render(); 
         }
       } catch (error) {
         console.error('Short.io error:', error);
       }
     }
     
-    // 手動觸發統計表
     async function triggerPivotTable() {
       if (!confirm('確定要重新計算並覆蓋 Google Sheet 上的統計表嗎？')) return;
       showToast('⏳ 正在計算統計報表...');
@@ -1166,7 +1177,6 @@
       }
     }
 
-    // 狀態開關
     async function toggleFormStatus(newStatus) {
       if (!confirm('確定要' + (newStatus === 'CLOSED' ? '停止' : '開啟') + '接單嗎？')) return;
       state.loading = true;
@@ -1190,11 +1200,9 @@
       render();
     }
 
-    // 修改數量與名稱
     async function editItemLimit(itemName, currentLimit, currentWaitlist) {
-      // ★ 新增：先詢問是否修改名稱
       const newName = prompt('修改 [' + itemName + '] 的「品項名稱」：\n(若不修改請保持原樣)', itemName);
-      if (newName === null) return; // 按取消就終止
+      if (newName === null) return; 
       
       const newLimit = prompt('修改 [' + newName + '] 的 "正取" 數量：', currentLimit);
       if (newLimit === null) return;
@@ -1211,8 +1219,8 @@
             action: 'updateSettings', 
             sheetName: state.currentSheet, 
             updateItem: { 
-              name: itemName,          // 傳送舊名字給後台找資料
-              newName: newName,        // 傳送新名字
+              name: itemName,          
+              newName: newName,        
               limit: newLimit, 
               waitlist: newWaitlist 
             }
@@ -1221,12 +1229,9 @@
         const result = await response.json();
         if (result.success) {
           state.formConfig = result.formConfig;
-          
-          // 如果有改名，需要重新載入訂單，確保前端統計資料刷新
           if (newName !== itemName) {
             await loadOrders(); 
           }
-          
           showToast('✅ 品項已更新');
         } else {
           showToast('❌ 更新失敗：' + result.error);
@@ -1238,7 +1243,6 @@
       render();
     }
 
-    // ★ 取得所有分頁清單
     async function loadSheetList() {
       try {
         const response = await fetch(SCRIPT_URL + '?action=getSheetList');
@@ -1340,25 +1344,19 @@
       const sheetParam = urlParams.get('sheet');
       
       if (sheetParam) {
-        // === 客人模式 (不用登入) ===
         state.currentSheet = sheetParam;
         state.view = 'customer';
         localStorage.setItem('currentSheet', sheetParam);
         loadFormData();
       } else {
-        // === 管理員模式 ===
-        // 檢查 localStorage 是否已經登入過
         const storedLogin = localStorage.getItem('isAdminLoggedIn');
-        
         if (storedLogin === 'true') {
-          // 已經登入過，直接進後台
           state.isLoggedIn = true;
           state.view = 'admin'; 
           state.adminMode = 'stats';
-          loadSheetList(); // ★ 這裡呼叫現在有定義了
+          loadSheetList(); 
           if (state.currentSheet) loadOrders();
         } else {
-          // 還沒登入，顯示登入頁
           state.view = 'login';
         }
       }
@@ -1370,7 +1368,6 @@
       if (!pwd) return;
       
       state.loading = true;
-      // 簡單的 loading 效果，把按鈕文字改掉
       const btn = document.querySelector('.btn-primary');
       if(btn) btn.innerText = '驗證中...';
 
@@ -1384,13 +1381,9 @@
         if (result.success) {
           state.isLoggedIn = true;
           state.view = 'admin';
-          // 登入成功後，把狀態存到 localStorage，這樣重新整理不用重打密碼
           localStorage.setItem('isAdminLoggedIn', 'true');
-          
-          // 登入成功後順便載入分頁清單
           loadSheetList();
           if (state.currentSheet) loadOrders();
-          
           render();
         } else {
           showToast('❌ 密碼錯誤');
@@ -1403,7 +1396,6 @@
       state.loading = false;
     }
 
-    // 登出功能
     function logout() {
       localStorage.removeItem('isAdminLoggedIn');
       state.isLoggedIn = false;
@@ -1411,16 +1403,14 @@
       state.currentSheet = '';
       state.orders = [];
       state.formConfig = null;
-      
       render();
       showToast('🔒 已安全登出');
     }
 
     function switchAdminSheet(sheetName) {
-      if (!sheetName) return; // 防呆：如果選到第一項「📂 切換至...」就不動作
-      
+      if (!sheetName) return; 
       state.currentSheet = sheetName;
-      state.adminMode = 'stats'; // ⭐️ 關鍵：告訴系統要把畫面切換成統計報表
+      state.adminMode = 'stats'; 
       localStorage.setItem('currentSheet', sheetName);
       state.shortUrl = ''; 
       localStorage.removeItem('shortUrl');
