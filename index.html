@@ -205,16 +205,16 @@
       background: rgba(216, 27, 96, 0.95); border-radius: 50px; padding: 6px;
       display: flex; flex-direction: row; gap: 4px; backdrop-filter: blur(10px);
       border: 1px solid rgba(255,255,255,0.2); 
-      z-index: 999; 
+      z-index: 999;
       box-shadow: 0 4px 20px rgba(180, 20, 80, 0.4);
-      width: max-content; 
+      width: max-content;
       max-width: 90vw;
     }
     .nav-btn {
       padding: 12px 22px; border-radius: 50px; border: none; background: transparent;
       color: rgba(255,255,255,0.8); font-size: 15px; font-weight: 600;
       cursor: pointer; transition: all 0.2s; font-family: inherit;
-      white-space: nowrap; 
+      white-space: nowrap;
       display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .nav-btn.active {
@@ -303,30 +303,6 @@
     }
     .copy-btn:hover { background: #edf2f7; }
 
-    .btn-generate-short {
-      margin-top: 12px;
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      border: none;
-      background: #10b981;
-      color: #ffffff;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s;
-    }
-    .btn-generate-short:hover {
-      background: #059669;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 15px rgba(16, 185, 129, 0.4);
-    }
-    
     .toast {
       position: fixed; 
       top: 60px;
@@ -398,8 +374,8 @@
 
     // ====== 狀態管理 ======
     let state = {
-      view: 'login', // 預設改為 login
-      isLoggedIn: false, // ★ 新增：登入狀態
+      view: 'login',
+      isLoggedIn: false,
       adminMode: 'create',
       currentSheet: localStorage.getItem('currentSheet') || '',
       formConfig: null,
@@ -407,7 +383,7 @@
       loading: false,
       error: '',
       formTitle: '',
-      items: [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }], // 加入 waitlist
+      items: [{ name: '', limit: 30, waitlist: 0, image: '', description: '' }],
       selectedStore: '',
       phone: '',
       selectedItems: {},
@@ -416,7 +392,7 @@
       showUploadModal: false,
       uploadTargetIndex: -1,
       shortUrl: localStorage.getItem('shortUrl') || '',
-      sheetList: [], // ★ 新增分頁清單
+      sheetList: [],
     };
 
     // ====== 圖片上傳 (ImgBB) ======
@@ -598,7 +574,7 @@
             '<h1>管理員登入</h1>' +
             '<p class="subtitle">請輸入密碼以進入後台</p>' +
             '<div class="form-group">' +
-              '<input type="password" id="admin-password" placeholder="請輸入密碼" style="text-align:center;letter-spacing:4px;">' +
+              '<input type="password" id="admin-password" placeholder="請輸入密碼" style="text-align:center;letter-spacing:4px;" onkeydown="if(event.key===\'Enter\')doLogin()">' +
             '</div>' +
             '<button class="btn btn-primary" onclick="doLogin()">登入</button>' +
           '</div>' +
@@ -613,6 +589,7 @@
       }
     }
 
+    // ====== ★ 修復後的 renderCreateForm ======
     function renderCreateForm() {
       // 1. 準備下拉選單的選項
       let sheetOptions = '<option value="">📂 切換至已建立的團購...</option>';
@@ -629,60 +606,59 @@
       for (let index = 0; index < state.items.length; index++) {
         const item = state.items[index];
         const isUploading = state.uploadingIndex === index;
-        
-        itemsHTML += 
-        '<div class="admin-item">' +
-          
-          // 第一排：只放品項名稱與刪除按鈕
-          '<div class="admin-item-row">' +
-            '<input type="text" placeholder="品項名稱" value="' + item.name + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:1; min-width:120px;">' +
-            (state.items.length > 1 ? '<button class="remove-btn" onclick="removeItem(' + index + ')">×</button>' : '') +
-          '</div>' +
-          
-          // 第二排：獨立放正取與候補數量
-          '<div class="admin-item-row">' +
-            '<div style="display:flex; flex:1; gap:6px; align-items:center;">' +
-              '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center; width:100%;">' +
-              '<span style="font-size:14px;color:#666;font-weight:bold;white-space:nowrap;">正取</span>' +
+
+        // 圖片預覽區
+        let imagePreviewHTML = '';
+        if (item.image) {
+          imagePreviewHTML = '<img src="' + item.image + '" class="image-preview" onerror="this.style.display=\'none\'">';
+        } else {
+          imagePreviewHTML = '<div class="image-preview-placeholder" onclick="showUploadOptions(' + index + ')">📷</div>';
+        }
+
+        itemsHTML +=
+          '<div class="admin-item">' +
+            // 第一排：品項名稱 + 刪除按鈕
+            '<div class="admin-item-row">' +
+              '<input type="text" placeholder="品項名稱" value="' + (item.name || '') + '" onchange="updateItem(' + index + ', \'name\', this.value)" style="flex:1;">' +
+              (state.items.length > 1 ? '<button class="remove-btn" onclick="removeItem(' + index + ')">×</button>' : '') +
             '</div>' +
-            '<div style="display:flex; flex:1; gap:6px; align-items:center;">' +
-              '<input type="number" placeholder="候補" value="' + item.waitlist + '" onchange="updateItem(' + index + ', \'waitlist\', this.value)" style="text-align:center; color:#f59e0b; border-color:#fcd34d; width:100%;">' +
-              '<span style="font-size:14px;color:#f59e0b;font-weight:bold;white-space:nowrap;">候補</span>' +
-            '</div>' +
-          '</div>' +
-          
-          // 第三排：圖片上傳區塊
-          '<div class="admin-item-row">' +
-            '<div class="image-upload-area" style="flex:1">' +
-              (item.image ? 
-                '<img src="' + item.image + '" class="image-preview" onclick="showUploadOptions(' + index + ')">' : 
-                '<div class="image-preview-placeholder" onclick="showUploadOptions(' + index + ')">📷</div>'
-              ) +
-              '<div class="image-input-wrapper">' +
-                '<input type="text" placeholder="或貼上圖片網址" value="' + item.image + '" onchange="updateItem(' + index + ', \'image\', this.value)" style="flex:1">' +
-                '<button class="upload-btn ' + (isUploading ? 'uploading' : '') + '" onclick="showUploadOptions(' + index + ')" ' + (isUploading ? 'disabled' : '') + '>' +
-                  (isUploading ? '上傳中...' : '上傳') +
-                '</button>' +
+            // 第二排：正取與候補數量
+            '<div class="admin-item-row">' +
+              '<div style="display:flex; flex:1; gap:6px; align-items:center;">' +
+                '<input type="number" placeholder="正取" value="' + item.limit + '" onchange="updateItem(' + index + ', \'limit\', this.value)" style="text-align:center; width:100%;">' +
+                '<span style="font-size:14px;color:#666;font-weight:bold;white-space:nowrap;">正取</span>' +
+              '</div>' +
+              '<div style="display:flex; flex:1; gap:6px; align-items:center;">' +
+                '<input type="number" placeholder="候補" value="' + item.waitlist + '" onchange="updateItem(' + index + ', \'waitlist\', this.value)" style="text-align:center; color:#f59e0b; border-color:#fcd34d; width:100%;">' +
+                '<span style="font-size:14px;color:#f59e0b;font-weight:bold;white-space:nowrap;">候補</span>' +
               '</div>' +
             '</div>' +
-          '</div>' +
-          
-          // 第四排：商品簡介
-          '<div class="admin-item-row">' +
-            '<textarea placeholder="商品簡介（選填）" onchange="updateItem(' + index + ', \'description\', this.value)">' + item.description + '</textarea>' +
-          '</div>' +
-        '</div>';
+            // 第三排：圖片上傳
+            '<div class="admin-item-row">' +
+              '<div class="image-upload-area" style="flex:1;">' +
+                imagePreviewHTML +
+                '<div class="image-input-wrapper">' +
+                  '<button class="upload-btn ' + (isUploading ? 'uploading' : '') + '" onclick="showUploadOptions(' + index + ')" type="button">' +
+                    (isUploading ? '⏳ 上傳中...' : (item.image ? '🔄 更換圖片' : '📷 上傳圖片')) +
+                  '</button>' +
+                '</div>' +
+              '</div>' +
+            '</div>' +
+            // 第四排：商品描述
+            '<div class="admin-item-row">' +
+              '<textarea placeholder="商品描述（選填）" onchange="updateItem(' + index + ', \'description\', this.value)" style="flex:1;">' + (item.description || '') + '</textarea>' +
+            '</div>' +
+          '</div>';
       }
 
-      // 3. 回傳 HTML (加上頂部選單區塊)
+      // 3. 回傳完整的 HTML
       return '<div class="container">' +
           '<div class="card">' +
-            
-            // ★ 新增：頂部切換選單區塊 ★
+            // 頂部切換選單區塊
             '<div style="margin-bottom:20px; padding-bottom:15px; border-bottom:1px dashed #ddd;">' +
               '<label style="color:#666;font-size:13px;margin-bottom:6px;">📂 管理現有團購</label>' +
               '<select onchange="switchAdminSheet(this.value)" style="width:100%; font-weight:bold; font-size:16px; padding:12px; border:2px solid #ddd; border-radius:12px; background:#f9f9f9;">' +
-                 sheetOptions +
+                sheetOptions +
               '</select>' +
             '</div>' +
 
@@ -702,7 +678,6 @@
               (state.loading ? '處理中...' : '🚀 產生表單') +
             '</button>' +
             
-            // 登出按鈕
             '<div style="margin-top:20px; text-align:center;">' +
                '<button class="btn btn-outline" style="border-color:#ccc; color:#666; width:auto; display:inline-block; padding:10px 30px;" onclick="logout()">🔒 登出後台</button>' +
             '</div>' +
@@ -736,7 +711,6 @@
         ordersByStore[order.store].push(order);
         
         const itemStr = String(order.item || ""); 
-        const cleanName = itemStr.replace(' (候補)', ''); 
         
         if (!ordersByItem[itemStr]) ordersByItem[itemStr] = 0;
         ordersByItem[itemStr] += order.quantity;
@@ -765,13 +739,13 @@
           barColorClass = 'full';
         }
 
-        const percentage = Math.min((ordered / totalLimit) * 100, 100);
+        const percentage = Math.min((ordered / (totalLimit || 1)) * 100, 100);
 
         itemStatsHTML += 
           '<div style="margin-bottom:16px; border-bottom:1px dashed #eee; padding-bottom:12px;">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">' +
               '<span style="font-weight:500;color:#333">' + item.name + '</span>' +
-              '<button onclick="editItemLimit(\'' + item.name + '\', ' + limit + ', ' + waitlist + ')" style="padding:4px 8px; font-size:12px; border:1px solid #ddd; background:#fff; border-radius:6px; cursor:pointer;">✏️ 修改</button>' +
+              '<button onclick="editItemLimit(\'' + item.name.replace(/'/g, "\\'") + '\', ' + limit + ', ' + waitlist + ')" style="padding:4px 8px; font-size:12px; border:1px solid #ddd; background:#fff; border-radius:6px; cursor:pointer;">✏️ 修改</button>' +
             '</div>' +
             '<div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;">' +
               '<span style="color:#666">進度：</span>' +
@@ -918,16 +892,11 @@
           statusBadge = '<div class="item-stock sold-out">❌ 已額滿 (售完)</div>';
           cardStyle = 'border-color:#ffcccc; background:#fff0f0;';
         } else if (regularRemaining > 0) {
-          statusBadge = `
-            <div class="item-stock available">
-              🔥 正取剩 <span style="font-weight:800;font-size:15px;">${regularRemaining}</span> 份
-              ${waitlist > 0 ? `<span style="color:#f59e0b; font-size:12px; margin-left:4px;">(候補尚有 ${waitlistRemaining})</span>` : ''}
-            </div>`;
+          statusBadge = '<div class="item-stock available">🔥 正取剩 <span style="font-weight:800;font-size:15px;">' + regularRemaining + '</span> 份' +
+            (waitlist > 0 ? '<span style="color:#f59e0b; font-size:12px; margin-left:4px;">(候補尚有 ' + waitlistRemaining + ')</span>' : '') +
+            '</div>';
         } else {
-          statusBadge = `
-            <div class="item-stock" style="color:#d97706; font-weight:bold;">
-              ⚠️ 正取已滿，候補剩 ${waitlistRemaining} 份
-            </div>`;
+          statusBadge = '<div class="item-stock" style="color:#d97706; font-weight:bold;">⚠️ 正取已滿，候補剩 ' + waitlistRemaining + ' 份</div>';
           cardStyle = 'border-color:#fcd34d; background:#fffbeb;'; 
           btnStyle = 'background:#f59e0b; border-color:#f59e0b;';
         }
@@ -946,9 +915,9 @@
             '</div>' +
             (!isFullySoldOut ? 
               '<div class="item-controls">' +
-                '<button class="qty-btn" onclick="changeQty(\'' + item.name + '\', -1)" ' + (selectedQty <= 0 ? 'disabled' : '') + '>−</button>' +
+                '<button class="qty-btn" onclick="changeQty(\'' + item.name.replace(/'/g, "\\'") + '\', -1)" ' + (selectedQty <= 0 ? 'disabled' : '') + '>−</button>' +
                 '<span class="qty-display">' + selectedQty + '</span>' +
-                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name + '\', 1)" ' + (selectedQty >= totalRemaining ? 'disabled' : '') + ' style="' + btnStyle + '">+</button>' +
+                '<button class="qty-btn plus" onclick="changeQty(\'' + item.name.replace(/'/g, "\\'") + '\', 1)" ' + (selectedQty >= totalRemaining ? 'disabled' : '') + ' style="' + btnStyle + '">+</button>' +
               '</div>' : '') +
           '</div>';
       });
@@ -966,7 +935,6 @@
           '<div class="card">' +
             '<p class="subtitle">請填寫以下資料完成登記</p>' +
             
-            // ★ 新增：固定警告標語區塊 ★
             '<div style="background:#fff0f0; border:1px solid #ffcccc; border-radius:12px; padding:16px; margin-bottom:20px; font-size:14px; line-height:1.6; color:#d32f2f;">' +
               '<div style="font-weight:800; margin-bottom:8px; font-size:15px;">下單請三思!!!!無特殊理由者不接受取消訂單，謝謝</div>' +
               '<div style="font-weight:600;">🔺注意!!</div>' +
@@ -975,7 +943,6 @@
               '<div style="font-weight:600;">🔺沒有綁定會員者，</div>' +
               '<div style="font-weight:600;">🔺無法為您入單感謝您</div>' +
             '</div>' +
-            // ★ 結束 ★
 
             '<div class="form-group">' +
               '<label>📍 取貨分店</label>' +
@@ -1014,13 +981,11 @@
       return '<div class="container">' +
           '<div class="success-screen">' +
             '<div class="success-content">' +
-              '<div class="success-icon-container">' +
-                '<svg class="success-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' +
-                  '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>' +
-                '</svg>' +
-              '</div>' +
+              '<svg class="success-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">' +
+                '<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>' +
+              '</svg>' +
               '<h2 class="success-title">登記成功！</h2>' +
-              '<div class="success-info">取貨分店：' + info.store + '<br>電話末六碼：' + info.phone + '</div>' +
+              '<div class="success-info">取貨分店：' + (info.store || '') + '<br>電話末六碼：' + (info.phone || '') + '</div>' +
               '<div class="success-items">' + itemsHTML + '</div>' +
               '<button class="btn btn-primary" style="margin-top:24px;" onclick="resetCustomerForm()">繼續登記其他品項</button>' +
             '</div>' +
@@ -1150,7 +1115,7 @@
         if (result.success && result.shortURL) {
           state.shortUrl = result.shortURL;
           localStorage.setItem('shortUrl', state.shortUrl);
-          render(); 
+          render();
         }
       } catch (error) {
         console.error('Short.io error:', error);
@@ -1202,7 +1167,7 @@
 
     async function editItemLimit(itemName, currentLimit, currentWaitlist) {
       const newName = prompt('修改 [' + itemName + '] 的「品項名稱」：\n(若不修改請保持原樣)', itemName);
-      if (newName === null) return; 
+      if (newName === null) return;
       
       const newLimit = prompt('修改 [' + newName + '] 的 "正取" 數量：', currentLimit);
       if (newLimit === null) return;
@@ -1219,8 +1184,8 @@
             action: 'updateSettings', 
             sheetName: state.currentSheet, 
             updateItem: { 
-              name: itemName,          
-              newName: newName,        
+              name: itemName,
+              newName: newName,
               limit: newLimit, 
               waitlist: newWaitlist 
             }
@@ -1276,8 +1241,14 @@
       const newQty = Math.max(0, currentQty + delta);
       const item = state.formConfig.items.find(function(i) { return i.name === itemName; });
       if (item) {
-        const remaining = item.remaining !== undefined ? item.remaining : (item.limit - (item.ordered || 0));
-        if (newQty <= remaining) state.selectedItems[itemName] = newQty;
+        const limit = parseInt(item.limit);
+        const waitlist = parseInt(item.waitlist || 0);
+        const ordered = item.ordered || 0;
+        const regularRemaining = Math.max(0, limit - ordered);
+        const waitlistUsed = Math.max(0, ordered - limit);
+        const waitlistRemaining = Math.max(0, waitlist - waitlistUsed);
+        const totalRemaining = regularRemaining + waitlistRemaining;
+        if (newQty <= totalRemaining) state.selectedItems[itemName] = newQty;
       }
       render();
     }
@@ -1350,11 +1321,12 @@
         loadFormData();
       } else {
         const storedLogin = localStorage.getItem('isAdminLoggedIn');
+        
         if (storedLogin === 'true') {
           state.isLoggedIn = true;
           state.view = 'admin'; 
           state.adminMode = 'stats';
-          loadSheetList(); 
+          loadSheetList();
           if (state.currentSheet) loadOrders();
         } else {
           state.view = 'login';
@@ -1369,7 +1341,7 @@
       
       state.loading = true;
       const btn = document.querySelector('.btn-primary');
-      if(btn) btn.innerText = '驗證中...';
+      if (btn) btn.innerText = '驗證中...';
 
       try {
         const response = await fetch(SCRIPT_URL, {
@@ -1382,16 +1354,18 @@
           state.isLoggedIn = true;
           state.view = 'admin';
           localStorage.setItem('isAdminLoggedIn', 'true');
+          
           loadSheetList();
           if (state.currentSheet) loadOrders();
+          
           render();
         } else {
           showToast('❌ 密碼錯誤');
-          if(btn) btn.innerText = '登入';
+          if (btn) btn.innerText = '登入';
         }
       } catch (e) {
         showToast('❌ 連線錯誤');
-        if(btn) btn.innerText = '登入';
+        if (btn) btn.innerText = '登入';
       }
       state.loading = false;
     }
@@ -1408,9 +1382,9 @@
     }
 
     function switchAdminSheet(sheetName) {
-      if (!sheetName) return; 
+      if (!sheetName) return;
       state.currentSheet = sheetName;
-      state.adminMode = 'stats'; 
+      state.adminMode = 'stats';
       localStorage.setItem('currentSheet', sheetName);
       state.shortUrl = ''; 
       localStorage.removeItem('shortUrl');
